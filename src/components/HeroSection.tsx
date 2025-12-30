@@ -1,25 +1,10 @@
-import {
-  motion,
-  useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 export const HeroSection = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"]
-  });
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll-driven motion
-  const lensRotateXBase = useTransform(scrollYProgress, [0, 1], [0, -28]);
-  const lensRotateZBase = useTransform(scrollYProgress, [0, 1], [0, 32]);
-  const lensY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-
-  // Mouse-driven tilt
+  // Mouse-driven tilt (keep 3D feel)
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
   const pointerX = useMotionValue(0.5);
@@ -30,16 +15,22 @@ export const HeroSection = () => {
   const pointerXSpring = useSpring(pointerX, { stiffness: 220, damping: 26, mass: 0.45 });
   const pointerYSpring = useSpring(pointerY, { stiffness: 220, damping: 26, mass: 0.45 });
 
-  const lensRotateX = useTransform([lensRotateXBase, tiltXSpring], ([a, b]) => a + b);
-  const lensRotateY = useTransform([tiltYSpring], ([b]) => b);
-  const lensRotateZ = useTransform([lensRotateZBase, tiltYSpring], ([a, b]) => a + b * 0.25);
+  const lensRotateX = useTransform(tiltXSpring, (v) => v);
+  const lensRotateY = useTransform(tiltYSpring, (v) => v);
+  const lensRotateZ = useTransform(tiltYSpring, (v) => v * 0.2);
+
+  const glassHighlight = useTransform(
+    [pointerXSpring, pointerYSpring],
+    ([x, y]) =>
+      `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const bounds = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - bounds.left) / bounds.width;
     const y = (e.clientY - bounds.top) / bounds.height;
 
-    const max = 15; // degrees
+    const max = 12;
     const rx = (0.5 - y) * max * 2;
     const ry = (x - 0.5) * max * 2;
     tiltX.set(rx);
@@ -52,45 +43,34 @@ export const HeroSection = () => {
   const handleMouseLeave = () => {
     tiltX.set(0);
     tiltY.set(0);
-
     pointerX.set(0.5);
     pointerY.set(0.5);
   };
 
-  const glassHighlight = useTransform(
-    [pointerXSpring, pointerYSpring],
-    ([x, y]) =>
-      `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`
-  );
-
   return (
-    <section 
-      ref={ref}
-      className="relative h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        background: "radial-gradient(circle at center, #2e1065 0%, #000000 70%)",
-      }}
+    <section
+      ref={sectionRef}
+      className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#2e1065] via-black to-black"
     >
-      {/* Main Title (metallic) - behind the lens */}
+      {/* 2. Title (Background layer) */}
       <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 select-none whitespace-nowrap leading-[0.9] uppercase font-display text-[clamp(2.75rem,11.5vw,10.75rem)] tracking-[0.01em] md:tracking-[0.03em] bg-gradient-to-b from-white via-gray-200 to-gray-600 text-transparent bg-clip-text w-[96vw] max-w-[96vw] text-center pointer-events-none"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15, duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[13vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
       >
         CAMERAWALA
       </motion.h1>
 
-      {/* Layer 2: CSS Camera Lens - 3D perspective + scroll rotation + mouse tilt */}
+      {/* 3. Lens (Middle layer) */}
       <div
-        className="absolute z-10"
+        className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{ perspective: "1200px" }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
         <motion.div
           style={{
-            y: lensY,
             rotateX: lensRotateX,
             rotateY: lensRotateY,
             rotateZ: lensRotateZ,
@@ -99,7 +79,6 @@ export const HeroSection = () => {
           className="will-change-transform"
         >
           <div className="relative w-[520px] h-[520px] max-w-[82vw] max-h-[82vw]">
-            {/* Outer body */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
@@ -111,7 +90,6 @@ export const HeroSection = () => {
               }}
             />
 
-            {/* Bezel ring */}
             <div
               className="absolute inset-[34px] rounded-full"
               style={{
@@ -121,7 +99,6 @@ export const HeroSection = () => {
               }}
             />
 
-            {/* Glass */}
             <div
               className="absolute inset-[64px] rounded-full"
               style={{
@@ -132,17 +109,14 @@ export const HeroSection = () => {
               }}
             />
 
-            {/* Moving highlight (feels like physical glass) */}
             <motion.div
               className="absolute inset-[64px] rounded-full pointer-events-none will-change-opacity"
               style={{ background: glassHighlight, opacity: 0.9 }}
             />
 
-            {/* Aperture hint */}
             <div className="absolute inset-[110px] rounded-full border border-white/10" />
             <div className="absolute inset-[140px] rounded-full border border-white/8" />
 
-            {/* Center spec */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_40px_rgba(124,58,237,0.35)]" />
             </div>
@@ -150,12 +124,21 @@ export const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Layer 3: Glassmorphism Card - Bottom left corner */}
-      <motion.div 
-        className="absolute z-20 bottom-24 left-6 md:left-10 glass-card p-5 md:p-6 max-w-xs"
-        initial={{ opacity: 0, x: -30 }}
+      {/* 4. Content (Top layer) */}
+      <div className="absolute z-20 top-8 right-12">
+        <a
+          href="#services"
+          className="text-xs font-display tracking-[0.35em] uppercase text-white/70 hover:text-white transition-colors"
+        >
+          MENU
+        </a>
+      </div>
+
+      <motion.div
+        className="absolute z-20 bottom-12 left-12 glass-card p-5 md:p-6 max-w-xs"
+        initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
+        transition={{ delay: 0.35, duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
       >
         <p className="text-sm md:text-base text-foreground">
           <span className="font-display tracking-wide">Capture Your Story</span>
