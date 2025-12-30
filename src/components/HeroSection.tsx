@@ -54,7 +54,7 @@ export const HeroSection = () => {
     >
       {/* 2. Title (Background layer) */}
       <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[13vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[11vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
