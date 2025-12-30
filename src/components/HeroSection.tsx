@@ -72,7 +72,7 @@ export const HeroSection = () => {
       >
         <div className="font-display uppercase leading-none">
           <div className="text-yellow-400 text-[38px] md:text-[56px] tracking-wide">THE</div>
-          <div className="font-brand tracking-tight text-[13vw] md:text-[9.5vw] leading-[0.85] bg-gradient-to-r from-white via-white/85 to-white/60 bg-clip-text text-transparent">
+          <div className="font-brand tracking-tight text-[10vw] md:text-[8.5vw] leading-[0.85] bg-gradient-to-r from-white via-white/85 to-white/60 bg-clip-text text-transparent">
             CAMERAWALA
           </div>
         </div>
