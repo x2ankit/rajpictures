@@ -63,20 +63,18 @@ export const HeroSection = () => {
         CAMERAWALA
       </motion.h1>
 
-      {/* Foreground headline (Reference-style) */}
-      <motion.div
-        className="absolute z-20 left-6 md:left-12 top-10 md:top-16 pointer-events-none"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12, duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
-      >
-        <div className="font-display uppercase leading-none">
-          <div className="text-yellow-400 text-[38px] md:text-[56px] tracking-wide">THE</div>
-          <div className="font-brand tracking-tight text-[10vw] md:text-[8.5vw] leading-[0.85] bg-gradient-to-r from-white via-white/85 to-white/60 bg-clip-text text-transparent">
-            CAMERAWALA
-          </div>
+      {/* Container: Perfectly Centered & Compact */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center justify-center text-center w-full pointer-events-none">
+        {/* "THE" - Adjusted size */}
+        <div className="text-yellow-400 font-bold text-[16px] md:text-[24px] tracking-[0.3em] mb-2">
+          THE
         </div>
-      </motion.div>
+
+        {/* "CAMERAWALA" - Much smaller & tighter */}
+        <div className="font-brand font-bold tracking-tighter text-[8vw] md:text-[5vw] leading-none bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
+          CAMERAWALA
+        </div>
+      </div>
 
       {/* 3. Lens (Middle layer) */}
       <div
