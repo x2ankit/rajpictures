@@ -67,26 +67,19 @@ export const HeroSection = () => {
     <section 
       ref={ref}
       className="relative h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        background: "radial-gradient(circle at center, #2e1065 0%, #000000 70%)",
+      }}
     >
-      {/* Layer 1: Large Brand Name - Behind everything */}
-      <motion.h1 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12vw] font-display font-bold tracking-wider text-white/5 select-none whitespace-nowrap z-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 1 }}
+      {/* Main Title (metallic) - behind the lens */}
+      <motion.h1
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 select-none whitespace-nowrap leading-none text-[15vw] uppercase font-display tracking-[0.08em] bg-gradient-to-b from-white via-gray-200 to-gray-600 text-transparent bg-clip-text"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
       >
         CAMERAWALA
       </motion.h1>
-
-      {/* Foreground title (OSD-like) */}
-      <motion.h2
-        className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-black font-display text-5xl md:text-7xl uppercase tracking-wide drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] select-none pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.35, duration: 0.6 }}
-      >
-        CAMERA WALA
-      </motion.h2>
 
       {/* Layer 2: CSS Camera Lens - 3D perspective + scroll rotation + mouse tilt */}
       <div

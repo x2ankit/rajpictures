@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Anton"', 'sans-serif'],
+        display: ['"Michroma"', '"Anton"', 'sans-serif'],
+        brand: ['"Michroma"', 'sans-serif'],
         body: ['Manrope', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
