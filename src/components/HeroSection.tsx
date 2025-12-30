@@ -53,32 +53,22 @@ export const HeroSection = () => {
       ref={sectionRef}
       className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#2e1065] via-black to-black"
     >
-      {/* 2. Title (Background layer) */}
-      <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[9.5vw] 2xl:text-[8vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
-      >
-        CAMERAWALA
-      </motion.h1>
-
       {/* Container: Perfectly Centered & Compact */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center justify-center text-center w-full pointer-events-none">
-        {/* "THE" - Adjusted size */}
-        <div className="text-yellow-400 font-bold text-[16px] md:text-[24px] tracking-[0.3em] mb-2">
+        {/* "THE" */}
+        <div className="text-yellow-400 font-bold text-sm md:text-xl tracking-[0.3em] mb-2">
           THE
         </div>
 
-        {/* "CAMERAWALA" - Much smaller & tighter */}
-        <div className="font-brand font-bold tracking-tighter text-[8vw] md:text-[5vw] leading-none bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
+        {/* "CAMERAWALA" */}
+        <div className="font-brand font-bold tracking-tighter text-[10vw] md:text-[6vw] leading-none bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
           CAMERAWALA
         </div>
       </div>
 
       {/* 3. Lens (Middle layer) */}
       <div
-        className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{ perspective: "1200px" }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
