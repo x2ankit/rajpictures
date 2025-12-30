@@ -73,7 +73,7 @@ export const HeroSection = () => {
     >
       {/* Main Title (metallic) - behind the lens */}
       <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 select-none whitespace-nowrap leading-[0.85] uppercase font-display text-[clamp(3.25rem,15vw,12rem)] tracking-[0.04em] md:tracking-[0.08em] bg-gradient-to-b from-white via-gray-200 to-gray-600 text-transparent bg-clip-text w-[95vw] max-w-[95vw] text-center pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 select-none whitespace-normal md:whitespace-nowrap leading-[0.9] uppercase font-display text-[clamp(3rem,13vw,12rem)] tracking-[0.02em] md:tracking-[0.08em] bg-gradient-to-b from-white via-gray-200 to-gray-600 text-transparent bg-clip-text w-[92vw] max-w-[92vw] text-center pointer-events-none"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
