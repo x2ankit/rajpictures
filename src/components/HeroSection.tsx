@@ -54,13 +54,26 @@ export const HeroSection = () => {
     >
       {/* 2. Title (Background layer) */}
       <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[11vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[9.5vw] 2xl:text-[8vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
       >
         CAMERAWALA
       </motion.h1>
+
+      {/* Foreground headline (Reference-style) */}
+      <motion.div
+        className="absolute z-20 left-6 md:left-12 top-10 md:top-16 pointer-events-none"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
+      >
+        <div className="font-display uppercase leading-none">
+          <div className="text-primary text-[38px] md:text-[56px] tracking-wide">THE</div>
+          <div className="text-white tracking-tight text-[18vw] md:text-[13vw] leading-[0.85]">CAMERAWALA</div>
+        </div>
+      </motion.div>
 
       {/* 3. Lens (Middle layer) */}
       <div

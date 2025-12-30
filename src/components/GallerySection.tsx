@@ -8,6 +8,18 @@ import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 const filters = ["All", "Weddings", "Cinematic"] as const;
 type Filter = (typeof filters)[number];
 
+function isMissingOrderIndexColumnError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("order_index") &&
+    (lower.includes("does not exist") ||
+      lower.includes("could not find") ||
+      lower.includes("unknown column") ||
+      lower.includes("column") && lower.includes("not") && lower.includes("exist"))
+  );
+}
+
 async function fetchGallery(): Promise<GalleryItem[]> {
   const { data, error } = await supabase
     .from("gallery")
@@ -15,8 +27,19 @@ async function fetchGallery(): Promise<GalleryItem[]> {
     .order("order_index", { ascending: true })
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
-  return (data as GalleryItem[]) || [];
+  if (!error) return (data as GalleryItem[]) || [];
+
+  if (isMissingOrderIndexColumnError(error)) {
+    const fallback = await supabase
+      .from("gallery")
+      .select("id, created_at, title, category, image_url, storage_path")
+      .order("created_at", { ascending: false });
+
+    if (fallback.error) throw fallback.error;
+    return (fallback.data as GalleryItem[]) || [];
+  }
+
+  throw error;
 }
 
 export const GallerySection = () => {

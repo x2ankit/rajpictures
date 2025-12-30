@@ -35,8 +35,20 @@ type GalleryRow = {
   category: string | null;
   image_url: string;
   storage_path: string | null;
-  order_index: number | null;
+  order_index?: number | null;
 };
+
+function isMissingOrderIndexColumnError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("order_index") &&
+    (lower.includes("does not exist") ||
+      lower.includes("could not find") ||
+      lower.includes("unknown column") ||
+      lower.includes("column") && lower.includes("not") && lower.includes("exist"))
+  );
+}
 
 function createObjectUrlSafe(file: File): string | null {
   try {
@@ -62,8 +74,8 @@ function safeFileName(name: string) {
     .replace(/[^a-zA-Z0-9._-]/g, "");
 }
 
-function extractImageFilesFromClipboard(data: DataTransfer | ClipboardData | null | undefined): File[] {
-  const items = (data as ClipboardData | null | undefined)?.items;
+function extractImageFilesFromClipboard(data: DataTransfer | null | undefined): File[] {
+  const items = data?.items;
   if (!items || items.length === 0) return [];
 
   const imageFiles: File[] = [];
@@ -172,6 +184,7 @@ export default function Admin() {
   const [isLoadingGallery, setIsLoadingGallery] = useState(false);
   const [galleryRows, setGalleryRows] = useState<GalleryRow[]>([]);
   const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const [isOrderIndexAvailable, setIsOrderIndexAvailable] = useState(true);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -190,10 +203,32 @@ export default function Admin() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
+      setIsOrderIndexAvailable(true);
       setGalleryRows((data as GalleryRow[]) || []);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to load gallery";
-      toast({ title: "Gallery load failed", description: message, variant: "destructive" });
+      if (isMissingOrderIndexColumnError(err)) {
+        try {
+          const { data, error } = await supabase
+            .from("gallery")
+            .select("id, created_at, title, category, image_url, storage_path")
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+          setIsOrderIndexAvailable(false);
+          setGalleryRows(((data as Omit<GalleryRow, "order_index">[]) || []).map((r) => ({ ...r, order_index: null })));
+          toast({
+            title: "Ordering not enabled",
+            description: "Add an order_index column to enable drag-and-drop ordering.",
+            variant: "destructive",
+          });
+        } catch (fallbackErr: unknown) {
+          const message = fallbackErr instanceof Error ? fallbackErr.message : "Failed to load gallery";
+          toast({ title: "Gallery load failed", description: message, variant: "destructive" });
+        }
+      } else {
+        const message = err instanceof Error ? err.message : "Failed to load gallery";
+        toast({ title: "Gallery load failed", description: message, variant: "destructive" });
+      }
     } finally {
       setIsLoadingGallery(false);
     }
@@ -324,15 +359,33 @@ export default function Admin() {
       for (const item of pending) {
         const { publicUrl, storagePath } = await uploadToSupabase(item.file);
 
-        const { error: insertError } = await supabase.from("gallery").insert({
+        const baseRow = {
           title: item.title || null,
           category: item.category,
           image_url: publicUrl,
           storage_path: storagePath,
-          order_index: nextOrderIndex++,
-        });
+        };
 
-        if (insertError) throw insertError;
+        const rowWithOrder = isOrderIndexAvailable
+          ? { ...baseRow, order_index: nextOrderIndex++ }
+          : baseRow;
+
+        const { error: insertError } = await supabase.from("gallery").insert(rowWithOrder);
+
+        if (insertError) {
+          if (isMissingOrderIndexColumnError(insertError)) {
+            setIsOrderIndexAvailable(false);
+            const { error: retryError } = await supabase.from("gallery").insert(baseRow);
+            if (retryError) throw retryError;
+            toast({
+              title: "Ordering not enabled",
+              description: "Uploaded without order_index. Add the column to enable reordering.",
+              variant: "destructive",
+            });
+          } else {
+            throw insertError;
+          }
+        }
       }
 
       toast({
@@ -379,6 +432,15 @@ export default function Admin() {
   );
 
   const saveOrderIndexes = async (rows: GalleryRow[]) => {
+    if (!isOrderIndexAvailable) {
+      toast({
+        title: "Ordering not enabled",
+        description: "Add an order_index column to enable drag-and-drop ordering.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSavingOrder(true);
     try {
       const updates = rows.map((row, index) => ({ id: row.id, order_index: index }));
@@ -386,6 +448,9 @@ export default function Admin() {
       if (error) throw error;
       toast({ title: "Order saved", description: "Gallery order updated." });
     } catch (err: unknown) {
+      if (isMissingOrderIndexColumnError(err)) {
+        setIsOrderIndexAvailable(false);
+      }
       const message = err instanceof Error ? err.message : "Failed to save order";
       toast({ title: "Save failed", description: message, variant: "destructive" });
       // Re-sync to server state
@@ -396,6 +461,16 @@ export default function Admin() {
   };
 
   const onDragEnd = async (event: DragEndEvent) => {
+    if (!isOrderIndexAvailable) {
+      toast({
+        title: "Ordering not enabled",
+        description: "Add an order_index column to enable drag-and-drop ordering.",
+        variant: "destructive",
+      });
+      await loadGallery();
+      return;
+    }
+
     const { active, over } = event;
     if (!over) return;
     if (active.id === over.id) return;
