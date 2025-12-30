@@ -11,7 +11,6 @@ export const HeroSection = () => {
   const lensY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const lensRotate = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const lensScale = useTransform(scrollYProgress, [0, 1], [1, 0.7]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
   return (
     <section 
@@ -24,9 +23,9 @@ export const HeroSection = () => {
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-primary/3 blur-[120px]" />
       </div>
 
-      {/* Large Brand Name - Behind everything */}
+      {/* Layer 1: Large Brand Name - Behind everything */}
       <motion.h1 
-        className="absolute text-[15vw] md:text-[12vw] font-display tracking-[0.2em] text-foreground/10 select-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-anton tracking-wider text-foreground/10 select-none whitespace-nowrap z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 1 }}
@@ -34,7 +33,7 @@ export const HeroSection = () => {
         CAMERAWALA
       </motion.h1>
 
-      {/* CSS Camera Lens - On top of text */}
+      {/* Layer 2: CSS Camera Lens - On top of text */}
       <motion.div
         className="absolute z-10"
         style={{ 
@@ -43,14 +42,14 @@ export const HeroSection = () => {
           scale: lensScale
         }}
       >
-        <div className="relative w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80">
-          {/* Outer ring */}
-          <div className="absolute inset-0 rounded-full border-[6px] border-muted/50 animate-lens-rotate" 
+        <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72">
+          {/* Outer ring with glow */}
+          <div className="absolute inset-0 rounded-full border-[6px] border-muted/40 animate-lens-rotate" 
             style={{
               boxShadow: `
                 inset 0 0 60px rgba(0,0,0,0.9),
-                0 0 60px rgba(124, 58, 237, 0.15),
-                0 0 100px rgba(0,0,0,0.6)
+                0 0 40px rgba(124, 58, 237, 0.2),
+                0 0 80px rgba(0,0,0,0.6)
               `
             }}
           />
@@ -87,48 +86,42 @@ export const HeroSection = () => {
         </div>
       </motion.div>
 
-      {/* Glassmorphism Card - On top of lens */}
+      {/* Layer 3: Glassmorphism Card - Bottom left corner */}
       <motion.div 
-        className="absolute z-20 glass-card p-6 md:p-8 max-w-md mx-auto animate-float"
-        style={{ y: 120 }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        className="absolute z-20 bottom-24 left-6 md:left-10 glass-card p-5 md:p-6 max-w-xs"
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
       >
-        <h2 className="text-xl md:text-2xl font-display text-accent mb-2">
+        <h2 className="text-lg md:text-xl font-display text-accent mb-1">
           CAPTURE YOUR STORY
         </h2>
-        <p className="text-muted-foreground text-sm md:text-base">
+        <p className="text-muted-foreground text-xs md:text-sm">
           Step into a world of creativity where every frame tells a unique narrative.
         </p>
       </motion.div>
 
-      {/* Hero Tagline */}
-      <motion.div 
-        className="absolute z-10 text-center px-6"
-        style={{ opacity: textOpacity, y: -100 }}
+      {/* Vision Tagline - Top right */}
+      <motion.p 
+        className="absolute top-20 right-6 md:right-10 text-[10px] md:text-xs font-mono tracking-[0.3em] text-muted-foreground/60 uppercase z-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.8 }}
       >
-        <motion.p 
-          className="text-lg md:text-xl lg:text-2xl font-display tracking-[0.3em] text-foreground/70"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-        >
-          WHERE VISION BECOMES AN EXPERIENCE
-        </motion.p>
-      </motion.div>
+        Where Vision Becomes<br className="md:hidden" /> An Experience
+      </motion.p>
 
       {/* Scroll indicator */}
       <motion.div 
-        className="absolute bottom-24 left-1/2 -translate-x-1/2"
+        className="absolute bottom-24 right-6 md:right-10 z-20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
       >
         <div className="flex flex-col items-center gap-2">
-          <span className="text-[10px] font-mono text-muted-foreground tracking-widest">SCROLL</span>
+          <span className="text-[10px] font-mono text-muted-foreground/50 tracking-widest">SCROLL</span>
           <motion.div 
-            className="w-px h-10 bg-gradient-to-b from-muted-foreground/50 to-transparent"
+            className="w-px h-8 bg-gradient-to-b from-muted-foreground/40 to-transparent"
             animate={{ scaleY: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           />
