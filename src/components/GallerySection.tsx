@@ -1,25 +1,44 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Image } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 
-const filters = ["All", "Weddings", "Cinematic"];
+const filters = ["All", "Weddings", "Cinematic"] as const;
+type Filter = (typeof filters)[number];
 
-// Placeholder images for demo - will be replaced with Supabase storage
-const placeholderImages = [
-  { id: 1, category: "Weddings", aspect: "portrait" },
-  { id: 2, category: "Cinematic", aspect: "landscape" },
-  { id: 3, category: "Weddings", aspect: "square" },
-  { id: 4, category: "Cinematic", aspect: "portrait" },
-  { id: 5, category: "Weddings", aspect: "landscape" },
-  { id: 6, category: "Cinematic", aspect: "square" },
-];
+async function fetchGallery(): Promise<GalleryItem[]> {
+  const { data, error } = await supabase
+    .from("gallery")
+    .select("id, created_at, title, category, image_url, storage_path")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data as GalleryItem[]) || [];
+}
 
 export const GallerySection = () => {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState<Filter>("All");
 
-  const filteredImages = activeFilter === "All" 
-    ? placeholderImages 
-    : placeholderImages.filter(img => img.category === activeFilter);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["gallery"],
+    queryFn: fetchGallery,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const items = data ?? [];
+
+  const filtered = useMemo(() => {
+    if (activeFilter === "All") return items;
+    return items.filter((img) => (img.category || "").toLowerCase() === activeFilter.toLowerCase());
+  }, [items, activeFilter]);
+
+  if (isError) {
+    const message = error instanceof Error ? error.message : "Failed to load gallery";
+    toast({ title: "Gallery error", description: message, variant: "destructive" });
+  }
 
   return (
     <section className="py-24 px-6">
@@ -57,33 +76,89 @@ export const GallerySection = () => {
         </motion.div>
 
         {/* Masonry Grid */}
-        <motion.div 
-          className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4"
-          layout
-        >
-          {filteredImages.map((image, index) => (
-            <motion.div
-              key={image.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: index * 0.1 }}
-              className={`glass-card overflow-hidden break-inside-avoid ${
-                image.aspect === "portrait" ? "aspect-[3/4]" :
-                image.aspect === "landscape" ? "aspect-[4/3]" :
-                "aspect-square"
-              }`}
-            >
-              <div className="w-full h-full flex items-center justify-center bg-muted/30">
-                <div className="text-center">
-                  <Image className="w-12 h-12 mx-auto mb-2 text-muted-foreground/50" />
-                  <p className="text-xs text-muted-foreground font-mono">{image.category}</p>
-                </div>
+        {isLoading ? (
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <div
+                key={i}
+                className="glass-card overflow-hidden break-inside-avoid bg-muted/20 animate-pulse"
+                style={{ height: 220 + (i % 3) * 110 }}
+              />
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            layout
+            className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 1 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+              },
+            }}
+          >
+            <AnimatePresence mode="popLayout">
+              {filtered.map((image) => (
+                <motion.div
+                  key={String(image.id)}
+                  layout
+                  variants={{
+                    hidden: { opacity: 0, y: 14 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
+                    },
+                  }}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.25 } }}
+                  className="group relative glass-card overflow-hidden break-inside-avoid cursor-zoom-in"
+                >
+                  <div className="relative">
+                    <motion.img
+                      src={image.image_url}
+                      alt={image.title || "CameraWala photo"}
+                      loading="lazy"
+                      className="w-full h-auto object-cover block"
+                      whileHover={{ scale: 1.04 }}
+                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+                    />
+
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    {/* View indicator (plus icon) */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-12 h-12 rounded-full bg-background/30 border border-border/50 backdrop-blur-md flex items-center justify-center">
+                        <Plus className="w-5 h-5 text-foreground" />
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <div className="absolute left-0 right-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="text-sm font-display tracking-wider">
+                        {(image.title && image.title.trim()) || "(Untitled)"}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-400 tracking-widest">
+                        {(image.category && image.category.trim()) || "Uncategorized"}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {filtered.length === 0 && (
+              <div className="glass-card p-10 text-center">
+                <div className="text-sm text-muted-foreground">No images in this category yet.</div>
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
+            )}
+          </motion.div>
+        )}
 
         {/* Admin hint */}
         <motion.p 

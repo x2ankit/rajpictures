@@ -44,7 +44,7 @@ export const Footer = () => {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-border/20 text-center">
           <p className="text-[10px] text-muted-foreground/60 font-mono tracking-wider">
-            © 2025 CAMERAWALA. CRAFTED WITH PRECISION & ARTISTRY.
+            © 2025 CameraWala. Crafted with precision.
           </p>
         </div>
       </div>

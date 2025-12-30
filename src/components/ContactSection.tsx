@@ -4,15 +4,6 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { ArtistSection } from "./ArtistSection";
 
-const services = [
-  "Pre Wedding / Wedding Shoot",
-  "Maternity Photography",
-  "Newborn Photography",
-  "Kids Photography",
-  "Pre Birthday Photography",
-  "Fashion & Commercial Shoots"
-];
-
 const budgets = [
   "Below ₹50k",
   "₹50k - 1L",
@@ -24,9 +15,10 @@ const budgets = [
 export const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    service: "",
-    budget: ""
+    mobile: "",
+    city: "",
+    budget: "",
+    requirements: ""
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,7 +27,7 @@ export const ContactSection = () => {
       title: "Inquiry Sent!",
       description: "We'll get back to you within 24 hours.",
     });
-    setFormData({ name: "", email: "", service: "", budget: "" });
+    setFormData({ name: "", mobile: "", city: "", budget: "", requirements: "" });
   };
 
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=B%2F24+2nd+floor+Siddhi+Vihar+Krishna+garden+Jagamara+Bhubaneswar+Odisha+751030";
@@ -83,33 +75,29 @@ export const ContactSection = () => {
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Email
+                  Mobile
                 </label>
                 <input
-                  type="email"
+                  type="tel"
                   required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  value={formData.mobile}
+                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                   className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-                  placeholder="your@email.com"
+                  placeholder="Your mobile number"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Service
+                  City
                 </label>
-                <select
+                <input
                   required
-                  value={formData.service}
-                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none text-sm"
-                >
-                  <option value="">Select a service</option>
-                  {services.map((service) => (
-                    <option key={service} value={service}>{service}</option>
-                  ))}
-                </select>
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
+                  placeholder="Your city"
+                />
               </div>
 
               <div>
@@ -127,6 +115,19 @@ export const ContactSection = () => {
                     <option key={budget} value={budget}>{budget}</option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-2">
+                  Requirements
+                </label>
+                <textarea
+                  required
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm min-h-[120px]"
+                  placeholder="Tell us what you need (date, location, style, references)"
+                />
               </div>
 
               <button

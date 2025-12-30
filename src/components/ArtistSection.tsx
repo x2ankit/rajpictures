@@ -15,9 +15,12 @@ export const ArtistSection = () => {
         {/* Image container with gradient mask */}
         <div className="relative overflow-hidden rounded-xl border border-border/20">
           <img
-            src={photographerImage}
+            src="/image_129164.jpg"
             alt="RAJ - Lead Photographer"
             className="w-full aspect-[4/5] object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = photographerImage;
+            }}
           />
           {/* Bottom gradient fade */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />

@@ -22,7 +22,8 @@
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 24 91% 48%;
+    /* Accent should match the deep electric purple (#7c3aed) */
+    --accent: 263 70% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -66,10 +67,11 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Manrope', sans-serif;
+    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Anton', sans-serif;
     letter-spacing: 0.05em;
   }
 
@@ -131,6 +133,11 @@
 }
 
 @layer utilities {
+  .mask-linear-gradient {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  }
+
   .animate-pulse-rec {
     animation: pulse-rec 1.5s ease-in-out infinite;
   }

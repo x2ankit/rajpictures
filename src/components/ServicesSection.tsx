@@ -5,32 +5,32 @@ const services = [
   {
     number: "01",
     title: "Pre Wedding / Wedding Shoot",
-    description: "Romantic, cinematic captures that tell the couple's story — timeless & tasteful."
+    description: "Romantic, cinematic captures that tell the couple’s story."
   },
   {
     number: "02",
     title: "Maternity Photography",
-    description: "Soft, emotive portraits celebrating the journey into parenthood."
+    description: "Soft, emotive portraits celebrating parenthood."
   },
   {
     number: "03",
     title: "Newborn Photography",
-    description: "Tender, detail-forward newborn portraits crafted with calm & care."
+    description: "Tender, detail-forward newborn portraits."
   },
   {
     number: "04",
     title: "Kids Photography",
-    description: "Playful, story-filled sessions that capture wonder and personality."
+    description: "Playful, story-filled sessions."
   },
   {
     number: "05",
     title: "Pre Birthday Photography",
-    description: "Vivid, joyful portraits to celebrate milestones with style."
+    description: "Vivid, joyful portraits."
   },
   {
     number: "06",
-    title: "Fashion & Commercial Shoots",
-    description: "High-concept visuals for brands — polished, on-brief, and editorial."
+    title: "Fashion & Commercial",
+    description: "High-concept visuals for brands."
   }
 ];
 
@@ -102,11 +102,11 @@ export const ServicesSection = () => {
                 {/* Buttons */}
                 <div className="flex items-center gap-3 mt-4 md:mt-0">
                   <button className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded-full hover:border-primary/50 transition-all duration-300 flex items-center gap-2">
-                    Learn more
+                    Learn More
                     <ArrowRight className="w-3 h-3" />
                   </button>
                   <button className="px-4 py-2 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                    Pricing & packages
+                    Pricing
                   </button>
                 </div>
               </div>

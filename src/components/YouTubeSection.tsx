@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { Play, Circle } from "lucide-react";
+import { useState } from "react";
 
 export const YouTubeSection = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   return (
     <section className="py-24 px-6">
       <div className="max-w-5xl mx-auto">
@@ -39,14 +42,33 @@ export const YouTubeSection = () => {
 
             {/* Video container */}
             <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
-              <iframe
-                src="https://www.youtube.com/embed/TlbZJj_9_xY?rel=0&modestbranding=1"
-                title="CameraWala Cinematic Wedding Highlights"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-                loading="lazy"
-              />
+              {isPlaying ? (
+                <iframe
+                  src="https://www.youtube.com/embed/TlbZJj_9_xY?rel=0&modestbranding=1&autoplay=1"
+                  title="CameraWala Cinematic Wedding Highlights"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(true)}
+                  className="absolute inset-0 w-full h-full group"
+                  aria-label="Play video"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-20 h-20 rounded-full bg-background/25 border border-border/60 backdrop-blur-md flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                      <Play className="w-7 h-7 text-foreground" />
+                    </div>
+                  </div>
+                  <div className="absolute left-4 bottom-4 text-left">
+                    <div className="text-xs font-mono text-zinc-400 tracking-widest">PRESS PLAY</div>
+                  </div>
+                </button>
+              )}
             </div>
 
             {/* Monitor footer */}
