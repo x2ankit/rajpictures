@@ -72,6 +72,10 @@
     font-family: 'Bebas Neue', sans-serif;
     letter-spacing: 0.05em;
   }
+
+  .font-anton {
+    font-family: 'Anton', sans-serif;
+  }
 }
 
 @layer components {

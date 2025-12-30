@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, ExternalLink, Phone, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { ArtistSection } from "./ArtistSection";
 
 const services = [
   "Pre Wedding / Wedding Shoot",
@@ -52,16 +53,22 @@ export const ContactSection = () => {
           <h2 className="text-4xl md:text-6xl font-display mt-4">LET'S WORK TOGETHER</h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          {/* Artist Profile - Shows first on mobile */}
+          <div className="lg:order-3">
+            <ArtistSection />
+          </div>
+
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            className="lg:order-1"
           >
-            <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                <label className="block text-xs font-medium text-muted-foreground mb-2">
                   Name
                 </label>
                 <input
@@ -69,13 +76,13 @@ export const ContactSection = () => {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
                   placeholder="Your name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                <label className="block text-xs font-medium text-muted-foreground mb-2">
                   Email
                 </label>
                 <input
@@ -83,20 +90,20 @@ export const ContactSection = () => {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
                   placeholder="your@email.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                <label className="block text-xs font-medium text-muted-foreground mb-2">
                   Service
                 </label>
                 <select
                   required
                   value={formData.service}
                   onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none text-sm"
                 >
                   <option value="">Select a service</option>
                   {services.map((service) => (
@@ -106,14 +113,14 @@ export const ContactSection = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                <label className="block text-xs font-medium text-muted-foreground mb-2">
                   Budget
                 </label>
                 <select
                   required
                   value={formData.budget}
                   onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none text-sm"
                 >
                   <option value="">Select your budget</option>
                   {budgets.map((budget) => (
@@ -133,20 +140,20 @@ export const ContactSection = () => {
 
           {/* Location & Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-4 lg:order-2"
           >
             {/* Location Card */}
-            <div className="glass-card p-8">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-accent" />
+            <div className="glass-card p-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-display mb-2">STUDIO LOCATION</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <h3 className="text-lg font-display mb-1">STUDIO LOCATION</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     B/24 2nd floor, Siddhi Vihar,<br />
                     Krishna garden, Jagamara,<br />
                     Bhubaneswar, Odisha 751030
@@ -158,7 +165,7 @@ export const ContactSection = () => {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent/10 text-accent rounded-lg hover:bg-accent hover:text-accent-foreground transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-lg hover:bg-accent hover:text-accent-foreground transition-all text-sm"
               >
                 <span>Open in Google Maps</span>
                 <ExternalLink className="w-4 h-4" />
@@ -166,36 +173,36 @@ export const ContactSection = () => {
             </div>
 
             {/* Contact Details */}
-            <div className="glass-card p-8 space-y-4">
+            <div className="glass-card p-6 space-y-3">
               <a 
                 href="tel:+919937125551" 
-                className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-primary" />
+                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-primary" />
                 </div>
                 <span className="font-mono text-sm">+91 9937125551</span>
               </a>
               <a 
                 href="mailto:thefotowalla@gmail.com" 
-                className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-primary" />
+                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-primary" />
                 </div>
                 <span className="font-mono text-sm">thefotowalla@gmail.com</span>
               </a>
             </div>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="glass-card p-6 text-center">
-                <span className="text-3xl font-display text-primary">500+</span>
-                <p className="text-sm text-muted-foreground mt-1">Projects Delivered</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="glass-card p-4 text-center">
+                <span className="text-2xl font-display text-primary">500+</span>
+                <p className="text-xs text-muted-foreground mt-1">Projects</p>
               </div>
-              <div className="glass-card p-6 text-center">
-                <span className="text-3xl font-display text-accent">8+</span>
-                <p className="text-sm text-muted-foreground mt-1">Years Experience</p>
+              <div className="glass-card p-4 text-center">
+                <span className="text-2xl font-display text-accent">10+</span>
+                <p className="text-xs text-muted-foreground mt-1">Years</p>
               </div>
             </div>
           </motion.div>
