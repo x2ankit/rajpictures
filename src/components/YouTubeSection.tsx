@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Circle, Youtube } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function getYouTubeChannelLabel(channelUrl: string): string {
   try {
@@ -38,9 +39,34 @@ function toYouTubeEmbedUrl(videoUrl: string): string {
 
 export const YouTubeSection = () => {
   const videoUrl = "https://www.youtube.com/watch?v=TlbZJj_9_xY";
-  const channelUrl = "https://www.youtube.com/@CameraWala";
-  const channelLabel = getYouTubeChannelLabel(channelUrl) || "CameraWala";
+  const channelUrl = "https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A";
+  const [channelLabel, setChannelLabel] = useState(() => getYouTubeChannelLabel(channelUrl) || "YouTube");
   const embedUrl = toYouTubeEmbedUrl(videoUrl);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fallback = getYouTubeChannelLabel(channelUrl) || "YouTube";
+    setChannelLabel(fallback);
+
+    const load = async () => {
+      try {
+        const resp = await fetch(
+          `https://www.youtube.com/oembed?url=${encodeURIComponent(channelUrl)}&format=json`
+        );
+        if (!resp.ok) return;
+        const json = (await resp.json()) as { author_name?: string; title?: string };
+        const name = (json.author_name || json.title || "").trim();
+        if (!cancelled && name) setChannelLabel(name);
+      } catch {
+        // ignore
+      }
+    };
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [channelUrl]);
 
   return (
     <section className="py-24 px-6">
