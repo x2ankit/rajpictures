@@ -12,6 +12,7 @@ async function fetchGallery(): Promise<GalleryItem[]> {
   const { data, error } = await supabase
     .from("gallery")
     .select("id, created_at, title, category, image_url, storage_path")
+    .order("order_index", { ascending: true })
     .order("created_at", { ascending: false });
 
   if (error) throw error;
