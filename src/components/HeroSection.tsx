@@ -19,11 +19,12 @@ export const HeroSection = () => {
   const lensRotateY = useTransform(tiltYSpring, (v) => v);
   const lensRotateZ = useTransform(tiltYSpring, (v) => v * 0.2);
 
-  const glassHighlight = useTransform(
-    [pointerXSpring, pointerYSpring],
-    ([x, y]) =>
-      `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`
-  );
+  const glassHighlight = useTransform([pointerXSpring, pointerYSpring], (latest) => {
+    const [xRaw, yRaw] = latest as unknown as [number, number];
+    const x = typeof xRaw === "number" ? xRaw : Number(xRaw);
+    const y = typeof yRaw === "number" ? yRaw : Number(yRaw);
+    return `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`;
+  });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const bounds = e.currentTarget.getBoundingClientRect();
