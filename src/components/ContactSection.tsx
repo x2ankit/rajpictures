@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
-import { MapPin, ExternalLink } from "lucide-react";
+import { MapPin, ExternalLink, Phone, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
 const services = [
-  "Wedding Photography",
-  "Studio Portraits", 
-  "Cinematic Video",
-  "Brand Shoots"
+  "Pre Wedding / Wedding Shoot",
+  "Maternity Photography",
+  "Newborn Photography",
+  "Kids Photography",
+  "Pre Birthday Photography",
+  "Fashion & Commercial Shoots"
 ];
 
 const budgets = [
@@ -129,14 +131,15 @@ export const ContactSection = () => {
             </form>
           </motion.div>
 
-          {/* Location Card */}
+          {/* Location & Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="flex flex-col gap-6"
           >
-            <div className="glass-card p-8 flex-1">
+            {/* Location Card */}
+            <div className="glass-card p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-6 h-6 text-accent" />
@@ -159,6 +162,28 @@ export const ContactSection = () => {
               >
                 <span>Open in Google Maps</span>
                 <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Contact Details */}
+            <div className="glass-card p-8 space-y-4">
+              <a 
+                href="tel:+919937125551" 
+                className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-primary" />
+                </div>
+                <span className="font-mono text-sm">+91 9937125551</span>
+              </a>
+              <a 
+                href="mailto:thefotowalla@gmail.com" 
+                className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-primary" />
+                </div>
+                <span className="font-mono text-sm">thefotowalla@gmail.com</span>
               </a>
             </div>
 

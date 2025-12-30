@@ -13,42 +13,36 @@ export const ViewfinderOverlay = () => {
   // Map scroll to aperture index
   const apertureIndex = useTransform(scrollYProgress, [0, 1], [0, apertures.length - 1]);
   
-  // Map scroll to ruler offset
-  const rulerX = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  // Map scroll to ruler offset - smoother and wider range
+  const rulerX = useTransform(scrollYProgress, [0, 1], [0, -400]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50">
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-4">
-        {/* Left: REC indicator and brand */}
-        <div className="flex items-center gap-4">
+        {/* Left: REC indicator */}
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse-rec" />
-            <span className="text-xs font-mono text-red-500 tracking-wider">REC</span>
+            <span className="text-[10px] font-mono text-red-500/80 tracking-wider">REC</span>
           </div>
-          <span className="text-sm font-display tracking-[0.3em] text-foreground/90">
-            CAMERAWALA
+          <span className="text-[10px] font-mono text-muted-foreground tracking-wider">
+            4K 60
           </span>
         </div>
 
         {/* Right: Dynamic Aperture */}
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-muted-foreground">APERTURE</span>
+          <span className="text-[10px] font-mono text-muted-foreground tracking-wider">APERTURE</span>
           <ApertureDisplay progress={apertureIndex} apertures={apertures} />
         </div>
       </div>
 
-      {/* Corner Brackets */}
-      <div className="viewfinder-bracket top-12 left-4 border-t-2 border-l-2" />
-      <div className="viewfinder-bracket top-12 right-4 border-t-2 border-r-2" />
-      <div className="viewfinder-bracket bottom-20 left-4 border-b-2 border-l-2" />
-      <div className="viewfinder-bracket bottom-20 right-4 border-b-2 border-r-2" />
-
       {/* Shutter Speed Ruler - Bottom */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 overflow-hidden w-80">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 overflow-hidden w-96">
         {/* Red indicator triangle */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-red-500" />
+          <div className="w-0 h-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-red-500" />
         </div>
         
         {/* Ruler */}
@@ -61,11 +55,6 @@ export const ViewfinderOverlay = () => {
           ))}
         </motion.div>
       </div>
-
-      {/* Grid lines (subtle) */}
-      <div className="absolute inset-12 border border-white/5" />
-      <div className="absolute top-1/2 left-12 right-12 h-px bg-white/5" />
-      <div className="absolute left-1/2 top-12 bottom-20 w-px bg-white/5" />
     </div>
   );
 };
