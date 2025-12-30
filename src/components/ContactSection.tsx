@@ -191,13 +191,13 @@ export const ContactSection = () => {
                 <span className="font-mono text-sm">+91 9937125551</span>
               </a>
               <a 
-                href="mailto:thefotowalla@gmail.com" 
+                href="mailto:camerawala@gmail.com" 
                 className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Mail className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">thefotowalla@gmail.com</span>
+                <span className="font-mono text-sm">camerawala@gmail.com</span>
               </a>
             </div>
 

@@ -1,9 +1,46 @@
 import { motion } from "framer-motion";
-import { Play, Circle } from "lucide-react";
-import { useState } from "react";
+import { Circle, Youtube } from "lucide-react";
+
+function getYouTubeChannelLabel(channelUrl: string): string {
+  try {
+    const url = new URL(channelUrl);
+    const parts = url.pathname.split("/").filter(Boolean);
+    if (parts.length === 0) return "YouTube";
+
+    const last = parts[parts.length - 1] || "";
+    if (last.startsWith("@")) return last.slice(1);
+    if (parts[0] === "channel" && parts[1]) return parts[1];
+    if ((parts[0] === "c" || parts[0] === "user") && parts[1]) return parts[1];
+    return last;
+  } catch {
+    return "YouTube";
+  }
+}
+
+function toYouTubeEmbedUrl(videoUrl: string): string {
+  try {
+    const url = new URL(videoUrl);
+    // youtu.be/<id>
+    if (url.hostname.includes("youtu.be")) {
+      const id = url.pathname.replace("/", "").trim();
+      if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+    }
+    // youtube.com/watch?v=<id>
+    const v = url.searchParams.get("v");
+    if (v) return `https://www.youtube.com/embed/${v}?rel=0&modestbranding=1`;
+    // already embed
+    if (url.pathname.includes("/embed/")) return `${url.origin}${url.pathname}?rel=0&modestbranding=1`;
+    return `https://www.youtube.com/embed/TlbZJj_9_xY?rel=0&modestbranding=1`;
+  } catch {
+    return `https://www.youtube.com/embed/TlbZJj_9_xY?rel=0&modestbranding=1`;
+  }
+}
 
 export const YouTubeSection = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const videoUrl = "https://www.youtube.com/watch?v=TlbZJj_9_xY";
+  const channelUrl = "https://www.youtube.com/@CameraWala";
+  const channelLabel = getYouTubeChannelLabel(channelUrl) || "CameraWala";
+  const embedUrl = toYouTubeEmbedUrl(videoUrl);
 
   return (
     <section className="py-24 px-6">
@@ -38,41 +75,29 @@ export const YouTubeSection = () => {
                 <Circle className="w-3 h-3 text-green-500 fill-green-500" />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-muted-foreground">PLAYBACK</span>
-                <Play className="w-4 h-4 text-primary" />
+                <Youtube className="w-4 h-4 text-primary" />
+                <a
+                  href={channelUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {channelLabel}
+                </a>
               </div>
               <span className="text-xs font-mono text-muted-foreground">1080p 24fps</span>
             </div>
 
             {/* Video container */}
             <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
-              {isPlaying ? (
-                <iframe
-                  src="https://www.youtube.com/embed/TlbZJj_9_xY?rel=0&modestbranding=1&autoplay=1"
-                  title="CameraWala Cinematic Wedding Highlights"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                  loading="lazy"
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(true)}
-                  className="absolute inset-0 w-full h-full group"
-                  aria-label="Play video"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-background/25 border border-border/60 backdrop-blur-md flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-                      <Play className="w-7 h-7 text-foreground" />
-                    </div>
-                  </div>
-                  <div className="absolute left-4 bottom-4 text-left">
-                    <div className="text-xs font-mono text-zinc-400 tracking-widest">PRESS PLAY</div>
-                  </div>
-                </button>
-              )}
+              <iframe
+                src={embedUrl}
+                title="CameraWala Featured Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+                loading="lazy"
+              />
             </div>
 
             {/* Monitor footer */}
