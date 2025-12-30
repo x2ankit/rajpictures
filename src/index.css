@@ -64,6 +64,10 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Manrope', sans-serif;
@@ -77,6 +81,29 @@
 
   .font-anton {
     font-family: 'Anton', sans-serif;
+  }
+}
+
+@layer utilities {
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Strikethrough that animates left -> right */
+  .strike-link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    background-position: 0 58%;
+    transition: background-size 300ms ease;
+  }
+
+  .strike-link:hover {
+    background-size: 100% 1px;
   }
 }
 

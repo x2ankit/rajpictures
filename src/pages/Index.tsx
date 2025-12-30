@@ -1,6 +1,6 @@
 import { ViewfinderOverlay } from "@/components/ViewfinderOverlay";
 import { HeroSection } from "@/components/HeroSection";
-import { ServicesSection } from "@/components/ServicesSection";
+import { ServicesGrid } from "@/components/ServicesGrid";
 import { YouTubeSection } from "@/components/YouTubeSection";
 import { AccordionSection } from "@/components/AccordionSection";
 import { GallerySection } from "@/components/GallerySection";
@@ -12,7 +12,7 @@ const Index = () => {
     <main className="relative">
       <ViewfinderOverlay />
       <HeroSection />
-      <ServicesSection />
+      <ServicesGrid />
       <YouTubeSection />
       <GallerySection />
       <AccordionSection />

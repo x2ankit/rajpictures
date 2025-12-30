@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Upload, Lock, LogOut, Image as ImageIcon, Trash2, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import { supabase, supabaseGalleryBucket } from "@/lib/supabaseClient";
 
@@ -296,11 +297,13 @@ export default function Admin() {
         <div className="glass-card p-6 mb-8">
           <div className="flex items-center justify-between gap-4 mb-4">
             <h2 className="text-xl font-display">LIVE GALLERY</h2>
-            <button
+            <motion.button
               type="button"
               onClick={() => void loadGallery()}
               className="px-4 py-2 bg-secondary text-muted-foreground rounded-lg hover:text-foreground transition-all"
               disabled={isLoadingGallery}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
               {isLoadingGallery ? (
                 <span className="inline-flex items-center gap-2">
@@ -310,7 +313,7 @@ export default function Admin() {
               ) : (
                 "Refresh"
               )}
-            </button>
+            </motion.button>
           </div>
 
           {galleryRows.length === 0 ? (
@@ -408,10 +411,12 @@ export default function Admin() {
               ))}
             </div>
             
-            <button
+            <motion.button
               className="w-full mt-6 py-3 bg-primary text-primary-foreground font-display tracking-wider rounded-lg hover:bg-primary/90 transition-all"
               disabled={isUploading}
               onClick={uploadAll}
+              whileHover={!isUploading ? { scale: 1.03, boxShadow: "var(--shadow-glow-purple)" } : undefined}
+              whileTap={!isUploading ? { scale: 0.98 } : undefined}
             >
               {isUploading ? (
                 <span className="inline-flex items-center justify-center gap-2">
@@ -421,7 +426,7 @@ export default function Admin() {
               ) : (
                 "UPLOAD TO GALLERY"
               )}
-            </button>
+            </motion.button>
 
             <div className="mt-3 text-center text-[10px] font-mono text-muted-foreground/70">
               Bucket: {supabaseGalleryBucket} • Table: gallery

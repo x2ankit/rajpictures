@@ -22,8 +22,13 @@ export const HeroSection = () => {
   // Mouse-driven tilt
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
+  const pointerX = useMotionValue(0.5);
+  const pointerY = useMotionValue(0.5);
+
   const tiltXSpring = useSpring(tiltX, { stiffness: 180, damping: 22, mass: 0.5 });
   const tiltYSpring = useSpring(tiltY, { stiffness: 180, damping: 22, mass: 0.5 });
+  const pointerXSpring = useSpring(pointerX, { stiffness: 220, damping: 26, mass: 0.45 });
+  const pointerYSpring = useSpring(pointerY, { stiffness: 220, damping: 26, mass: 0.45 });
 
   const lensRotateX = useTransform([lensRotateXBase, tiltXSpring], ([a, b]) => a + b);
   const lensRotateY = useTransform([tiltYSpring], ([b]) => b);
@@ -34,17 +39,29 @@ export const HeroSection = () => {
     const x = (e.clientX - bounds.left) / bounds.width;
     const y = (e.clientY - bounds.top) / bounds.height;
 
-    const max = 10; // degrees
+    const max = 15; // degrees
     const rx = (0.5 - y) * max * 2;
     const ry = (x - 0.5) * max * 2;
     tiltX.set(rx);
     tiltY.set(ry);
+
+    pointerX.set(Math.min(1, Math.max(0, x)));
+    pointerY.set(Math.min(1, Math.max(0, y)));
   };
 
   const handleMouseLeave = () => {
     tiltX.set(0);
     tiltY.set(0);
+
+    pointerX.set(0.5);
+    pointerY.set(0.5);
   };
+
+  const glassHighlight = useTransform(
+    [pointerXSpring, pointerYSpring],
+    ([x, y]) =>
+      `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`
+  );
 
   return (
     <section 
@@ -53,13 +70,23 @@ export const HeroSection = () => {
     >
       {/* Layer 1: Large Brand Name - Behind everything */}
       <motion.h1 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-display font-bold tracking-wider text-white/5 select-none whitespace-nowrap z-0"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12vw] font-display font-bold tracking-wider text-white/5 select-none whitespace-nowrap z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 1 }}
       >
         CAMERAWALA
       </motion.h1>
+
+      {/* Foreground title (OSD-like) */}
+      <motion.h2
+        className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-black font-display text-5xl md:text-7xl uppercase tracking-wide drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] select-none pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35, duration: 0.6 }}
+      >
+        CAMERA WALA
+      </motion.h2>
 
       {/* Layer 2: CSS Camera Lens - 3D perspective + scroll rotation + mouse tilt */}
       <div
@@ -110,6 +137,12 @@ export const HeroSection = () => {
                 boxShadow:
                   "inset 0 0 120px rgba(0,0,0,0.95), inset 0 -30px 80px rgba(124,58,237,0.08)",
               }}
+            />
+
+            {/* Moving highlight (feels like physical glass) */}
+            <motion.div
+              className="absolute inset-[64px] rounded-full pointer-events-none will-change-opacity"
+              style={{ background: glassHighlight, opacity: 0.9 }}
             />
 
             {/* Aperture hint */}

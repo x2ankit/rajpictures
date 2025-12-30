@@ -1,13 +1,16 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
 const shutterSpeeds = Array.from({ length: 19 }, (_, i) => `1/${100 + i * 50}`);
 
 export const ViewfinderOverlay = () => {
   const { scrollYProgress } = useScroll();
 
+  // Add a tiny bit of inertia so the dial feels mechanical/heavy.
+  const scrollSpring = useSpring(scrollYProgress, { stiffness: 120, damping: 22, mass: 0.6 });
+
   // Map vertical scroll (0..1) to horizontal dial movement.
   // Using percentage keeps it responsive; padding centers the dial under the triangle.
-  const rulerX = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]); 
+  const rulerX = useTransform(scrollSpring, [0, 1], ["0%", "-50%"]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50">

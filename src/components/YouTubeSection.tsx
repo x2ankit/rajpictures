@@ -14,8 +14,12 @@ export const YouTubeSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="text-sm font-mono text-primary tracking-widest">FEATURED WORK</span>
-          <h2 className="text-4xl md:text-6xl font-display mt-4">DIRECTOR'S MONITOR</h2>
+          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
+            FEATURED WORK
+          </h2>
+          <div className="mt-4 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+            DIRECTOR'S MONITOR
+          </div>
         </motion.div>
 
         <motion.div

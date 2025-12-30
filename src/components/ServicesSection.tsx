@@ -55,19 +55,20 @@ const itemVariants = {
 
 export const ServicesSection = () => {
   return (
-    <section className="py-24 px-6">
+    <section className="py-28 md:py-32 px-6">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-12"
         >
-          <span className="text-xs font-mono text-muted-foreground tracking-widest">SERVICES</span>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display mt-4 leading-tight">
-            A Few Words About<br />
-            <span className="text-gradient-purple">What I Do</span>
+          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
+            SERVICES
           </h2>
+          <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl">
+            A few words about what I do.
+          </p>
         </motion.div>
 
         <motion.div 
@@ -101,13 +102,21 @@ export const ServicesSection = () => {
                 
                 {/* Buttons */}
                 <div className="flex items-center gap-3 mt-4 md:mt-0">
-                  <button className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded-full hover:border-primary/50 transition-all duration-300 flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border/50 rounded-full hover:border-primary/50 transition-all duration-300 flex items-center gap-2"
+                  >
                     Learn More
                     <ArrowRight className="w-3 h-3" />
-                  </button>
-                  <button className="px-4 py-2 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: "var(--shadow-glow-purple)" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-4 py-2 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                  >
                     Pricing
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </motion.div>

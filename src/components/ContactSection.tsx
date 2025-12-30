@@ -41,8 +41,12 @@ export const ContactSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-mono text-primary tracking-widest">GET IN TOUCH</span>
-          <h2 className="text-4xl md:text-6xl font-display mt-4">LET'S WORK TOGETHER</h2>
+          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
+            GET IN TOUCH
+          </h2>
+          <div className="mt-4 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+            LET'S WORK TOGETHER
+          </div>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
@@ -130,12 +134,14 @@ export const ContactSection = () => {
                 />
               </div>
 
-              <button
+              <motion.button
                 type="submit"
                 className="w-full py-4 bg-primary text-primary-foreground font-display text-lg tracking-wider rounded-lg hover:bg-primary/90 transition-all glow-purple"
+                whileHover={{ scale: 1.05, boxShadow: "var(--shadow-glow-purple)" }}
+                whileTap={{ scale: 0.95 }}
               >
                 SEND INQUIRY
-              </button>
+              </motion.button>
             </form>
           </motion.div>
 
@@ -166,7 +172,7 @@ export const ContactSection = () => {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-lg hover:bg-accent hover:text-accent-foreground transition-all text-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-lg hover:bg-accent hover:text-accent-foreground transition-all text-sm strike-link"
               >
                 <span>Open in Google Maps</span>
                 <ExternalLink className="w-4 h-4" />
