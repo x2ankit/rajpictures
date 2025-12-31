@@ -1,12 +1,12 @@
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
-const filters = ["All", "Weddings", "Cinematic"] as const;
-type Filter = (typeof filters)[number];
+type Tab = "STILLS" | "MOTION";
 
 function isMissingOrderIndexColumnError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
@@ -25,7 +25,8 @@ async function fetchGallery(): Promise<GalleryItem[]> {
     .from("gallery")
     .select("id, created_at, title, category, image_url, storage_path")
     .order("order_index", { ascending: true })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(10);
 
   if (!error) return (data as GalleryItem[]) || [];
 
@@ -33,7 +34,8 @@ async function fetchGallery(): Promise<GalleryItem[]> {
     const fallback = await supabase
       .from("gallery")
       .select("id, created_at, title, category, image_url, storage_path")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(10);
 
     if (fallback.error) throw fallback.error;
     return (fallback.data as GalleryItem[]) || [];
@@ -42,14 +44,20 @@ async function fetchGallery(): Promise<GalleryItem[]> {
   throw error;
 }
 
-export const GallerySection = () => {
-  const [activeFilter, setActiveFilter] = useState<Filter>("All");
+function isVideoUrl(url: string): boolean {
+  const u = url.toLowerCase();
+  return u.endsWith(".mp4") || u.endsWith(".webm") || u.endsWith(".mov") || u.endsWith(".m4v");
+}
 
-  const [isHoveringImage, setIsHoveringImage] = useState(false);
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
-  const cursorXSpring = useSpring(cursorX, { stiffness: 420, damping: 38, mass: 0.5 });
-  const cursorYSpring = useSpring(cursorY, { stiffness: 420, damping: 38, mass: 0.5 });
+export const GallerySection = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<Tab>("STILLS");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  const buttonX = useMotionValue(0);
+  const buttonY = useMotionValue(0);
+  const buttonXSpring = useSpring(buttonX, { stiffness: 240, damping: 22, mass: 0.6 });
+  const buttonYSpring = useSpring(buttonY, { stiffness: 240, damping: 22, mass: 0.6 });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["gallery"],
@@ -60,10 +68,11 @@ export const GallerySection = () => {
 
   const items = data ?? [];
 
-  const filtered = useMemo(() => {
-    if (activeFilter === "All") return items;
-    return items.filter((img) => (img.category || "").toLowerCase() === activeFilter.toLowerCase());
-  }, [items, activeFilter]);
+  const visible = useMemo(() => {
+    const stills = items.filter((it) => !isVideoUrl(it.image_url));
+    const motion = items.filter((it) => isVideoUrl(it.image_url));
+    return activeTab === "STILLS" ? stills : motion;
+  }, [items, activeTab]);
 
   if (isError) {
     const message = error instanceof Error ? error.message : "Failed to load gallery";
@@ -73,23 +82,6 @@ export const GallerySection = () => {
   return (
     <section className="py-28 md:py-32 px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Magnetic cursor */}
-        <AnimatePresence>
-          {isHoveringImage && (
-            <motion.div
-              className="pointer-events-none fixed left-0 top-0 z-[60] -translate-x-1/2 -translate-y-1/2 will-change-transform"
-              style={{ x: cursorXSpring, y: cursorYSpring }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.15 }}
-            >
-              <div className="w-16 h-16 rounded-full bg-background/35 border border-border/60 backdrop-blur-md flex items-center justify-center">
-                <span className="text-[10px] font-mono tracking-widest">VIEW</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -104,29 +96,26 @@ export const GallerySection = () => {
           </div>
         </motion.div>
 
-        {/* Filters */}
-        <motion.div 
-          className="flex justify-center gap-4 mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          {filters.map((filter) => (
-            <motion.button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                activeFilter === filter 
-                  ? "bg-primary text-primary-foreground" 
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
-              }`}
+        {/* Tabs */}
+        <div className="flex items-center justify-center gap-2 mb-10">
+          {(["STILLS", "MOTION"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => {
+                setHoveredId(null);
+                setActiveTab(tab);
+              }}
+              className={
+                "px-6 py-2 rounded-full text-xs md:text-sm uppercase tracking-[0.3em] font-['Michroma'] transition-all " +
+                (activeTab === tab
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-muted-foreground hover:text-foreground")
+              }
             >
-              {filter}
-            </motion.button>
+              {tab}
+            </button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Masonry Grid */}
         {isLoading ? (
@@ -140,87 +129,155 @@ export const GallerySection = () => {
             ))}
           </div>
         ) : (
-          <motion.div
-            layout
-            className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4"
-            transition={{ layout: { type: "spring", stiffness: 200, damping: 26 } }}
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 1 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.05, delayChildren: 0.1 },
-              },
-            }}
-          >
-            <AnimatePresence mode="popLayout">
-              {filtered.map((image) => (
-                <motion.div
-                  key={String(image.id)}
-                  layout
-                  layoutId={`gallery-${String(image.id)}`}
-                  variants={{
-                    hidden: { opacity: 0, y: 14 },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
-                    },
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.22 } }}
-                  transition={{ layout: { type: "spring", stiffness: 220, damping: 26 } }}
-                  className="group relative glass-card overflow-hidden break-inside-avoid cursor-none will-change-transform"
-                  onPointerEnter={() => setIsHoveringImage(true)}
-                  onPointerLeave={() => setIsHoveringImage(false)}
-                  onPointerMove={(e) => {
-                    cursorX.set(e.clientX);
-                    cursorY.set(e.clientY);
-                  }}
-                >
-                  <div className="relative">
-                    <motion.img
-                      src={image.image_url}
-                      alt={image.title || "CameraWala photo"}
-                      loading="lazy"
-                      className="w-full h-auto object-cover block will-change-transform"
-                      whileHover={{ scale: 1.04 }}
-                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-                    />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.28, ease: [0.2, 0, 0.2, 1] as const }}
+            >
+              <motion.div
+                layout
+                transition={{ layout: { type: "spring", stiffness: 200, damping: 26 } }}
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 1 },
+                  visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.05, delayChildren: 0.05 },
+                  },
+                }}
+              >
+                <AnimatePresence mode="popLayout">
+                  {visible.map((image) => {
+                    const id = String(image.id);
+                    const dimOthers = hoveredId !== null && hoveredId !== id;
+                    const isVideo = isVideoUrl(image.image_url);
 
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    return (
+                      <motion.div
+                        key={id}
+                        layout
+                        variants={{
+                          hidden: { opacity: 0, y: 14 },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] as const },
+                          },
+                        }}
+                        initial="hidden"
+                        animate="visible"
+                        exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.22 } }}
+                        transition={{ layout: { type: "spring", stiffness: 220, damping: 26 } }}
+                        className={
+                          "group relative glass-card overflow-hidden break-inside-avoid will-change-transform cursor-pointer transition-opacity duration-300 " +
+                          (dimOthers ? "opacity-40" : "opacity-100")
+                        }
+                        onMouseEnter={() => setHoveredId(id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                      >
+                        <div className="relative">
+                          {isVideo ? (
+                            <video
+                              src={image.image_url}
+                              muted
+                              loop
+                              playsInline
+                              preload="metadata"
+                              className="w-full h-auto object-cover block will-change-transform"
+                              onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                void el.play().catch(() => undefined);
+                              }}
+                              onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.pause();
+                              }}
+                            />
+                          ) : (
+                            <motion.img
+                              src={image.image_url}
+                              alt={image.title || "CameraWala asset"}
+                              loading="lazy"
+                              className="w-full h-auto object-cover block will-change-transform"
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+                            />
+                          )}
 
-                    {/* View indicator (plus icon) */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-12 h-12 rounded-full bg-background/30 border border-border/50 backdrop-blur-md flex items-center justify-center">
-                        <Plus className="w-5 h-5 text-foreground" />
-                      </div>
-                    </div>
+                          {/* Dark gradient overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                    {/* Title */}
-                    <div className="absolute left-0 right-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="text-sm font-display tracking-wider">
-                        {(image.title && image.title.trim()) || "(Untitled)"}
-                      </div>
-                      <div className="text-[10px] font-mono text-zinc-400 tracking-widest">
-                        {(image.category && image.category.trim()) || "Uncategorized"}
-                      </div>
+                          {/* View indicator (plus icon) */}
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="w-12 h-12 rounded-full bg-background/30 border border-border/50 backdrop-blur-md flex items-center justify-center">
+                              <Plus className="w-5 h-5 text-foreground" />
+                            </div>
+                          </div>
+
+                          {/* Title */}
+                          <div className="absolute left-0 right-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="text-sm font-display tracking-wider">
+                              {(image.title && image.title.trim()) || "(Untitled)"}
+                            </div>
+                            <div className="text-[10px] font-mono text-muted-foreground tracking-widest">
+                              {(image.category && image.category.trim()) || "Uncategorized"}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+
+                {visible.length === 0 && (
+                  <div className="glass-card p-10 text-center break-inside-avoid">
+                    <div className="text-sm text-muted-foreground">
+                      {activeTab === "MOTION" ? "No motion clips added yet." : "No stills added yet."}
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-
-            {filtered.length === 0 && (
-              <div className="glass-card p-10 text-center">
-                <div className="text-sm text-muted-foreground">No images in this category yet.</div>
-              </div>
-            )}
-          </motion.div>
+                )}
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
         )}
+
+        {/* Call to action */}
+        <div className="mt-14 flex justify-center">
+          <motion.button
+            type="button"
+            onClick={() => navigate("/gallery")}
+            className="group pointer-events-auto px-10 md:px-14 py-6 md:py-7 rounded-full border border-primary/40 bg-card/30 backdrop-blur-xl text-foreground font-['Michroma'] text-xs md:text-sm uppercase tracking-[0.35em] transition-colors"
+            style={{ x: buttonXSpring, y: buttonYSpring }}
+            whileHover={{ boxShadow: "var(--shadow-glow-purple)" }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
+              const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
+              buttonX.set(dx * 14);
+              buttonY.set(dy * 10);
+            }}
+            onMouseLeave={() => {
+              buttonX.set(0);
+              buttonY.set(0);
+            }}
+          >
+            <span className="inline-flex items-center gap-4">
+              <span>EXPLORE FULL ARCHIVE</span>
+              <motion.span
+                className="h-px bg-foreground/70"
+                initial={{ width: 22 }}
+                whileHover={{ width: 46 }}
+                transition={{ duration: 0.25 }}
+              />
+              <ArrowRight className="w-4 h-4 text-foreground/80" />
+            </span>
+          </motion.button>
+        </div>
 
       </div>
     </section>

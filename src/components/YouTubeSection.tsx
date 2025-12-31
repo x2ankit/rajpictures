@@ -1,22 +1,5 @@
 import { motion } from "framer-motion";
 import { Circle, Youtube } from "lucide-react";
-import { useEffect, useState } from "react";
-
-function getYouTubeChannelLabel(channelUrl: string): string {
-  try {
-    const url = new URL(channelUrl);
-    const parts = url.pathname.split("/").filter(Boolean);
-    if (parts.length === 0) return "YouTube";
-
-    const last = parts[parts.length - 1] || "";
-    if (last.startsWith("@")) return last.slice(1);
-    if (parts[0] === "channel" && parts[1]) return parts[1];
-    if ((parts[0] === "c" || parts[0] === "user") && parts[1]) return parts[1];
-    return last;
-  } catch {
-    return "YouTube";
-  }
-}
 
 function toYouTubeEmbedUrl(videoUrl: string): string {
   try {
@@ -40,33 +23,8 @@ function toYouTubeEmbedUrl(videoUrl: string): string {
 export const YouTubeSection = () => {
   const videoUrl = "https://www.youtube.com/watch?v=TlbZJj_9_xY";
   const channelUrl = "https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A";
-  const [channelLabel, setChannelLabel] = useState(() => getYouTubeChannelLabel(channelUrl) || "YouTube");
+  const channelLabel = "CAMERAWALA";
   const embedUrl = toYouTubeEmbedUrl(videoUrl);
-
-  useEffect(() => {
-    let cancelled = false;
-    const fallback = getYouTubeChannelLabel(channelUrl) || "YouTube";
-    setChannelLabel(fallback);
-
-    const load = async () => {
-      try {
-        const resp = await fetch(
-          `https://www.youtube.com/oembed?url=${encodeURIComponent(channelUrl)}&format=json`
-        );
-        if (!resp.ok) return;
-        const json = (await resp.json()) as { author_name?: string; title?: string };
-        const name = (json.author_name || json.title || "").trim();
-        if (!cancelled && name) setChannelLabel(name);
-      } catch {
-        // ignore
-      }
-    };
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [channelUrl]);
 
   return (
     <section className="py-24 px-6">
@@ -111,7 +69,7 @@ export const YouTubeSection = () => {
                   {channelLabel}
                 </a>
               </div>
-              <span className="text-xs font-mono text-muted-foreground">1080p 24fps</span>
+              <span className="text-xs font-mono text-muted-foreground">4K 60fps</span>
             </div>
 
             {/* Video container */}

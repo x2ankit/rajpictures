@@ -5,19 +5,31 @@ import { YouTubeSection } from "@/components/YouTubeSection";
 import { AccordionSection } from "@/components/AccordionSection";
 import { GallerySection } from "@/components/GallerySection";
 import { ContactSection } from "@/components/ContactSection";
-import { Footer } from "@/components/Footer";
+import { Testimonials } from "@/components/Testimonials";
 
 const Index = () => {
   return (
     <main className="relative">
       <ViewfinderOverlay />
-      <HeroSection />
-      <ServicesSection />
-      <YouTubeSection />
-      <GallerySection />
-      <AccordionSection />
-      <ContactSection />
-      <Footer />
+      <section id="home">
+        <HeroSection />
+      </section>
+      <section id="services">
+        <ServicesSection />
+      </section>
+      <section id="films">
+        <YouTubeSection />
+      </section>
+      <section id="portfolio">
+        <GallerySection />
+      </section>
+      <section id="about">
+        <AccordionSection />
+      </section>
+      <Testimonials />
+      <section id="contact">
+        <ContactSection />
+      </section>
     </main>
   );
 };

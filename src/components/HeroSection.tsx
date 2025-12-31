@@ -51,7 +51,7 @@ export const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#2e1065] via-black to-black"
+      className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a0b2e] via-[#0b0614] to-[#050505]"
     >
       {/* 2. Title (Background layer) */}
       <motion.h1
@@ -64,9 +64,9 @@ export const HeroSection = () => {
       </motion.h1>
 
       {/* Container: Perfectly Centered & Compact */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center justify-center text-center w-full pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center justify-center text-center w-full pointer-events-none">
         {/* "THE" - Adjusted size */}
-        <div className="text-yellow-400 font-bold text-[16px] md:text-[24px] tracking-[0.3em] mb-2">
+        <div className="text-yellow-400 font-bold text-[20px] md:text-[32px] tracking-[0.3em] mb-2">
           THE
         </div>
 
@@ -132,14 +132,14 @@ export const HeroSection = () => {
             <div className="absolute inset-[140px] rounded-full border border-white/8" />
 
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_40px_rgba(124,58,237,0.35)]" />
+              <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_40px_rgba(250,204,21,0.28)]" />
             </div>
           </div>
         </motion.div>
       </div>
 
       {/* 4. Content (Top layer) */}
-      <div className="absolute z-20 top-8 right-12">
+      <div className="absolute z-30 top-8 right-12">
         <a
           href="#services"
           className="text-xs font-display tracking-[0.35em] uppercase text-white/70 hover:text-white transition-colors"
@@ -149,7 +149,7 @@ export const HeroSection = () => {
       </div>
 
       <motion.div
-        className="absolute z-20 bottom-12 left-12 glass-card p-5 md:p-6 max-w-xs"
+        className="absolute z-30 bottom-12 left-12 glass-card p-5 md:p-6 max-w-xs"
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.35, duration: 0.6, ease: [0.2, 0, 0.2, 1] }}

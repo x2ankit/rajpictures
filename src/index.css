@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,39 +7,40 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    /* Royal Luxury palette */
+    --background: 266 61% 11%; /* #1a0b2e */
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 5%;
+    --card: 267 66% 8% / 0.55; /* #130722 w/ alpha */
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 5%;
+    --popover: 267 66% 8% / 0.75;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 263 70% 50%;
-    --primary-foreground: 0 0% 100%;
+    /* Golden accent */
+    --primary: 48 96% 53%; /* yellow-400 */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 10%;
+    --secondary: 267 55% 14% / 0.65;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 267 40% 14% / 0.6;
+    --muted-foreground: 270 55% 90%;
 
-    /* Accent should match the deep electric purple (#7c3aed) */
-    --accent: 263 70% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 48 96% 53%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 263 70% 50%;
+    --border: 0 0% 100% / 0.1;
+    --input: 0 0% 100% / 0.12;
+    --ring: 48 96% 53%;
 
     --radius: 0.5rem;
 
     /* Custom tokens */
-    --purple: 263 70% 50%;
+    --purple: 266 61% 45%;
     --orange: 24 91% 48%;
     --glass: 0 0% 100% / 0.05;
     --glass-border: 0 0% 100% / 0.1;
@@ -50,7 +52,7 @@
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.1), hsl(0 0% 100% / 0.02));
 
     /* Shadows */
-    --shadow-glow-purple: 0 0 60px hsl(263 70% 50% / 0.3);
+    --shadow-glow-purple: 0 0 60px hsl(48 96% 53% / 0.28);
     --shadow-glow-orange: 0 0 40px hsl(24 91% 48% / 0.3);
     --shadow-card: 0 25px 50px -12px hsl(0 0% 0% / 0.8);
   }

@@ -13,6 +13,13 @@ const budgets = [
 ];
 
 export const ContactSection = () => {
+  const primaryPhoneDisplay = "+91 93375 64186";
+  const secondaryPhoneDisplay = "+91 94377 50574";
+  const primaryPhoneTel = "+919337564186";
+  const secondaryPhoneTel = "+919437750574";
+  const contactEmail = "book@camerawala.com";
+  const locationDisplay = "Bhubaneswar, Odisha, India";
+
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -30,7 +37,7 @@ export const ContactSection = () => {
     setFormData({ name: "", mobile: "", city: "", budget: "", requirements: "" });
   };
 
-  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=B%2F24+2nd+floor+Siddhi+Vihar+Krishna+garden+Jagamara+Bhubaneswar+Odisha+751030";
+  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Bhubaneswar%2C%20Odisha%2C%20India";
 
   return (
     <section className="py-24 px-6" id="contact">
@@ -161,9 +168,7 @@ export const ContactSection = () => {
                 <div>
                   <h3 className="text-lg font-display mb-1">STUDIO LOCATION</h3>
                   <p className="text-muted-foreground text-xs leading-relaxed">
-                    B/24 2nd floor, Siddhi Vihar,<br />
-                    Krishna garden, Jagamara,<br />
-                    Bhubaneswar, Odisha 751030
+                    {locationDisplay}
                   </p>
                 </div>
               </div>
@@ -182,22 +187,33 @@ export const ContactSection = () => {
             {/* Contact Details */}
             <div className="glass-card p-6 space-y-3">
               <a 
-                href="tel:+919937125551" 
+                href={`tel:${primaryPhoneTel}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Phone className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">+91 9937125551</span>
+                <span className="font-mono text-sm">{primaryPhoneDisplay}</span>
               </a>
+
+              <a
+                href={`tel:${secondaryPhoneTel}`}
+                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-primary" />
+                </div>
+                <span className="font-mono text-sm">{secondaryPhoneDisplay}</span>
+              </a>
+
               <a 
-                href="mailto:camerawala@gmail.com" 
+                href={`mailto:${contactEmail}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Mail className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">camerawala@gmail.com</span>
+                <span className="font-mono text-sm">{contactEmail}</span>
               </a>
             </div>
 

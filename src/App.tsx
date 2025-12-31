@@ -9,8 +9,29 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { Preloader } from "@/components/Preloader";
+import FullGallery from "./pages/FullGallery";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { ScrollToHash } from "@/components/ScrollToHash";
 
 const queryClient = new QueryClient();
+
+const AppLayout = () => {
+  return (
+    <>
+      <Header />
+      <ScrollToHash />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/gallery" element={<FullGallery />} />
+        <Route path="/admin" element={<Admin />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </>
+  );
+};
 
 const App = () => {
   const [showPreloader, setShowPreloader] = useState(true);
@@ -28,12 +49,7 @@ const App = () => {
         </AnimatePresence>
 
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppLayout />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
