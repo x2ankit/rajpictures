@@ -26,10 +26,10 @@ export const ServiceCards = () => {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          className="mb-12"
+          className="mb-12 text-center"
         >
           <p className="text-amber-500 text-xs uppercase tracking-[0.35em]">Cinematic Services</p>
-          <h2 className="mt-4 font-serifDisplay text-4xl md:text-5xl text-white">
+          <h2 className="mt-4 font-serifDisplay text-5xl md:text-6xl text-white tracking-tight">
             Crafted for stories worth remembering
           </h2>
         </motion.div>

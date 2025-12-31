@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 
-const PORTRAIT_SRC = "/raj-portrait-placeholder.svg";
+import photographerImage from "@/assets/photographer-profile.jpg";
+
+const PORTRAIT_SRC = "/image_129164.jpg";
 
 export const AboutRaj = () => {
   return (
@@ -10,16 +12,30 @@ export const AboutRaj = () => {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          className="relative"
+          className="relative flex justify-center md:justify-start"
         >
-          <div className="aspect-[3/4] w-full overflow-hidden rounded-lg border border-white/10 bg-zinc-950">
-            <img
-              src={PORTRAIT_SRC}
-              alt="Portrait of Raj"
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
+          <motion.div
+            whileHover={{ y: -6, rotate: -0.4 }}
+            transition={{ duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
+            className="relative w-full max-w-[320px] sm:max-w-[360px]"
+          >
+            {/* Frame */}
+            <div className="absolute -inset-3 rounded-xl border border-amber-500/35" />
+            <div className="absolute -inset-1 rounded-xl border border-white/10" />
+
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-zinc-950">
+              <img
+                src={PORTRAIT_SRC}
+                alt="Portrait of Raj"
+                className="h-full w-full object-cover grayscale-[15%]"
+                loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = photographerImage;
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+            </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -37,9 +53,15 @@ export const AboutRaj = () => {
             crafted with intention, light, and emotion — so your memories feel as cinematic as they truly were.
           </p>
 
-          <div className="mt-10 pt-8 border-t border-white/10">
-            <div className="font-signature text-4xl text-white/85">Raj</div>
-          </div>
+          <p className="mt-4 text-white/70 text-base md:text-lg leading-relaxed">
+            From intimate portraits to grand wedding films, I focus on honest expressions, elegant composition, and
+            lighting that feels like a scene from a movie.
+          </p>
+
+          <p className="mt-4 text-white/70 text-base md:text-lg leading-relaxed">
+            Based in Bhubaneswar, I work across India to create imagery that stays timeless — long after the day is
+            over.
+          </p>
         </motion.div>
       </div>
     </section>
