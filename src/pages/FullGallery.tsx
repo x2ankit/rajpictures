@@ -160,8 +160,8 @@ export default function FullGallery() {
   }, [lightboxIndex, flatItems.length]);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pt-32">
-      <div className="sticky top-24 z-40 bg-[#1a0b2e]/95 backdrop-blur-xl border-b border-white/10">
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="sticky top-0 z-40 bg-[#1a0b2e]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-6">
           <div className="text-sm md:text-base uppercase tracking-[0.35em] font-['Michroma'] text-foreground/80">
             GALLERY
