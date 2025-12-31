@@ -87,6 +87,13 @@ function extractImageFilesFromClipboard(data: DataTransfer | null | undefined): 
   return imageFiles;
 }
 
+function formatUploadSpeed(bytesPerSecond: number): string {
+  if (!Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) return "0 KB/s";
+  const kbps = bytesPerSecond / 1024;
+  if (kbps < 1024) return `${kbps.toFixed(1)} KB/s`;
+  return `${(kbps / 1024).toFixed(2)} MB/s`;
+}
+
 async function uploadToSupabase(file: File) {
   const bucket = supabaseGalleryBucket;
   const extension = file.name.includes(".") ? file.name.split(".").pop() : "";
@@ -180,6 +187,11 @@ export default function Admin() {
   const [pin, setPin] = useState("");
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadUploadedCount, setUploadUploadedCount] = useState(0);
+  const [uploadTotalCount, setUploadTotalCount] = useState(0);
+  const [uploadBytesUploaded, setUploadBytesUploaded] = useState(0);
+  const [uploadStartedAt, setUploadStartedAt] = useState<number | null>(null);
+  const [uploadCurrentFileName, setUploadCurrentFileName] = useState<string | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const [isLoadingGallery, setIsLoadingGallery] = useState(false);
   const [galleryRows, setGalleryRows] = useState<GalleryRow[]>([]);
@@ -191,7 +203,19 @@ export default function Admin() {
   const pendingCount = pending.length;
   const hasPending = pendingCount > 0;
 
-  const accept = useMemo(() => "image/*", []);
+  const accept = useMemo(() => "image/*,video/*", []);
+
+  const uploadSpeedText = useMemo(() => {
+    if (!uploadStartedAt) return "0 KB/s";
+    const elapsedSeconds = (Date.now() - uploadStartedAt) / 1000;
+    if (elapsedSeconds <= 0) return "0 KB/s";
+    return formatUploadSpeed(uploadBytesUploaded / elapsedSeconds);
+  }, [uploadBytesUploaded, uploadStartedAt]);
+
+  const uploadProgressPct = useMemo(() => {
+    if (!uploadTotalCount) return 0;
+    return Math.min(100, Math.round((uploadUploadedCount / uploadTotalCount) * 100));
+  }, [uploadUploadedCount, uploadTotalCount]);
 
   const loadGallery = async () => {
     setIsLoadingGallery(true);
@@ -283,26 +307,28 @@ export default function Admin() {
   };
 
   const addFiles = (files: File[]) => {
-    const imageFiles = files.filter((f) => f.type.startsWith("image/"));
-    if (imageFiles.length === 0) {
+    const mediaFiles = files.filter(
+      (f) => f.type.startsWith("image/") || f.type.startsWith("video/")
+    );
+    if (mediaFiles.length === 0) {
       toast({
-        title: "No images found",
-        description: "Please add image files (JPG/PNG/WebP).",
+        title: "No media found",
+        description: "Please add image/video files (JPG/PNG/WebP/MP4/WebM/MOV).",
         variant: "destructive",
       });
       return;
     }
 
-    const newPending: PendingUpload[] = imageFiles.map((file) => ({
+    const newPending: PendingUpload[] = mediaFiles.map((file) => ({
       id: crypto.randomUUID(),
       file,
       previewUrl: createObjectUrlSafe(file) || undefined,
       title: file.name.replace(/\.[^/.]+$/, ""),
-      category: "Weddings",
+      category: file.type.startsWith("video/") ? "Cinematic" : "Weddings",
     }));
 
     setPending((prev) => [...prev, ...newPending]);
-    toast({ title: "Images Added", description: `${newPending.length} image(s) queued.` });
+    toast({ title: "Files Added", description: `${newPending.length} file(s) queued.` });
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
@@ -348,6 +374,11 @@ export default function Admin() {
   const uploadAll = async () => {
     if (!hasPending) return;
     setIsUploading(true);
+    setUploadUploadedCount(0);
+    setUploadTotalCount(pendingCount);
+    setUploadBytesUploaded(0);
+    setUploadStartedAt(Date.now());
+    setUploadCurrentFileName(null);
 
     try {
       const currentMaxOrderIndex = galleryRows.reduce(
@@ -357,6 +388,7 @@ export default function Admin() {
       let nextOrderIndex = currentMaxOrderIndex + 1;
 
       for (const item of pending) {
+        setUploadCurrentFileName(item.file.name);
         const { publicUrl, storagePath } = await uploadToSupabase(item.file);
 
         const baseRow = {
@@ -386,11 +418,14 @@ export default function Admin() {
             throw insertError;
           }
         }
+
+        setUploadUploadedCount((c) => c + 1);
+        setUploadBytesUploaded((b) => b + item.file.size);
       }
 
       toast({
         title: "Upload complete",
-        description: `${pendingCount} image(s) uploaded to Supabase.`,
+        description: `${pendingCount} file(s) uploaded to Supabase.`,
       });
       pending.forEach((p) => revokeObjectUrlSafe(p.previewUrl));
       setPending([]);
@@ -400,6 +435,7 @@ export default function Admin() {
       toast({ title: "Upload failed", description: message, variant: "destructive" });
     } finally {
       setIsUploading(false);
+      setUploadCurrentFileName(null);
     }
   };
 
@@ -444,8 +480,16 @@ export default function Admin() {
     setIsSavingOrder(true);
     try {
       const updates = rows.map((row, index) => ({ id: row.id, order_index: index }));
-      const { error } = await supabase.from("gallery").upsert(updates, { onConflict: "id" });
-      if (error) throw error;
+
+      // Use update per row to avoid needing insert privilege (upsert requires insert).
+      for (const update of updates) {
+        const { error } = await supabase
+          .from("gallery")
+          .update({ order_index: update.order_index })
+          .eq("id", update.id);
+        if (error) throw error;
+      }
+
       toast({ title: "Order saved", description: "Gallery order updated." });
     } catch (err: unknown) {
       if (isMissingOrderIndexColumnError(err)) {
@@ -555,7 +599,7 @@ export default function Admin() {
           }}
           tabIndex={0}
           role="button"
-          aria-label="Upload images. Drag and drop, click to select, or paste with Ctrl+V."
+          aria-label="Upload images or videos. Drag and drop, click to select, or paste images with Ctrl+V."
           className={
             "glass-card border-2 border-dashed transition-all p-12 text-center cursor-pointer mb-8 outline-none focus-visible:ring-2 focus-visible:ring-primary/60 " +
             (isDragActive
@@ -564,9 +608,9 @@ export default function Admin() {
           }
         >
           <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-lg font-display mb-2">DROP IMAGES HERE</p>
+          <p className="text-lg font-display mb-2">DROP FILES HERE</p>
           <p className="text-sm text-muted-foreground">
-            Drag & drop images to queue them • Or paste (Ctrl+V)
+            Drag & drop images/videos to queue them • Or paste images (Ctrl+V)
           </p>
 
           <div className="mt-6 pointer-events-auto" onClick={(e) => e.stopPropagation()}>
@@ -643,6 +687,29 @@ export default function Admin() {
         {hasPending && (
           <div className="glass-card p-6">
             <h2 className="text-xl font-display mb-4">PENDING UPLOADS</h2>
+
+            {isUploading && (
+              <div className="mb-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+                  <span className="font-mono">
+                    Uploaded {uploadUploadedCount}/{uploadTotalCount} • {uploadProgressPct}%
+                  </span>
+                  <span className="font-mono">Speed: {uploadSpeedText}</span>
+                </div>
+                {uploadCurrentFileName && (
+                  <div className="mt-1 text-[10px] text-muted-foreground truncate">
+                    Uploading: <span className="font-mono">{uploadCurrentFileName}</span>
+                  </div>
+                )}
+                <div className="mt-2 h-2 w-full rounded-full bg-secondary/60 overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-[width] duration-300"
+                    style={{ width: `${uploadProgressPct}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               {pending.map((image) => (
                 <div
@@ -652,11 +719,20 @@ export default function Admin() {
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-md overflow-hidden bg-black/40 border border-border/40 flex-shrink-0">
                       {image.previewUrl ? (
-                        <img
-                          src={image.previewUrl}
-                          alt={image.title || image.file.name}
-                          className="w-full h-full object-cover"
-                        />
+                        image.file.type.startsWith("video/") ? (
+                          <video
+                            src={image.previewUrl}
+                            className="w-full h-full object-cover"
+                            muted
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={image.previewUrl}
+                            alt={image.title || image.file.name}
+                            className="w-full h-full object-cover"
+                          />
+                        )
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <ImageIcon className="w-5 h-5 text-muted-foreground" />
@@ -723,9 +799,7 @@ export default function Admin() {
               )}
             </motion.button>
 
-            <div className="mt-3 text-center text-[10px] font-mono text-muted-foreground/70">
-              Bucket: {supabaseGalleryBucket} • Table: gallery
-            </div>
+            {/* Intentionally removed bucket/table debug label */}
           </div>
         )}
 
