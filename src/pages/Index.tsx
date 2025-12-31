@@ -3,8 +3,8 @@ import { YouTubeSection } from "@/components/YouTubeSection";
 import { GallerySection } from "@/components/GallerySection";
 import { ContactSection } from "@/components/ContactSection";
 import { Testimonials } from "@/components/Testimonials";
-import { AboutRaj } from "@/components/AboutRaj";
-import { ServiceCards } from "@/components/ServiceCards";
+import { AboutRaj } from "../components/AboutRaj";
+import { ServiceCards } from "../components/ServiceCards";
 import { LensScrollSection } from "@/components/LensScrollSection";
 
 const Index = () => {
@@ -17,9 +17,9 @@ const Index = () => {
       <section id="about">
         <AboutRaj />
       </section>
-        <section id="services">
-          <ServiceCards />
-        </section>
+      <section id="services">
+        <ServiceCards />
+      </section>
       <section id="films">
         <YouTubeSection />
       </section>
@@ -27,9 +27,7 @@ const Index = () => {
         <GallerySection />
       </section>
       <Testimonials />
-      <section id="contact">
-        <ContactSection />
-      </section>
+      <ContactSection />
     </main>
   );
 };

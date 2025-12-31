@@ -1,166 +1,117 @@
-import { Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { motion } from "framer-motion";
+import { Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PRIMARY_PHONE_DISPLAY = "+91 93375 64186";
 const SECONDARY_PHONE_DISPLAY = "+91 94377 50574";
 const PRIMARY_PHONE_TEL = "+919337564186";
-const SECONDARY_PHONE_TEL = "+919437750574";
 const CONTACT_EMAIL = "book@rajphotography.com";
-const LOCATION_DISPLAY = "Bhubaneswar, Odisha, India";
+const LOCATION_DISPLAY = "Bonaigarh, Sundargarh, Odisha, India";
+const LOCATION_SHORT = "Bonaigarh, Odisha";
 
 export const Footer = () => {
   return (
-    <footer className="bg-black">
-      <div className="mx-auto max-w-6xl px-8 md:px-16 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            {/* Column 1: Brand */}
+    <motion.footer
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
+      className="bg-[#020202]"
+    >
+      <div className="mx-auto max-w-7xl px-6 md:px-10 py-16">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 md:gap-12">
+          {/* Column 1: Brand */}
           <div className="min-w-0">
-              <div className="font-brand text-lg sm:text-xl lg:text-2xl leading-none tracking-tight text-white">
-              RAJ <span className="text-amber-500">PHOTOGRAPHY</span>
+            <div className="font-serifDisplay text-2xl text-white tracking-tight">
+              Raj <span className="text-amber-500">Pictures</span>
             </div>
-            <p className="mt-4 text-sm text-zinc-400 leading-relaxed">
-              Cinematic visuals & storytelling — crafted with intention.
+            <p className="mt-4 text-sm text-zinc-500 leading-relaxed font-body">
+              Crafting visual stories that transcend time...
             </p>
 
-            <div className="mt-6 flex items-center gap-4">
+            <div className="mt-7 flex items-center gap-4">
               <a
                 href="#"
                 aria-label="Instagram"
-                className="text-zinc-400 hover:text-amber-400 transition-all duration-200 hover:scale-110"
+                className="text-zinc-400 hover:text-amber-500 transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
                 href="#"
                 aria-label="YouTube"
-                className="text-zinc-400 hover:text-amber-400 transition-all duration-200 hover:scale-110"
+                className="text-zinc-400 hover:text-amber-500 transition-colors"
               >
                 <Youtube className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="text-zinc-400 hover:text-amber-400 transition-all duration-200 hover:scale-110"
-              >
-                <Facebook className="h-5 w-5" />
               </a>
             </div>
           </div>
 
           {/* Column 2: Quick Links */}
           <div className="min-w-0">
-            <div className="text-amber-500 text-xs font-display uppercase tracking-wider">EXPLORE</div>
-            <div className="mt-5 space-y-3 text-sm">
-              <Link
-                to="/"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Home
-              </Link>
-              <Link
-                to="/#about"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                About
-              </Link>
-              <Link
-                to="/#portfolio"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Portfolio
-              </Link>
-              <Link
-                to="/#films"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Films
-              </Link>
-              <Link
-                to="/#contact"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Contact
-              </Link>
+            <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
+              Quick Links
+            </div>
+            <div className="mt-5 space-y-3 text-sm font-body">
+              {[{ to: "/", label: "Home" }, { to: "/#about", label: "About" }, { to: "/#portfolio", label: "Portfolio" }, { to: "/#films", label: "Films" }, { to: "/#contact", label: "Contact" }].map(
+                (l) => (
+                  <Link
+                    key={l.label}
+                    to={l.to}
+                    className="block text-zinc-400 hover:text-amber-500 transition-all hover:translate-x-1"
+                  >
+                    {l.label}
+                  </Link>
+                )
+              )}
             </div>
           </div>
 
           {/* Column 3: Services */}
           <div className="min-w-0">
-            <div className="text-amber-500 text-xs font-display uppercase tracking-wider">SERVICES</div>
-            <div className="mt-5 space-y-3 text-sm">
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Wedding Photography
-              </Link>
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Pre-Wedding Shoots
-              </Link>
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Cinematic Wedding Films
-              </Link>
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Premium Album Designing
-              </Link>
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Trendy Instagram Reels
-              </Link>
-              <Link
-                to="/#services"
-                className="block text-zinc-400 hover:text-amber-400 transition-all hover:translate-x-1"
-              >
-                Baby &amp; Lifestyle Photography
-              </Link>
+            <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
+              Services
+            </div>
+            <div className="mt-5 space-y-3 text-sm font-body">
+              {[
+                "Wedding Photography",
+                "Pre-Wedding Shoots",
+                "Baby Photography",
+                "Corporate Events",
+                "Drone Coverage",
+              ].map((s) => (
+                <Link
+                  key={s}
+                  to="/#services"
+                  className="block text-zinc-400 hover:text-amber-500 transition-all hover:translate-x-1"
+                >
+                  {s}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Column 4: Contact */}
           <div className="min-w-0">
-            <div className="text-amber-500 text-xs font-display uppercase tracking-wider">GET IN TOUCH</div>
-            <div className="mt-5 space-y-4 text-sm text-zinc-400">
+            <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
+              Contact Us
+            </div>
+            <div className="mt-5 space-y-4 text-sm font-body text-zinc-400">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 text-amber-500" />
-                <span>{LOCATION_DISPLAY}</span>
+                <span>{LOCATION_SHORT}</span>
               </div>
 
               <div className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 text-amber-500" />
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <a
-                    href={`tel:${PRIMARY_PHONE_TEL}`}
-                    className="hover:text-amber-400 transition-colors"
-                  >
-                    {PRIMARY_PHONE_DISPLAY}
-                  </a>
-                  <span className="text-white/10">/</span>
-                  <a
-                    href={`tel:${SECONDARY_PHONE_TEL}`}
-                    className="hover:text-amber-400 transition-colors"
-                  >
-                    {SECONDARY_PHONE_DISPLAY}
-                  </a>
-                </div>
+                <a href={`tel:${PRIMARY_PHONE_TEL}`} className="hover:text-amber-500 transition-colors">
+                  {PRIMARY_PHONE_DISPLAY}
+                </a>
               </div>
 
               <div className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 text-amber-500" />
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="hover:text-amber-400 transition-colors"
-                >
+                <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-amber-500 transition-colors">
                   {CONTACT_EMAIL}
                 </a>
               </div>
@@ -168,19 +119,19 @@ export const Footer = () => {
           </div>
         </div>
 
-          <div className="mt-16 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-zinc-400">© 2025 Raj Photography. All rights reserved.</div>
-          <div className="text-xs text-zinc-400">
-            <a href="#" className="hover:text-amber-400 transition-colors">
+        <div className="mt-16 border-t border-white/5 pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="text-xs text-zinc-600 font-body">© 2025 Raj Photography. All rights reserved.</div>
+          <div className="text-xs text-zinc-600 font-body">
+            <a href="#" className="hover:text-white transition-colors">
               Privacy Policy
             </a>
             <span className="mx-2 text-white/10">|</span>
-            <a href="#" className="hover:text-amber-400 transition-colors">
-              Terms &amp; Conditions
+            <a href="#" className="hover:text-white transition-colors">
+              Terms of Service
             </a>
           </div>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 };

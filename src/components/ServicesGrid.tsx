@@ -69,8 +69,12 @@ const actionsVariants = {
 
 export const ServicesGrid = () => {
   return (
-    <section id="services" className="px-6 py-24 md:py-32">
+    <section id="services" className="relative overflow-hidden px-6 py-24 md:py-32 bg-zinc-900/50 backdrop-blur-3xl border-y border-white/5">
       <div className="max-w-6xl mx-auto">
+        <div
+          aria-hidden
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none"
+        />
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -97,7 +101,7 @@ export const ServicesGrid = () => {
               key={service.number}
               variants={cardVariants}
               whileHover="hover"
-              className="group relative overflow-hidden rounded-2xl p-8 bg-white/5 border border-white/10 backdrop-blur-sm"
+              className="group relative overflow-hidden rounded-2xl p-8 bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-gradient-to-br hover:from-white/5 hover:to-white/0 hover:border-amber-500/30"
               style={{ willChange: "transform" }}
             >
               <motion.div

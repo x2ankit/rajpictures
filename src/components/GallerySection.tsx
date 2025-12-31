@@ -26,7 +26,7 @@ async function fetchGallery(): Promise<GalleryItem[]> {
     .select("id, created_at, title, category, image_url, storage_path")
     .order("order_index", { ascending: true })
     .order("created_at", { ascending: false })
-    .limit(10);
+    .limit(36);
 
   if (!error) return (data as GalleryItem[]) || [];
 
@@ -35,7 +35,7 @@ async function fetchGallery(): Promise<GalleryItem[]> {
       .from("gallery")
       .select("id, created_at, title, category, image_url, storage_path")
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(36);
 
     if (fallback.error) throw fallback.error;
     return (fallback.data as GalleryItem[]) || [];
@@ -71,7 +71,8 @@ export const GallerySection = () => {
   const visible = useMemo(() => {
     const stills = items.filter((it) => !isVideoUrl(it.image_url));
     const motion = items.filter((it) => isVideoUrl(it.image_url));
-    return activeTab === "STILLS" ? stills : motion;
+    const next = activeTab === "STILLS" ? stills : motion;
+    return next.slice(0, 12);
   }, [items, activeTab]);
 
   if (isError) {
@@ -80,7 +81,8 @@ export const GallerySection = () => {
   }
 
   return (
-    <section className="py-28 md:py-32 px-6">
+    <section className="py-28 md:py-32 px-6 bg-black">
+      <div id="gallery" className="scroll-mt-28" />
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,7 +122,7 @@ export const GallerySection = () => {
         {/* Masonry Grid */}
         {isLoading ? (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
-            {Array.from({ length: 9 }).map((_, i) => (
+            {Array.from({ length: 12 }).map((_, i) => (
               <div
                 key={i}
                 className="glass-card overflow-hidden break-inside-avoid bg-muted/20 animate-pulse"

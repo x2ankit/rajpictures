@@ -1,31 +1,29 @@
 import { motion } from "framer-motion";
-import { MapPin, ExternalLink, Phone, Mail } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { ArtistSection } from "./ArtistSection";
 
-const budgets = [
-  "Below ₹50k",
-  "₹50k - 1L",
-  "₹1L - 2L",
-  "₹2L - 5L",
-  "Above ₹5L"
-];
+const budgets = ["Below ₹50k", "₹50k - 1L", "₹1L - 2L", "₹2L - 5L", "Above ₹5L"] as const;
+const serviceTypes = [
+  "Wedding Photography",
+  "Pre-Wedding Shoots",
+  "Baby / Maternity",
+  "Corporate Events",
+  "Drone Coverage",
+] as const;
 
 export const ContactSection = () => {
   const primaryPhoneDisplay = "+91 93375 64186";
-  const secondaryPhoneDisplay = "+91 94377 50574";
   const primaryPhoneTel = "+919337564186";
-  const secondaryPhoneTel = "+919437750574";
   const contactEmail = "book@rajphotography.com";
-  const locationDisplay = "Bhubaneswar, Odisha, India";
+  const locationDisplay = "Bonaigarh, Sundargarh, Odisha, India";
 
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
-    city: "",
+    serviceType: "",
     budget: "",
-    requirements: ""
+    message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,142 +32,77 @@ export const ContactSection = () => {
       title: "Inquiry Sent!",
       description: "We'll get back to you within 24 hours.",
     });
-    setFormData({ name: "", mobile: "", city: "", budget: "", requirements: "" });
+    setFormData({ name: "", mobile: "", serviceType: "", budget: "", message: "" });
   };
 
-  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Bhubaneswar%2C%20Odisha%2C%20India";
+  const googleMapsUrl = "https://www.google.com/maps/place/Bonaigarh,+Odisha";
+
+  const inputClassName =
+    "bg-transparent border-b border-zinc-700 focus:border-amber-500 text-white placeholder:text-zinc-600 outline-none transition-colors py-4 w-full placeholder:uppercase placeholder:text-xs placeholder:tracking-widest";
 
   return (
-    <section className="py-24 px-6" id="contact">
-      <div className="max-w-6xl mx-auto">
+    <section id="contact" className="px-6 py-24 md:py-32 bg-gradient-to-t from-amber-900/20 to-black">
+      <div className="mx-auto max-w-6xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-80px" }}
+          className="mb-12"
         >
-          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
-            GET IN TOUCH
-          </h2>
-          <div className="mt-4 text-sm md:text-base text-muted-foreground font-body tracking-widest">
-            LET'S WORK TOGETHER
+          <p className="text-amber-500 text-xs sm:text-sm uppercase tracking-[0.2em]">WHAT WE CREATE</p>
+          <div className="mt-5 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <h2 className="font-serifDisplay text-5xl md:text-7xl leading-[1.02] text-white">
+              Get In <span className="text-amber-500">Touch</span>
+            </h2>
+            <p className="font-body text-zinc-400 tracking-[0.08em] max-w-xl">
+              Share your date, vision, and style — we’ll reply with availability and a tailored quote.
+            </p>
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Artist Profile - Shows first on mobile */}
-          <div className="lg:order-3">
-            <ArtistSection />
-          </div>
-
-          {/* Contact Form */}
+        <div className="grid grid-cols-1 md:grid-cols-2 overflow-hidden border border-white/5">
+          {/* Left: Visual */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="lg:order-1"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
+            className="relative min-h-[520px] md:min-h-[640px]"
           >
-            <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 space-y-5">
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-                  placeholder="Your name"
-                />
-              </div>
+            <img
+              src="https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80&w=1000"
+              alt="Studio portrait"
+              className="absolute inset-0 h-full w-full object-cover grayscale"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
 
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Mobile
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.mobile}
-                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-                  placeholder="Your mobile number"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  City
-                </label>
-                <input
-                  required
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-                  placeholder="Your city"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Budget
-                </label>
-                <select
-                  required
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none text-sm"
-                >
-                  <option value="">Select your budget</option>
-                  {budgets.map((budget) => (
-                    <option key={budget} value={budget}>{budget}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Requirements
-                </label>
-                <textarea
-                  required
-                  value={formData.requirements}
-                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm min-h-[120px]"
-                  placeholder="Tell us what you need (date, location, style, references)"
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                className="w-full py-4 bg-primary text-primary-foreground font-display text-lg tracking-wider rounded-lg hover:bg-primary/90 transition-all glow-purple"
-                whileHover={{ scale: 1.05, boxShadow: "var(--shadow-glow-purple)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                SEND INQUIRY
-              </motion.button>
-            </form>
-          </motion.div>
-
-          {/* Location & Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col gap-4 lg:order-2"
-          >
-            {/* Location Card */}
-            <div className="glass-card p-6">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-accent" />
-                </div>
+            <div className="absolute bottom-8 left-8 right-8 space-y-4">
+              <div className="flex items-start gap-3 text-zinc-300">
+                <MapPin className="mt-0.5 h-4 w-4 text-amber-500" />
                 <div>
-                  <h3 className="text-lg font-display mb-1">STUDIO LOCATION</h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed">
-                    {locationDisplay}
-                  </p>
+                  <div className="text-xs uppercase tracking-[0.28em] text-white/70">Studio Location</div>
+                  <div className="mt-1 text-sm">Bonaigarh, Odisha</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 text-zinc-300">
+                <Phone className="mt-0.5 h-4 w-4 text-amber-500" />
+                <div>
+                  <div className="text-xs uppercase tracking-[0.28em] text-white/70">Phone</div>
+                  <a href={`tel:${primaryPhoneTel}`} className="mt-1 block text-sm hover:text-amber-500 transition-colors">
+                    {primaryPhoneDisplay}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 text-zinc-300">
+                <Mail className="mt-0.5 h-4 w-4 text-amber-500" />
+                <div>
+                  <div className="text-xs uppercase tracking-[0.28em] text-white/70">Email</div>
+                  <a href={`mailto:${contactEmail}`} className="mt-1 block text-sm hover:text-amber-500 transition-colors">
+                    {contactEmail}
+                  </a>
                 </div>
               </div>
 
@@ -177,57 +110,95 @@ export const ContactSection = () => {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-lg hover:bg-accent hover:text-accent-foreground transition-all text-sm strike-link"
+                className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-amber-500 hover:text-white transition-colors"
               >
-                <span>Open in Google Maps</span>
-                <ExternalLink className="w-4 h-4" />
+                Open in Google Maps <span aria-hidden>↗</span>
               </a>
             </div>
+          </motion.div>
 
-            {/* Contact Details */}
-            <div className="glass-card p-6 space-y-3">
-              <a 
-                href={`tel:${primaryPhoneTel}`}
-                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-primary" />
-                </div>
-                <span className="font-body text-sm">{primaryPhoneDisplay}</span>
-              </a>
-
-              <a
-                href={`tel:${secondaryPhoneTel}`}
-                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-primary" />
-                </div>
-                <span className="font-body text-sm">{secondaryPhoneDisplay}</span>
-              </a>
-
-              <a 
-                href={`mailto:${contactEmail}`}
-                className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-primary" />
-                </div>
-                <span className="font-body text-sm">{contactEmail}</span>
-              </a>
+          {/* Right: Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
+            className="bg-black/40 backdrop-blur-3xl p-8 md:p-10"
+          >
+            <div className="font-serifDisplay text-3xl md:text-4xl text-white">
+              Ready to Create <span className="text-amber-500">Magic</span>?
             </div>
+            <div className="mt-2 font-body text-zinc-400 tracking-[0.18em] text-xs uppercase">Send an inquiry</div>
 
-            {/* Quick stats */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="glass-card p-4 text-center">
-                <span className="text-2xl font-display text-primary">500+</span>
-                <p className="text-xs text-muted-foreground mt-1">Projects</p>
-              </div>
-              <div className="glass-card p-4 text-center">
-                <span className="text-2xl font-display text-accent">10+</span>
-                <p className="text-xs text-muted-foreground mt-1">Years</p>
-              </div>
-            </div>
+            <form onSubmit={handleSubmit} className="mt-10 space-y-8">
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className={inputClassName}
+                placeholder="Name"
+              />
+
+              <input
+                type="tel"
+                required
+                value={formData.mobile}
+                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                className={inputClassName}
+                placeholder="Mobile"
+              />
+
+              <select
+                required
+                value={formData.serviceType}
+                onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
+                className={
+                  inputClassName +
+                  " appearance-none text-white/90 [&>option]:text-black"
+                }
+              >
+                <option value="">SERVICE TYPE</option>
+                {serviceTypes.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                required
+                value={formData.budget}
+                onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                className={
+                  inputClassName +
+                  " appearance-none text-white/90 [&>option]:text-black"
+                }
+              >
+                <option value="">BUDGET</option>
+                {budgets.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+
+              <textarea
+                required
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className={inputClassName + " min-h-[140px] resize-none"}
+                placeholder="Message"
+              />
+
+              <motion.button
+                type="submit"
+                className="w-full py-4 bg-amber-500 text-black font-bold text-xs uppercase tracking-[0.28em] rounded-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95 hover:bg-amber-600"
+                whileTap={{ scale: 0.98 }}
+              >
+                SEND INQUIRY
+              </motion.button>
+            </form>
           </motion.div>
         </div>
       </div>

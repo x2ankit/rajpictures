@@ -21,7 +21,7 @@ const AppLayout = () => {
   const hideHeader = location.pathname === "/gallery";
 
   return (
-    <>
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a0b2e] via-black to-black">
       {!hideHeader && <Header />}
       <ScrollToHash />
       <Routes>
@@ -32,7 +32,7 @@ const AppLayout = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-    </>
+    </div>
   );
 };
 

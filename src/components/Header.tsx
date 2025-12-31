@@ -80,7 +80,7 @@ export const Header = () => {
         <div className="flex items-center justify-end gap-4">
           <a
             href={location.pathname === "/" ? "#contact" : "/#contact"}
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase"
+            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
           >
             BOOK NOW
           </a>
@@ -132,7 +132,7 @@ export const Header = () => {
 
               <a
                 href={location.pathname === "/" ? "#contact" : "/#contact"}
-                className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase"
+                className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
               >
                 BOOK NOW
               </a>

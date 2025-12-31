@@ -18,6 +18,7 @@ export default {
         brand: ['"Playfair Display"', 'serif'],
         serifDisplay: ['"Playfair Display"', 'serif'],
         body: ['Manrope', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
         signature: ['"Dancing Script"', 'cursive'],
         mono: ['JetBrains Mono', 'monospace'],
       },

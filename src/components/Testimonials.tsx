@@ -63,7 +63,7 @@ export const Testimonials = () => {
               }}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.25 }}
-              className="bg-white/5 border border-white/10 p-8 rounded-sm"
+              className="bg-white/5 border border-white/10 p-8 rounded-sm transition-colors hover:bg-gradient-to-br hover:from-white/5 hover:to-white/0 hover:border-amber-500/30"
             >
               <div className="flex items-center gap-1 text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
