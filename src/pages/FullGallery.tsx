@@ -161,9 +161,9 @@ export default function FullGallery() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="sticky top-0 z-40 bg-[#1a0b2e]/95 backdrop-blur-xl border-b border-white/10">
+      <div className="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-6">
-          <div className="text-sm md:text-base uppercase tracking-[0.35em] font-['Michroma'] text-foreground/80">
+          <div className="text-sm md:text-base uppercase tracking-[0.35em] font-body text-foreground/80">
             GALLERY
           </div>
           <div className="flex items-center gap-2">
@@ -175,7 +175,7 @@ export default function FullGallery() {
                   itemsContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className={
-                  "px-3 py-2 text-[11px] md:text-xs uppercase tracking-[0.25em] font-['Michroma'] transition-colors rounded-full " +
+                  "px-3 py-2 text-[11px] md:text-xs uppercase tracking-[0.25em] font-body transition-colors rounded-full " +
                   (activeFilter === f.key
                     ? "bg-primary text-primary-foreground"
                     : "bg-secondary text-muted-foreground hover:text-foreground")
@@ -199,7 +199,7 @@ export default function FullGallery() {
             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
               FULL ARCHIVE
             </h1>
-            <div className="mt-3 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+            <div className="mt-3 text-sm md:text-base text-muted-foreground font-body tracking-widest">
               200+ ASSETS • LAZY LOADED
             </div>
           </motion.div>
@@ -242,7 +242,7 @@ export default function FullGallery() {
                     ) : (
                       <img
                         src={item.image_url}
-                        alt={item.title || "CameraWala asset"}
+                        alt={item.title || "Raj Photography asset"}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
@@ -335,7 +335,7 @@ export default function FullGallery() {
                     ) : (
                       <img
                         src={lightboxItem.image_url}
-                        alt={lightboxItem.title || "CameraWala asset"}
+                        alt={lightboxItem.title || "Raj Photography asset"}
                         className="w-full max-h-[84vh] object-contain"
                       />
                     )}

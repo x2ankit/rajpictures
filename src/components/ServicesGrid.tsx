@@ -147,7 +147,7 @@ export const ServicesGrid = () => {
 
               {/* Focus glow */}
               <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-[0_0_30px_rgba(168,85,247,0.18)]" />
-              <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-purple-500/50 transition-colors duration-300 pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-amber-500/40 transition-colors duration-300 pointer-events-none" />
             </motion.div>
           ))}
         </motion.div>

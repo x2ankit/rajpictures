@@ -17,7 +17,7 @@ export const ContactSection = () => {
   const secondaryPhoneDisplay = "+91 94377 50574";
   const primaryPhoneTel = "+919337564186";
   const secondaryPhoneTel = "+919437750574";
-  const contactEmail = "book@camerawala.com";
+  const contactEmail = "book@rajphotography.com";
   const locationDisplay = "Bhubaneswar, Odisha, India";
 
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ export const ContactSection = () => {
           <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
             GET IN TOUCH
           </h2>
-          <div className="mt-4 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+          <div className="mt-4 text-sm md:text-base text-muted-foreground font-body tracking-widest">
             LET'S WORK TOGETHER
           </div>
         </motion.div>
@@ -193,7 +193,7 @@ export const ContactSection = () => {
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Phone className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">{primaryPhoneDisplay}</span>
+                <span className="font-body text-sm">{primaryPhoneDisplay}</span>
               </a>
 
               <a
@@ -203,7 +203,7 @@ export const ContactSection = () => {
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Phone className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">{secondaryPhoneDisplay}</span>
+                <span className="font-body text-sm">{secondaryPhoneDisplay}</span>
               </a>
 
               <a 
@@ -213,7 +213,7 @@ export const ContactSection = () => {
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Mail className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-mono text-sm">{contactEmail}</span>
+                <span className="font-body text-sm">{contactEmail}</span>
               </a>
             </div>
 

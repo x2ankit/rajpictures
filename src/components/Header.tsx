@@ -47,16 +47,16 @@ export const Header = () => {
       className={
         "fixed top-0 left-0 right-0 z-50 py-5 px-8 md:px-12 transition-colors " +
         (scrolled
-          ? "bg-[#130722]/95 backdrop-blur-md"
-          : "bg-gradient-to-b from-[#130722]/80 to-transparent")
+          ? "bg-black/80 backdrop-blur-md"
+          : "bg-gradient-to-b from-black/70 to-transparent")
       }
     >
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 items-center">
         {/* Left: Logo */}
         <a href="/" className="inline-flex flex-col leading-none">
-          <span className="font-brand text-lg md:text-xl text-white tracking-tight">CAMERAWALA</span>
+          <span className="font-brand text-lg md:text-xl text-white tracking-tight">RAJ PHOTOGRAPHY</span>
           <span className="text-[9px] md:text-[10px] text-zinc-400 tracking-[0.35em] uppercase mt-1">
-            CINEMATIC VISUALS
+            CINEMATIC VISUALS &amp; STORYTELLING
           </span>
         </a>
 
@@ -68,7 +68,7 @@ export const Header = () => {
               <a
                 key={l.label}
                 href={href}
-                className="text-xs uppercase tracking-[0.2em] text-white hover:text-yellow-400 transition-colors"
+                className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
               >
                 {l.label}
               </a>
@@ -80,7 +80,7 @@ export const Header = () => {
         <div className="flex items-center justify-end gap-4">
           <a
             href={location.pathname === "/" ? "#contact" : "/#contact"}
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-yellow-400 text-black font-bold text-xs tracking-[0.2em] uppercase"
+            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase"
           >
             BOOK NOW
           </a>
@@ -88,7 +88,7 @@ export const Header = () => {
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="md:hidden inline-flex items-center justify-center text-yellow-400"
+            className="md:hidden inline-flex items-center justify-center text-amber-500"
             aria-label="Open menu"
           >
             <Menu className="w-6 h-6" />
@@ -109,7 +109,7 @@ export const Header = () => {
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center text-yellow-400"
+                className="inline-flex items-center justify-center text-amber-500"
                 aria-label="Close menu"
               >
                 <X className="w-7 h-7" />
@@ -123,7 +123,7 @@ export const Header = () => {
                   <a
                     key={l.label}
                     href={href}
-                    className="text-sm uppercase tracking-[0.25em] text-white hover:text-yellow-400 transition-colors"
+                    className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
                   >
                     {l.label}
                   </a>
@@ -132,7 +132,7 @@ export const Header = () => {
 
               <a
                 href={location.pathname === "/" ? "#contact" : "/#contact"}
-                className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-yellow-400 text-black font-bold text-xs tracking-[0.2em] uppercase"
+                className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase"
               >
                 BOOK NOW
               </a>

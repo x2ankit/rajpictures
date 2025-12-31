@@ -23,7 +23,7 @@ function toYouTubeEmbedUrl(videoUrl: string): string {
 export const YouTubeSection = () => {
   const videoUrl = "https://www.youtube.com/watch?v=TlbZJj_9_xY";
   const channelUrl = "https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A";
-  const channelLabel = "CAMERAWALA";
+  const channelLabel = "RAJ PHOTOGRAPHY";
   const embedUrl = toYouTubeEmbedUrl(videoUrl);
 
   return (
@@ -38,7 +38,7 @@ export const YouTubeSection = () => {
           <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
             FEATURED WORK
           </h2>
-          <div className="mt-4 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+          <div className="mt-4 text-sm md:text-base text-muted-foreground font-body tracking-widest">
             DIRECTOR'S MONITOR
           </div>
         </motion.div>
@@ -64,19 +64,19 @@ export const YouTubeSection = () => {
                   href={channelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-xs font-body text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {channelLabel}
                 </a>
               </div>
-              <span className="text-xs font-mono text-muted-foreground">4K 60fps</span>
+              <span className="text-xs font-body text-muted-foreground">4K 60fps</span>
             </div>
 
             {/* Video container */}
             <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
               <iframe
                 src={embedUrl}
-                title="CameraWala Featured Video"
+                title="Raj Photography Featured Video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 className="absolute inset-0 w-full h-full"
@@ -86,9 +86,9 @@ export const YouTubeSection = () => {
 
             {/* Monitor footer */}
             <div className="flex items-center justify-between px-4 py-2 mt-3 border-t border-border/50">
-              <span className="text-xs font-mono text-muted-foreground">TC: 00:00:00:00</span>
-              <span className="text-xs font-mono text-accent">WEDDING HIGHLIGHTS</span>
-              <span className="text-xs font-mono text-muted-foreground">CLIP 001</span>
+              <span className="text-xs font-body text-muted-foreground">TC: 00:00:00:00</span>
+              <span className="text-xs font-body text-accent">WEDDING HIGHLIGHTS</span>
+              <span className="text-xs font-body text-muted-foreground">CLIP 001</span>
             </div>
           </div>
 

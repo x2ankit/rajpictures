@@ -1,30 +1,28 @@
-import { ViewfinderOverlay } from "@/components/ViewfinderOverlay";
 import { HeroSection } from "@/components/HeroSection";
-import { ServicesSection } from "@/components/ServicesSection";
 import { YouTubeSection } from "@/components/YouTubeSection";
-import { AccordionSection } from "@/components/AccordionSection";
 import { GallerySection } from "@/components/GallerySection";
 import { ContactSection } from "@/components/ContactSection";
 import { Testimonials } from "@/components/Testimonials";
+import { AboutRaj } from "@/components/AboutRaj";
+import { ServiceCards } from "@/components/ServiceCards";
 
 const Index = () => {
   return (
     <main className="relative">
-      <ViewfinderOverlay />
       <section id="home">
         <HeroSection />
       </section>
       <section id="services">
-        <ServicesSection />
+        <ServiceCards />
+      </section>
+      <section id="about">
+        <AboutRaj />
       </section>
       <section id="films">
         <YouTubeSection />
       </section>
       <section id="portfolio">
         <GallerySection />
-      </section>
-      <section id="about">
-        <AccordionSection />
       </section>
       <Testimonials />
       <section id="contact">

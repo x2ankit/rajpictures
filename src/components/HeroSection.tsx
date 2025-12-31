@@ -1,164 +1,108 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { motion } from "framer-motion";
 import { useRef } from "react";
+import * as THREE from "three";
 
-export const HeroSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+const HERO_VIDEO_URL =
+  "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/.%20(48).mp4";
 
-  // Mouse-driven tilt (keep 3D feel)
-  const tiltX = useMotionValue(0);
-  const tiltY = useMotionValue(0);
-  const pointerX = useMotionValue(0.5);
-  const pointerY = useMotionValue(0.5);
+const Lens = () => {
+  const groupRef = useRef<THREE.Group | null>(null);
 
-  const tiltXSpring = useSpring(tiltX, { stiffness: 180, damping: 22, mass: 0.5 });
-  const tiltYSpring = useSpring(tiltY, { stiffness: 180, damping: 22, mass: 0.5 });
-  const pointerXSpring = useSpring(pointerX, { stiffness: 220, damping: 26, mass: 0.45 });
-  const pointerYSpring = useSpring(pointerY, { stiffness: 220, damping: 26, mass: 0.45 });
-
-  const lensRotateX = useTransform(tiltXSpring, (v) => v);
-  const lensRotateY = useTransform(tiltYSpring, (v) => v);
-  const lensRotateZ = useTransform(tiltYSpring, (v) => v * 0.2);
-
-  const glassHighlight = useTransform([pointerXSpring, pointerYSpring], (latest) => {
-    const [xRaw, yRaw] = latest as unknown as [number, number];
-    const x = typeof xRaw === "number" ? xRaw : Number(xRaw);
-    const y = typeof yRaw === "number" ? yRaw : Number(yRaw);
-    return `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.02) 28%, transparent 45%)`;
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y += delta * 0.55;
   });
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const bounds = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - bounds.left) / bounds.width;
-    const y = (e.clientY - bounds.top) / bounds.height;
-
-    const max = 12;
-    const rx = (0.5 - y) * max * 2;
-    const ry = (x - 0.5) * max * 2;
-    tiltX.set(rx);
-    tiltY.set(ry);
-
-    pointerX.set(Math.min(1, Math.max(0, x)));
-    pointerY.set(Math.min(1, Math.max(0, y)));
-  };
-
-  const handleMouseLeave = () => {
-    tiltX.set(0);
-    tiltY.set(0);
-    pointerX.set(0.5);
-    pointerY.set(0.5);
-  };
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a0b2e] via-[#0b0614] to-[#050505]"
-    >
-      {/* 2. Title (Background layer) */}
-      <motion.h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 font-display text-[9.5vw] 2xl:text-[8vw] tracking-tighter whitespace-nowrap bg-gradient-to-b from-white/20 to-white/5 bg-clip-text text-transparent select-none pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
-      >
-        CAMERAWALA
-      </motion.h1>
+    <group ref={groupRef}>
+      <mesh castShadow receiveShadow>
+        <cylinderGeometry args={[1.35, 1.35, 0.9, 80, 1, true]} />
+        <meshStandardMaterial color="#0a0a0a" metalness={0.75} roughness={0.35} />
+      </mesh>
 
-      {/* Container: Perfectly Centered & Compact */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center justify-center text-center w-full pointer-events-none">
-        {/* "THE" - Adjusted size */}
-        <div className="text-yellow-400 font-bold text-[20px] md:text-[32px] tracking-[0.3em] mb-2">
-          THE
-        </div>
+      <mesh position={[0, 0, 0.46]}>
+        <circleGeometry args={[1.05, 80]} />
+        <meshStandardMaterial color="#050505" metalness={0.8} roughness={0.2} />
+      </mesh>
 
-        {/* "CAMERAWALA" - Much smaller & tighter */}
-        <div className="font-brand font-bold tracking-tighter text-[8vw] md:text-[5vw] leading-none bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
-          CAMERAWALA
-        </div>
-      </div>
+      <mesh position={[0, 0, 0.468]}>
+        <ringGeometry args={[0.5, 1.03, 80]} />
+        <meshStandardMaterial
+          color="#f59e0b"
+          emissive="#f59e0b"
+          emissiveIntensity={0.12}
+          metalness={0.85}
+          roughness={0.28}
+        />
+      </mesh>
 
-      {/* 3. Lens (Middle layer) */}
-      <div
-        className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ perspective: "1200px" }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <motion.div
-          style={{
-            rotateX: lensRotateX,
-            rotateY: lensRotateY,
-            rotateZ: lensRotateZ,
-            transformStyle: "preserve-3d",
-          }}
-          className="will-change-transform"
-        >
-          <div className="relative w-[520px] h-[520px] max-w-[82vw] max-h-[82vw]">
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 18%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,1) 100%)",
-                boxShadow:
-                  "inset 0 0 80px rgba(0,0,0,0.95), 0 0 60px rgba(124,58,237,0.10)",
-                border: "10px solid rgba(255,255,255,0.06)",
-              }}
-            />
+      <mesh position={[0, 0, 0.49]}>
+        <circleGeometry args={[0.46, 80]} />
+        <meshStandardMaterial color="#0b0b0b" metalness={0.9} roughness={0.08} />
+      </mesh>
+    </group>
+  );
+};
 
-            <div
-              className="absolute inset-[34px] rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 60% 40%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.98) 60%, rgba(0,0,0,1) 100%)",
-                border: "2px solid rgba(255,255,255,0.08)",
-              }}
-            />
+export const HeroSection = () => {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black">
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        src={HERO_VIDEO_URL}
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
 
-            <div
-              className="absolute inset-[64px] rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 18%, rgba(124,58,237,0.08) 35%, rgba(0,0,0,0.95) 75%, rgba(0,0,0,1) 100%)",
-                boxShadow:
-                  "inset 0 0 120px rgba(0,0,0,0.95), inset 0 -30px 80px rgba(124,58,237,0.08)",
-              }}
-            />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
-            <motion.div
-              className="absolute inset-[64px] rounded-full pointer-events-none will-change-opacity"
-              style={{ background: glassHighlight, opacity: 0.9 }}
-            />
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+        <div className="w-full max-w-5xl flex flex-col items-center text-center gap-6">
+          <motion.h1
+            className="font-serifDisplay text-amber-500 tracking-tight text-5xl sm:text-7xl md:text-8xl"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.2, 0, 0.2, 1] }}
+          >
+            RAJ PHOTOGRAPHY
+          </motion.h1>
 
-            <div className="absolute inset-[110px] rounded-full border border-white/10" />
-            <div className="absolute inset-[140px] rounded-full border border-white/8" />
+          <motion.p
+            className="font-body text-white/90 text-sm sm:text-base md:text-lg tracking-[0.25em]"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08, duration: 0.7, ease: [0.2, 0, 0.2, 1] }}
+          >
+            Cinematic Visuals &amp; Storytelling
+          </motion.p>
 
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_40px_rgba(250,204,21,0.28)]" />
-            </div>
+          <div className="w-full max-w-3xl h-[220px] sm:h-[260px] md:h-[340px]">
+            <Canvas
+              camera={{ position: [0, 0, 4.2], fov: 42 }}
+              dpr={[1, 1.75]}
+              gl={{ antialias: true, alpha: true }}
+            >
+              <ambientLight intensity={0.7} />
+              <directionalLight position={[3, 3, 3]} intensity={1.1} />
+              <directionalLight position={[-3, -2, 2]} intensity={0.4} />
+
+              <Lens />
+
+              <OrbitControls
+                enablePan={false}
+                enableZoom={false}
+                rotateSpeed={0.8}
+                minPolarAngle={Math.PI / 2.4}
+                maxPolarAngle={Math.PI / 1.55}
+              />
+            </Canvas>
           </div>
-        </motion.div>
+        </div>
       </div>
-
-      {/* 4. Content (Top layer) */}
-      <div className="absolute z-30 top-8 right-12">
-        <a
-          href="#services"
-          className="text-xs font-display tracking-[0.35em] uppercase text-white/70 hover:text-white transition-colors"
-        >
-          MENU
-        </a>
-      </div>
-
-      <motion.div
-        className="absolute z-30 bottom-12 left-12 glass-card p-5 md:p-6 max-w-xs"
-        initial={{ opacity: 0, x: -24 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.35, duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
-      >
-        <p className="text-sm md:text-base text-foreground">
-          <span className="font-display tracking-wide">Capture Your Story</span>
-          <span className="text-muted-foreground"> — Step into a world of creativity.</span>
-        </p>
-      </motion.div>
     </section>
   );
 };

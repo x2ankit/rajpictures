@@ -91,7 +91,7 @@ export const GallerySection = () => {
           <h2 className="text-4xl md:text-6xl font-black uppercase tracking-wide font-display text-zinc-200">
             PORTFOLIO
           </h2>
-          <div className="mt-4 text-sm md:text-base text-muted-foreground font-mono tracking-widest">
+          <div className="mt-4 text-sm md:text-base text-muted-foreground font-body tracking-widest">
             GALLERY
           </div>
         </motion.div>
@@ -106,7 +106,7 @@ export const GallerySection = () => {
                 setActiveTab(tab);
               }}
               className={
-                "px-6 py-2 rounded-full text-xs md:text-sm uppercase tracking-[0.3em] font-['Michroma'] transition-all " +
+                "px-6 py-2 rounded-full text-xs md:text-sm uppercase tracking-[0.3em] font-body transition-all " +
                 (activeTab === tab
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-muted-foreground hover:text-foreground")
@@ -201,7 +201,7 @@ export const GallerySection = () => {
                           ) : (
                             <motion.img
                               src={image.image_url}
-                              alt={image.title || "CameraWala asset"}
+                              alt={image.title || "Raj Photography asset"}
                               loading="lazy"
                               className="w-full h-auto object-cover block will-change-transform"
                               whileHover={{ scale: 1.05 }}
@@ -251,7 +251,7 @@ export const GallerySection = () => {
           <motion.button
             type="button"
             onClick={() => navigate("/gallery")}
-            className="group pointer-events-auto px-10 md:px-14 py-6 md:py-7 rounded-full border border-primary/40 bg-card/30 backdrop-blur-xl text-foreground font-['Michroma'] text-xs md:text-sm uppercase tracking-[0.35em] transition-colors"
+            className="group pointer-events-auto px-10 md:px-14 py-6 md:py-7 rounded-full border border-primary/40 bg-card/30 backdrop-blur-xl text-foreground font-body text-xs md:text-sm uppercase tracking-[0.35em] transition-colors"
             style={{ x: buttonXSpring, y: buttonYSpring }}
             whileHover={{ boxShadow: "var(--shadow-glow-purple)" }}
             onMouseMove={(e) => {

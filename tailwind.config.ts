@@ -14,10 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Michroma"', '"Anton"', 'sans-serif'],
-        brand: ['"Michroma"', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+        brand: ['"Playfair Display"', 'serif'],
         serifDisplay: ['"Playfair Display"', 'serif'],
         body: ['Manrope', 'sans-serif'],
+        signature: ['"Dancing Script"', 'cursive'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
@@ -54,8 +55,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        purple: "hsl(var(--purple))",
-        orange: "hsl(var(--orange))",
       },
       borderRadius: {
         lg: "var(--radius)",

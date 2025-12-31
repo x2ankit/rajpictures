@@ -5,21 +5,21 @@ const PRIMARY_PHONE_DISPLAY = "+91 93375 64186";
 const SECONDARY_PHONE_DISPLAY = "+91 94377 50574";
 const PRIMARY_PHONE_TEL = "+919337564186";
 const SECONDARY_PHONE_TEL = "+919437750574";
-const CONTACT_EMAIL = "book@camerawala.com";
+const CONTACT_EMAIL = "book@rajphotography.com";
 const LOCATION_DISPLAY = "Bhubaneswar, Odisha, India";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gradient-to-t from-[#130722] to-[#1a0b2e]">
+    <footer className="bg-black">
       <div className="mx-auto max-w-6xl px-8 md:px-16 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             {/* Column 1: Brand */}
           <div className="min-w-0">
               <div className="font-brand text-lg sm:text-xl lg:text-2xl leading-none tracking-tight text-white">
-              CAMERA<span className="text-amber-500">WALA</span>
+              RAJ <span className="text-amber-500">PHOTOGRAPHY</span>
             </div>
             <p className="mt-4 text-sm text-zinc-400 leading-relaxed">
-              Capturing timeless moments with artistic vision.
+              Cinematic visuals & storytelling — crafted with intention.
             </p>
 
             <div className="mt-6 flex items-center gap-4">
@@ -168,8 +168,8 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-16 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-zinc-400">© 2025 CameraWala. All rights reserved.</div>
+          <div className="mt-16 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-xs text-zinc-400">© 2025 Raj Photography. All rights reserved.</div>
           <div className="text-xs text-zinc-400">
             <a href="#" className="hover:text-amber-400 transition-colors">
               Privacy Policy

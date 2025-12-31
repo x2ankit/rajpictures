@@ -6,7 +6,7 @@ export const Navbar = () => {
           href="#"
           className="text-xs md:text-sm uppercase tracking-[0.35em] text-zinc-200 font-display"
         >
-          CAMERAWALA
+          RAJ PHOTOGRAPHY
         </a>
         <a
           href="#services"

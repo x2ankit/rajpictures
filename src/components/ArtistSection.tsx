@@ -35,10 +35,10 @@ export const ArtistSection = () => {
 
       {/* Artist Info */}
       <div className="mt-6 text-center lg:text-left">
-        <h3 className="text-3xl md:text-4xl font-anton tracking-wider text-foreground">
+        <h3 className="text-3xl md:text-4xl font-serifDisplay tracking-tight text-foreground">
           RAJ
         </h3>
-        <p className="text-sm font-mono text-primary tracking-widest mt-1">
+        <p className="text-sm font-body text-primary tracking-widest mt-1">
           LEAD PHOTOGRAPHER & CREATIVE DIRECTOR
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed mt-4 max-w-sm mx-auto lg:mx-0">

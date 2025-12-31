@@ -14,13 +14,13 @@ const reviews = [
   {
     name: "Ananya & Rohit",
     quote:
-      "From the first meeting to the final album delivery, everything was perfect. CameraWala is worth every penny!",
+      "From the first meeting to the final album delivery, everything was perfect. Raj Photography is worth every penny!",
   },
 ] as const;
 
 export const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-24 px-6 bg-gradient-to-b from-[#1a0b2e] to-[#0f041a]">
+    <section id="testimonials" className="py-24 px-6 bg-black">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -29,7 +29,7 @@ export const Testimonials = () => {
           transition={{ duration: 0.6, ease: [0.2, 0, 0.2, 1] }}
           className="text-center mb-14"
         >
-          <div className="text-[11px] md:text-xs uppercase tracking-[0.35em] text-yellow-400 font-['Michroma']">
+          <div className="text-[11px] md:text-xs uppercase tracking-[0.35em] text-amber-500 font-body">
             LOVE NOTES
           </div>
           <h2 className="mt-5 text-4xl md:text-6xl text-white font-serifDisplay">
@@ -77,7 +77,7 @@ export const Testimonials = () => {
                 “{r.quote}”
               </p>
 
-              <div className="mt-8 text-yellow-400 uppercase tracking-[0.25em] text-xs font-['Michroma']">
+              <div className="mt-8 text-amber-500 uppercase tracking-[0.25em] text-xs font-body">
                 {r.name}
               </div>
             </motion.div>
