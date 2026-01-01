@@ -242,7 +242,7 @@ export default function FullGallery() {
                     ) : (
                       <img
                         src={item.image_url}
-                        alt={item.title || "Raj Photography asset"}
+                        alt={item.title || "Raj Pictures asset"}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
@@ -335,7 +335,7 @@ export default function FullGallery() {
                     ) : (
                       <img
                         src={lightboxItem.image_url}
-                        alt={lightboxItem.title || "Raj Photography asset"}
+                        alt={lightboxItem.title || "Raj Pictures asset"}
                         className="w-full max-h-[84vh] object-contain"
                       />
                     )}

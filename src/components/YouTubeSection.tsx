@@ -23,7 +23,7 @@ function toYouTubeEmbedUrl(videoUrl: string): string {
 export const YouTubeSection = () => {
   const videoUrl = "https://www.youtube.com/watch?v=TlbZJj_9_xY";
   const channelUrl = "https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A";
-  const channelLabel = "RAJ PHOTOGRAPHY";
+  const channelLabel = "RAJ PICTURES";
   const embedUrl = toYouTubeEmbedUrl(videoUrl);
 
   return (
@@ -76,7 +76,7 @@ export const YouTubeSection = () => {
             <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
               <iframe
                 src={embedUrl}
-                title="Raj Photography Featured Video"
+                title="Raj Pictures Featured Video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 className="absolute inset-0 w-full h-full"

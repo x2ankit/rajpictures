@@ -75,9 +75,9 @@ export const AboutRaj = () => {
           transition={{ duration: 1.0, ease: [0.2, 0, 0.2, 1], delay: 0.05 }}
           className="min-w-0 flex flex-col justify-center"
         >
-          <div className="mb-8">
-            <span className="block text-amber-500 uppercase tracking-[0.3em] text-xs md:text-sm font-medium mb-6">
-              About Raj Photography
+          <div className="mb-8 text-center">
+            <span className="block text-amber-500 uppercase tracking-[0.3em] text-sm md:text-base font-medium mb-6">
+              About Raj Pictures
             </span>
             <h2 className="font-serifDisplay text-5xl md:text-7xl lg:text-8xl leading-[1.1] text-white">
               A Decade of <br className="hidden md:block" />
@@ -86,9 +86,8 @@ export const AboutRaj = () => {
           </div>
 
           <p className="mt-6 text-white/70 text-base md:text-lg leading-relaxed">
-            I&apos;m Raj, founder and lead photographer. With over 10 years of experience capturing life&apos;s most
-            precious moments, I believe every frame should tell a story that resonates with emotion and
-            authenticity.
+            I&apos;m Raj, founder of Raj Pictures. With over 10 years of experience capturing life&apos;s most precious
+            moments, I believe every frame should tell a story that resonates with emotion and authenticity.
           </p>
 
           <p className="mt-5 text-white/65 text-base md:text-lg leading-relaxed">

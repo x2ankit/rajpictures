@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const PRIMARY_PHONE_DISPLAY = "+91 93375 64186";
 const SECONDARY_PHONE_DISPLAY = "+91 94377 50574";
 const PRIMARY_PHONE_TEL = "+919337564186";
-const CONTACT_EMAIL = "book@rajphotography.com";
+const CONTACT_EMAIL = "book@rajpictures.com";
 const LOCATION_DISPLAY = "Bonaigarh, Sundargarh, Odisha, India";
 const LOCATION_SHORT = "Bonaigarh, Odisha";
 
@@ -120,7 +120,7 @@ export const Footer = () => {
         </div>
 
         <div className="mt-16 border-t border-white/5 pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="text-xs text-zinc-600 font-body">© 2025 Raj Photography. All rights reserved.</div>
+          <div className="text-xs text-zinc-600 font-body">© 2025 Raj Pictures. All rights reserved.</div>
           <div className="text-xs text-zinc-600 font-body">
             <a href="#" className="hover:text-white transition-colors">
               Privacy Policy

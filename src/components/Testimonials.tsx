@@ -14,7 +14,7 @@ const reviews = [
   {
     name: "Ananya & Rohit",
     quote:
-      "From the first meeting to the final album delivery, everything was perfect. Raj Photography is worth every penny!",
+      "From the first meeting to the final album delivery, everything was perfect. Raj Pictures is worth every penny!",
   },
 ] as const;
 

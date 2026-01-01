@@ -21,25 +21,24 @@ export const HeroSection = () => {
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 
-      <div className="relative z-10 min-h-screen flex items-center justify-start px-6">
-        <div className="w-full">
-          <motion.div
-            style={{ scale: zoomScale, opacity: zoomOpacity }}
-            className="max-w-3xl ml-4 md:ml-8 lg:ml-16 text-left items-start"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
-          >
+      <div className="absolute inset-0 flex items-center px-6 md:px-12 lg:px-24 z-20">
+        <motion.div
+          style={{ scale: zoomScale, opacity: zoomOpacity }}
+          className="max-w-3xl flex flex-col items-start text-left"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
+        >
             <div className="font-montserrat text-xs sm:text-sm uppercase tracking-[0.3em] text-zinc-300">
               PREMIUM WEDDING PHOTOGRAPHY &amp; FILMS
             </div>
 
             <h1 className="mt-6 font-serifDisplay font-extrabold leading-none">
-              <span className="block text-white drop-shadow-lg text-6xl md:text-[9rem]">
-                Raj
-              </span>
               <span className="block bg-gradient-to-r from-yellow-200 via-amber-500 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(245,158,11,0.4)] text-6xl md:text-[9rem]">
-                Pictures
+                RAJ
+              </span>
+              <span className="block text-white drop-shadow-lg text-6xl md:text-[9rem]">
+                PICTURES
               </span>
             </h1>
 
@@ -62,7 +61,21 @@ export const HeroSection = () => {
                 BOOK A SESSION
               </a>
             </div>
-          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Scroll to Focus */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+        <div className="relative h-20 w-20 md:h-24 md:w-24">
+          <div className="absolute inset-0 rounded-full border border-white/20 animate-spin-slow" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-amber-500 text-xl leading-none animate-bounce" aria-hidden>
+              ↓
+            </span>
+          </div>
+        </div>
+        <div className="mt-4 text-[10px] font-mono tracking-widest text-amber-500">
+          SCROLL TO EXPLORE
         </div>
       </div>
     </section>

@@ -203,7 +203,7 @@ export const GallerySection = () => {
                           ) : (
                             <motion.img
                               src={image.image_url}
-                              alt={image.title || "Raj Photography asset"}
+                              alt={image.title || "Raj Pictures asset"}
                               loading="lazy"
                               className="w-full h-auto object-cover block will-change-transform"
                               whileHover={{ scale: 1.05 }}

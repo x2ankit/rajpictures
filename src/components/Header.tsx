@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Aperture, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
   { label: "HOME", hash: "#home" },
@@ -45,45 +45,55 @@ export const Header = () => {
   return (
     <header
       className={
-        "fixed top-0 left-0 right-0 z-50 py-5 px-8 md:px-12 transition-colors " +
+        "fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 lg:px-24 transition-colors " +
         (scrolled
           ? "bg-black/80 backdrop-blur-md"
           : "bg-gradient-to-b from-black/70 to-transparent")
       }
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 items-center">
+      <div className="w-full grid grid-cols-2 md:grid-cols-3 items-center">
         {/* Left: Logo */}
-        <a href="/" className="inline-flex flex-col leading-none">
-          <span className="font-brand text-lg md:text-xl text-white tracking-tight">RAJ PHOTOGRAPHY</span>
-          <span className="text-[9px] md:text-[10px] text-zinc-400 tracking-[0.35em] uppercase mt-1">
-            CINEMATIC VISUALS &amp; STORYTELLING
+        <Link to="/" className="inline-flex items-center gap-3 leading-none">
+          <span
+            aria-hidden
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
+          >
+            <Aperture className="h-5 w-5 text-amber-500" />
           </span>
-        </a>
+          <span className="inline-flex flex-col">
+            <span className="font-brand text-lg md:text-xl tracking-tight">
+              <span className="text-white">Raj</span> <span className="text-amber-500">Pictures</span>
+            </span>
+            <span className="text-[9px] md:text-[10px] text-zinc-400 tracking-[0.35em] uppercase mt-1">
+              CINEMATIC VISUALS &amp; STORYTELLING
+            </span>
+          </span>
+        </Link>
 
         {/* Center: Menu */}
         <nav className="hidden md:flex items-center justify-center gap-8">
           {navLinks.map((l) => {
-            const href = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
+            const to = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
             return (
-              <a
+              <Link
                 key={l.label}
-                href={href}
+                to={to}
                 className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
               >
                 {l.label}
-              </a>
+              </Link>
             );
           })}
         </nav>
 
         {/* Right: CTA / Mobile hamburger */}
         <div className="flex items-center justify-end gap-4">
-          <a
-            href={location.pathname === "/" ? "#contact" : "/#contact"}
+          <Link
+            to={location.pathname === "/" ? "#contact" : "/#contact"}
             className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
           >
             BOOK NOW
-          </a>
+          </Link>
 
           <button
             type="button"
@@ -118,24 +128,24 @@ export const Header = () => {
 
             <div className="h-full flex flex-col items-center justify-center gap-7 px-8">
               {navLinks.map((l) => {
-                const href = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
+                const to = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
                 return (
-                  <a
+                  <Link
                     key={l.label}
-                    href={href}
+                    to={to}
                     className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 );
               })}
 
-              <a
-                href={location.pathname === "/" ? "#contact" : "/#contact"}
+              <Link
+                to={location.pathname === "/" ? "#contact" : "/#contact"}
                 className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
               >
                 BOOK NOW
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

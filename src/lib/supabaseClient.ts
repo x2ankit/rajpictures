@@ -9,7 +9,7 @@ export const supabaseGalleryBucket =
 function assertEnv(value: string | undefined, key: string): string {
   if (!value) {
     throw new Error(
-      `[Raj Photography] Missing env var ${key}. Add it to .env.local (see .env.example).`
+      `[Raj Pictures] Missing env var ${key}. Add it to .env.local (see .env.example).`
     );
   }
   return value;

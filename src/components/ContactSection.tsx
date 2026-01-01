@@ -15,7 +15,7 @@ const serviceTypes = [
 export const ContactSection = () => {
   const primaryPhoneDisplay = "+91 93375 64186";
   const primaryPhoneTel = "+919337564186";
-  const contactEmail = "book@rajphotography.com";
+  const contactEmail = "book@rajpictures.com";
   const locationDisplay = "Bonaigarh, Sundargarh, Odisha, India";
 
   const [formData, setFormData] = useState({
