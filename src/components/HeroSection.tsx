@@ -1,6 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
-import heroPoster from "@/assets/photographer-profile.jpg";
 import { useEffect, useRef, useState } from "react";
 
 const HERO_VIDEO_URL =
@@ -10,17 +9,6 @@ export const HeroSection = () => {
   const isMobile = useIsMobile();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
-  const [showFallback, setShowFallback] = useState(false);
-
-  useEffect(() => {
-    // If autoplay is blocked or the network is slow, avoid a "flash" by
-    // showing a fallback only after a short grace period.
-    const t = window.setTimeout(() => {
-      if (!hasStartedPlaying) setShowFallback(true);
-    }, 1600);
-
-    return () => window.clearTimeout(t);
-  }, [hasStartedPlaying]);
 
   return (
     <section className="relative min-h-screen h-[100dvh] overflow-hidden bg-black">
@@ -38,30 +26,16 @@ export const HeroSection = () => {
         preload="metadata"
         onPlay={() => {
           setHasStartedPlaying(true);
-          setShowFallback(false);
         }}
         onPlaying={() => {
           setHasStartedPlaying(true);
-          setShowFallback(false);
         }}
         onError={() => {
-          setShowFallback(true);
+          setHasStartedPlaying(false);
         }}
       >
         <source src={HERO_VIDEO_URL} type="video/mp4" />
       </video>
-
-      {/* Fallback image (only if the video fails to start) */}
-      {showFallback && (
-        <img
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover z-0"
-          src={heroPoster}
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-      )}
 
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import photographerImage from "@/assets/photographer-profile.jpg";
 
-const PORTRAIT_SRC = "/image_129164.jpg";
+const PORTRAIT_SRC = "/raj.jpg";
 
 export const AboutRaj = () => {
   return (

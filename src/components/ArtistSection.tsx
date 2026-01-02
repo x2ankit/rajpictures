@@ -15,7 +15,7 @@ export const ArtistSection = () => {
         {/* Image container with gradient mask */}
         <div className="relative overflow-hidden rounded-xl border border-border/20">
           <img
-            src="/image_129164.jpg"
+            src="/raj.jpg"
             alt="RAJ - Lead Photographer"
             className="w-full aspect-[4/5] object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
             onError={(e) => {

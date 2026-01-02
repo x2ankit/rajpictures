@@ -74,17 +74,32 @@ function safeFileName(name: string) {
     .replace(/[^a-zA-Z0-9._-]/g, "");
 }
 
-function extractImageFilesFromClipboard(data: DataTransfer | null | undefined): File[] {
-  const items = data?.items;
-  if (!items || items.length === 0) return [];
+function extractMediaFilesFromClipboard(data: DataTransfer | null | undefined): File[] {
+  if (!data) return [];
 
-  const imageFiles: File[] = [];
-  for (const item of Array.from(items)) {
-    if (item.kind !== "file") continue;
-    const file = item.getAsFile();
-    if (file && file.type.startsWith("image/")) imageFiles.push(file);
+  const isMedia = (file: File | null | undefined) =>
+    !!file && (file.type.startsWith("image/") || file.type.startsWith("video/"));
+
+  const mediaFiles: File[] = [];
+
+  // Prefer items (covers screenshots copied to clipboard).
+  const items = data.items;
+  if (items && items.length > 0) {
+    for (const item of Array.from(items)) {
+      if (item.kind !== "file") continue;
+      const file = item.getAsFile();
+      if (isMedia(file)) mediaFiles.push(file);
+    }
   }
-  return imageFiles;
+
+  // Fallback to files list when available.
+  if (mediaFiles.length === 0 && data.files && data.files.length > 0) {
+    for (const file of Array.from(data.files)) {
+      if (isMedia(file)) mediaFiles.push(file);
+    }
+  }
+
+  return mediaFiles;
 }
 
 function formatUploadSpeed(bytesPerSecond: number): string {
@@ -267,9 +282,9 @@ export default function Admin() {
     if (!isAuthenticated) return;
 
     const onPaste = (e: ClipboardEvent) => {
-      const imageFiles = extractImageFilesFromClipboard(e.clipboardData);
-      if (imageFiles.length === 0) return;
-      addFiles(imageFiles);
+      const mediaFiles = extractMediaFilesFromClipboard(e.clipboardData);
+      if (mediaFiles.length === 0) return;
+      addFiles(mediaFiles);
       e.preventDefault();
     };
 
@@ -585,9 +600,9 @@ export default function Admin() {
           onDragLeave={handleDragLeave}
           onPaste={(e) => {
             if (!isAuthenticated) return;
-            const imageFiles = extractImageFilesFromClipboard(e.clipboardData);
-            if (imageFiles.length === 0) return;
-            addFiles(imageFiles);
+            const mediaFiles = extractMediaFilesFromClipboard(e.clipboardData);
+            if (mediaFiles.length === 0) return;
+            addFiles(mediaFiles);
             e.preventDefault();
           }}
           onClick={openFilePicker}

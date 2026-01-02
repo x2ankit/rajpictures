@@ -88,7 +88,7 @@ export const YouTubeSection = () => {
 
               <iframe
                 key={currentFilm.youtubeId}
-                src={`https://www.youtube.com/embed/${currentFilm.youtubeId}?rel=0&showinfo=0&autoplay=1&mute=1`}
+                src={`https://www.youtube.com/embed/${currentFilm.youtubeId}?autoplay=0&rel=0&controls=1&modestbranding=1`}
                 title={currentFilm.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
