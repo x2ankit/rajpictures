@@ -133,6 +133,43 @@ function UploadSpeedometer({
   );
 }
 
+function UploadStatsCompact({
+  percent,
+  currentIndex,
+  total,
+  speed,
+  currentFileName,
+}: {
+  percent: number;
+  currentIndex: number;
+  total: number;
+  speed: number;
+  currentFileName: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-[11px] uppercase tracking-[0.25em] text-zinc-400">Upload Stats</div>
+        <div className="text-xs font-mono tracking-widest text-amber-500">{percent}%</div>
+      </div>
+
+      <div className="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+        <div
+          className="h-full bg-amber-500 transition-[width] duration-200"
+          style={{ width: `${Math.max(0, Math.min(100, percent))}%` }}
+        />
+      </div>
+
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-zinc-300">
+        <div className="truncate">File {currentIndex} / {total}</div>
+        <div className="font-mono text-zinc-400">{formatSpeed(speed)}</div>
+      </div>
+
+      <div className="mt-2 text-[11px] text-zinc-500 truncate">{currentFileName || "—"}</div>
+    </div>
+  );
+}
+
 function SortablePhotoCard({
   row,
   onDelete,
@@ -210,62 +247,89 @@ function UploadZone({
 }) {
   const canUpload = uploadQueue.length > 0 && !isUploading;
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const openPicker = () => {
+    inputRef.current?.click();
+  };
+
+  const onDropFiles = (files: File[]) => {
+    const picked = (files || []).filter((f) => f.type.startsWith("image/"));
+    onPickFiles(picked);
+  };
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 md:p-8">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-amber-500">
-        <Cloud className="h-4 w-4" />
-        Upload Zone
+    <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+      <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-zinc-300">
+        <Cloud className="h-4 w-4 text-amber-500" />
+        Upload
       </div>
 
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-1">
-          <label className="block text-xs uppercase tracking-[0.25em] text-zinc-400">Category</label>
-          <select
-            value={selectedCategory}
-            onChange={(e) => onCategoryChange(e.target.value)}
-            className="mt-2 w-full rounded-md border border-white/10 bg-black/30 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-          >
-            {categories.map((c) => (
-              <option key={c} value={c} className="bg-black">
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-xs uppercase tracking-[0.25em] text-zinc-400">Files</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => onPickFiles(Array.from(e.target.files || []))}
-            className="mt-2 block w-full text-sm text-zinc-300 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.22em] file:text-white hover:file:bg-white/15"
-          />
-          <div className="mt-2 text-xs text-zinc-500">Selected: {uploadQueue.length} file(s)</div>
-        </div>
+      <div className="mt-4">
+        <label className="block text-[11px] uppercase tracking-[0.25em] text-zinc-400">Category</label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => onCategoryChange(e.target.value)}
+          className="mt-2 w-full rounded-md border border-white/10 bg-black/30 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        >
+          {categories.map((c) => (
+            <option key={c} value={c} className="bg-black">
+              {c}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="mt-6 flex items-center justify-end">
+      <div className="mt-4">
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) => onDropFiles(Array.from(e.target.files || []))}
+          className="hidden"
+        />
+
         <button
           type="button"
-          onClick={onStartUpload}
-          disabled={!canUpload}
-          className="inline-flex items-center gap-3 rounded-md bg-amber-500 px-5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-black disabled:opacity-60"
+          onClick={openPicker}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDropFiles(Array.from(e.dataTransfer.files || []));
+          }}
+          className="w-full h-32 rounded-lg border border-dashed border-zinc-700 bg-black/30 hover:border-amber-500/40 transition-colors flex flex-col items-center justify-center gap-2"
         >
-          {isUploading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Uploading
-            </>
-          ) : (
-            <>
-              <Upload className="h-4 w-4" />
-              Upload
-            </>
-          )}
+          <Upload className="h-5 w-5 text-zinc-300" />
+          <div className="text-xs text-zinc-300">Drop images here</div>
+          <div className="text-[11px] text-zinc-500">or click to browse</div>
         </button>
+
+        <div className="mt-2 text-xs text-zinc-500">Selected: {uploadQueue.length} file(s)</div>
       </div>
+
+      <button
+        type="button"
+        onClick={onStartUpload}
+        disabled={!canUpload}
+        className="mt-4 w-full inline-flex items-center justify-center gap-3 rounded-md bg-amber-500 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-black disabled:opacity-60"
+      >
+        {isUploading ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Uploading
+          </>
+        ) : (
+          <>
+            <Upload className="h-4 w-4" />
+            Upload
+          </>
+        )}
+      </button>
     </div>
   );
 }
@@ -283,12 +347,7 @@ function FolderGrid({
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-sm uppercase tracking-[0.25em] text-zinc-300">Folders</h2>
-        <div className="text-xs text-zinc-500">Click a folder to manage & reorder</div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {folders.map((folder) => {
           const isActive = folder === activeFolder;
           return (
@@ -297,7 +356,7 @@ function FolderGrid({
               type="button"
               onClick={() => onToggle(folder)}
               className={
-                "text-left rounded-xl border px-5 py-4 transition-colors " +
+                "text-left rounded-2xl border px-6 py-6 transition-colors " +
                 (isActive
                   ? "border-amber-500/60 bg-amber-500/10"
                   : "border-white/10 bg-white/5 hover:border-amber-500/30")
@@ -310,12 +369,43 @@ function FolderGrid({
                 </div>
                 <div className="text-xs font-mono tracking-widest text-zinc-400">{counts[folder] ?? 0}</div>
               </div>
-              <div className="mt-2 text-xs text-zinc-500">View photos • Drag to reorder • Delete safely</div>
+              <div className="mt-3 text-xs text-zinc-500">Click to open • Drag to reorder • Delete safely</div>
             </button>
           );
         })}
       </div>
     </div>
+  );
+}
+
+function ImageGrid({
+  items,
+  sensors,
+  onDragEnd,
+  onDelete,
+  isBusy,
+}: {
+  items: PortfolioItemRow[];
+  sensors: ReturnType<typeof useSensors>;
+  onDragEnd: (event: DragEndEvent) => void;
+  onDelete: (row: PortfolioItemRow) => void;
+  isBusy: boolean;
+}) {
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <SortableContext
+        items={items.map((r) => String(r.id))}
+        strategy={rectSortingStrategy}
+      >
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
+          {items.map((row) => (
+            <div key={row.id} className="mb-4 break-inside-avoid">
+              <SortablePhotoCard row={row} onDelete={onDelete} isBusy={isBusy} />
+            </div>
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }
 
@@ -341,6 +431,8 @@ export default function AdminDashboard() {
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [isSavingOrder, setIsSavingOrder] = useState(false);
 
+  const [userEmail, setUserEmail] = useState<string>("");
+
   const loadItems = async () => {
     setIsLoadingItems(true);
     try {
@@ -364,6 +456,23 @@ export default function AdminDashboard() {
   useEffect(() => {
     void loadItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (cancelled) return;
+      const email = data.user?.email || "";
+      setUserEmail(email);
+    };
+
+    void loadUser();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -676,37 +785,14 @@ export default function AdminDashboard() {
   }, [currentUploadIndex, isUploading, uploadQueue.length]);
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 md:px-12 lg:px-24 py-24">
-      <div className="mx-auto w-full max-w-6xl">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-4 mb-10">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-amber-500">Admin</div>
-            <h1 className="mt-3 font-serifDisplay text-4xl md:text-5xl">Dashboard</h1>
-            <div className="mt-2 text-xs text-zinc-500">
-              Pro manager • Upload stats • Folder view • Drag & drop ordering
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onDeleteAll}
-              disabled={isDeletingAll || isUploading || isSavingOrder}
-              className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-red-500 disabled:opacity-60"
-            >
-              {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash className="h-4 w-4" />}
-              DELETE ALL PHOTOS
-            </button>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
+    <div className="h-screen w-full flex bg-black text-white overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-[350px] flex-shrink-0 border-r border-zinc-800 p-6 flex flex-col gap-6 bg-zinc-950">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.35em] text-amber-500">Dashboard</div>
+          <div className="mt-2 font-serifDisplay text-2xl text-white">Admin Command Center</div>
+          <div className="mt-2 text-xs text-zinc-500 truncate">
+            {userEmail ? `Welcome, ${userEmail}` : "Welcome"}
           </div>
         </div>
 
@@ -720,83 +806,125 @@ export default function AdminDashboard() {
           isUploading={isUploading}
         />
 
-        <div className="mt-12">
-          {isLoadingItems ? (
-            <div className="mt-10 flex items-center gap-3 text-zinc-400">
-              <Loader2 className="h-5 w-5 animate-spin text-amber-500" />
-              Loading...
-            </div>
-          ) : (
-            <FolderGrid
-              folders={folders}
-              counts={folderCounts}
-              activeFolder={activeFolder}
-              onToggle={(folder) => setActiveFolder((prev) => (prev === folder ? null : folder))}
-            />
-          )}
+        <UploadStatsCompact
+          percent={uploadPercent}
+          currentIndex={Math.min(currentUploadIndex, Math.max(1, uploadQueue.length))}
+          total={Math.max(1, uploadQueue.length)}
+          speed={uploadSpeed}
+          currentFileName={currentUploadName}
+        />
+
+        <div className="mt-auto pt-2">
+          <button
+            type="button"
+            onClick={onDeleteAll}
+            disabled={isDeletingAll || isUploading || isSavingOrder}
+            className="w-full text-left text-xs uppercase tracking-[0.25em] text-red-400 hover:text-red-300 disabled:opacity-60"
+          >
+            {isDeletingAll ? "Deleting all..." : "Delete All Photos"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
         </div>
+      </aside>
 
-        {/* Active folder contents */}
-        <div className="mt-10">
-          {activeFolder ? (
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 md:p-8">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <Folder className="h-5 w-5 text-amber-500" />
-                    <h2 className="text-lg font-semibold text-white">{activeFolder}</h2>
-                    <div className="text-xs font-mono tracking-widest text-zinc-400">
-                      {activeFolderItems.length}
-                    </div>
-                  </div>
-                  <div className="mt-2 text-xs text-zinc-500">
-                    Drag photos to reorder. Order is saved to <span className="text-zinc-300">sort_order</span>.
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => onDeleteCategory(activeFolder)}
-                  disabled={isUploading || isDeletingAll || isSavingOrder}
-                  className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-red-500 disabled:opacity-60"
-                >
-                  <Trash className="h-4 w-4" />
-                  Delete Category
-                </button>
-              </div>
-
-              {activeFolderItems.length === 0 ? (
-                <div className="mt-8 text-sm text-zinc-400">This folder is empty.</div>
+      {/* Content */}
+      <section className="flex-1 h-full overflow-y-auto p-8 bg-black">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="text-xs text-zinc-400">
+              {activeFolder ? (
+                <span>
+                  <span className="text-zinc-500">📁</span> Home <span className="text-zinc-600">&gt;</span> <span className="text-white">{activeFolder}</span>
+                </span>
               ) : (
-                <div className="mt-8">
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-                    <SortableContext
-                      items={activeFolderItems.map((r) => String(r.id))}
-                      strategy={rectSortingStrategy}
-                    >
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {activeFolderItems.map((row) => (
-                          <SortablePhotoCard
-                            key={row.id}
-                            row={row}
-                            onDelete={onDeleteImage}
-                            isBusy={isUploading || isDeletingAll || isSavingOrder}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                </div>
+                <span>
+                  <span className="text-zinc-500">📁</span> Home
+                </span>
               )}
             </div>
-          ) : (
-            <div className="mt-2 text-sm text-zinc-400">
-              Select a folder above to manage photos.
+            <div className="mt-2 text-xl font-semibold text-white">
+              {activeFolder ? activeFolder : "Folders"}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
+          {/* Sign out (top right) */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out
+          </button>
+        </div>
+
+        {activeFolder ? (
+          <div className="mt-8">
+            <div className="flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setActiveFolder(null)}
+                className="text-xs uppercase tracking-[0.25em] text-zinc-400 hover:text-amber-500 transition-colors"
+              >
+                ← Back to Folders
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onDeleteCategory(activeFolder)}
+                disabled={isUploading || isDeletingAll || isSavingOrder}
+                className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-red-500 disabled:opacity-60"
+              >
+                <Trash className="h-4 w-4" />
+                Delete Category
+              </button>
+            </div>
+
+            {activeFolderItems.length === 0 ? (
+              <div className="mt-10 text-sm text-zinc-400">This folder is empty.</div>
+            ) : (
+              <div className="mt-8">
+                <div className="text-xs text-zinc-500 mb-4">
+                  Drag & drop to reorder. Saved to <span className="text-zinc-300">sort_order</span>.
+                </div>
+                <ImageGrid
+                  items={activeFolderItems}
+                  sensors={sensors}
+                  onDragEnd={onDragEnd}
+                  onDelete={onDeleteImage}
+                  isBusy={isUploading || isDeletingAll || isSavingOrder}
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mt-8">
+            {isLoadingItems ? (
+              <div className="mt-10 flex items-center gap-3 text-zinc-400">
+                <Loader2 className="h-5 w-5 animate-spin text-amber-500" />
+                Loading...
+              </div>
+            ) : (
+              <FolderGrid
+                folders={folders}
+                counts={folderCounts}
+                activeFolder={activeFolder}
+                onToggle={(folder) => setActiveFolder((prev) => (prev === folder ? null : folder))}
+              />
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* Optional floating speedometer (kept, but only when uploading) */}
       <UploadSpeedometer
         isUploading={isUploading}
         percent={uploadPercent}
@@ -805,6 +933,6 @@ export default function AdminDashboard() {
         speed={uploadSpeed}
         currentFileName={currentUploadName}
       />
-    </main>
+    </div>
   );
 }
