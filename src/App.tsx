@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FullGallery from "./pages/FullGallery";
+import Team from "./pages/Team";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollToHash } from "@/components/ScrollToHash";
@@ -57,6 +58,7 @@ const AppLayout = () => {
         <ScrollToHash />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/gallery" element={<FullGallery />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/unauthorized" element={<Unauthorized />} />
