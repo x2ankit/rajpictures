@@ -50,7 +50,6 @@ export default function Portfolio() {
         const { data, error } = await supabase
           .from("portfolio_items")
           .select("id, category, src, title, type, created_at, sort_order")
-          .order("sort_order", { ascending: true })
           .order("created_at", { ascending: false })
           .order("id", { ascending: false });
 
@@ -77,9 +76,27 @@ export default function Portfolio() {
     };
   }, []);
 
-  const visibleItems = useMemo(() => {
-    if (activeCategory === "All") return items;
-    return items.filter((it) => (it.category || "") === activeCategory);
+  const filteredData = useMemo(() => {
+    if (activeCategory === "All") {
+      // Only show top 12 for "All" (newest first)
+      return items.slice(0, 12);
+    }
+
+    // Show everything for categories, ordered by sort_order (then newest)
+    return items
+      .filter((it) => (it.category || "") === activeCategory)
+      .slice()
+      .sort((a, b) => {
+        const ao = typeof a.sort_order === "number" ? a.sort_order : 0;
+        const bo = typeof b.sort_order === "number" ? b.sort_order : 0;
+        if (ao !== bo) return ao - bo;
+
+        const ad = a.created_at ? Date.parse(a.created_at) : 0;
+        const bd = b.created_at ? Date.parse(b.created_at) : 0;
+        if (ad !== bd) return bd - ad;
+
+        return b.id - a.id;
+      });
   }, [activeCategory, items]);
 
   return (
@@ -124,27 +141,13 @@ export default function Portfolio() {
         </div>
 
         {/* Grid */}
-        {isLoading || visibleItems.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-xl border border-zinc-800 bg-black/40 overflow-hidden"
-              >
-                <div className="aspect-[4/3] bg-zinc-900/40 animate-pulse" />
-                <div className="p-4">
-                  <div className="h-3 w-2/3 bg-zinc-800/60 rounded animate-pulse" />
-                  <div className="mt-3 h-2 w-1/3 bg-zinc-800/40 rounded animate-pulse" />
-                </div>
-              </div>
-            ))}
-            <div className="md:col-span-3 text-center text-sm text-zinc-500 mt-2">
-              {isLoading ? "Loading Gallery..." : "Loading Gallery..."}
-            </div>
+        {isLoading ? (
+          <div className="text-center py-16 text-zinc-500 text-sm tracking-widest">
+            Loading highlights...
           </div>
-        ) : (
+        ) : filteredData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {visibleItems.map((item) => (
+            {filteredData.map((item) => (
               <div
                 key={item.id}
                 className="group text-left rounded-xl border border-zinc-800 overflow-hidden bg-black/40 hover:border-amber-500/40 transition-colors"
@@ -171,19 +174,26 @@ export default function Portfolio() {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="text-center py-20 text-zinc-500 text-sm tracking-widest italic">
+            No images in this collection yet.
+          </div>
         )}
 
-        <div className="mt-16 flex justify-center">
-          <Link
-            to="/gallery"
-            className="group flex items-center gap-3 px-8 py-3 border border-zinc-700 rounded-full text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition-all duration-300"
-          >
-            <span className="text-sm font-medium tracking-[0.2em] uppercase">
-              VIEW ARCHIVE
-            </span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
+        {/* "View Archive" button (only on All tab) */}
+        {activeCategory === "All" && !isLoading && (
+          <div className="mt-12 flex justify-center">
+            <Link
+              to="/gallery"
+              className="group flex items-center gap-3 px-8 py-3 border border-zinc-700 rounded-full text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition-all duration-300"
+            >
+              <span className="text-sm font-medium tracking-[0.2em] uppercase">
+                VIEW FULL ARCHIVE
+              </span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
