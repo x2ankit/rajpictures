@@ -2,13 +2,16 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-const HERO_VIDEO_URL =
+const HERO_VIDEO_LOCAL = "/hero-video-compressed.mp4";
+const HERO_VIDEO_FALLBACK =
   "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/finalhero.mp4";
+const HERO_POSTER = "/raj.jpg";
 
 export const HeroSection = () => {
   const isMobile = useIsMobile();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const [videoSrc, setVideoSrc] = useState(HERO_VIDEO_LOCAL);
 
   return (
     <section className="relative min-h-screen h-[100dvh] overflow-hidden bg-black">
@@ -23,18 +26,27 @@ export const HeroSection = () => {
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
+        poster={HERO_POSTER}
         onPlay={() => {
           setHasStartedPlaying(true);
         }}
         onPlaying={() => {
           setHasStartedPlaying(true);
         }}
+        onCanPlayThrough={() => {
+          setHasStartedPlaying(true);
+        }}
         onError={() => {
+          if (videoSrc !== HERO_VIDEO_FALLBACK) {
+            setVideoSrc(HERO_VIDEO_FALLBACK);
+            setHasStartedPlaying(false);
+            return;
+          }
           setHasStartedPlaying(false);
         }}
       >
-        <source src={HERO_VIDEO_URL} type="video/mp4" />
+        <source src={videoSrc} type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />

@@ -155,7 +155,7 @@ export default function Portfolio() {
                 <div className="relative aspect-[4/3] bg-transparent overflow-hidden">
                   <img
                     src={item.src}
-                    alt={item.title || "Portfolio image"}
+                    alt={item.category || "Portfolio image"}
                     loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                   />
@@ -163,10 +163,7 @@ export default function Portfolio() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   <div className="absolute left-0 right-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="text-sm font-display tracking-wider text-white">
-                      {item.title || "Untitled"}
-                    </div>
-                    <div className="mt-1 text-[10px] font-mono tracking-widest text-zinc-400">
+                    <div className="text-amber-500 text-[10px] tracking-[0.3em] uppercase font-bold">
                       {item.category || "Uncategorized"}
                     </div>
                   </div>

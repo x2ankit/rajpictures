@@ -3,6 +3,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 import { Image as ImageIcon, Maximize2, X } from "lucide-react";
 
+function isMissingCreatedAtColumnError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("created_at") &&
+    (lower.includes("does not exist") ||
+      lower.includes("could not find") ||
+      lower.includes("unknown column") ||
+      (lower.includes("column") && lower.includes("not") && lower.includes("exist")))
+  );
+}
+
 export default function Gallery() {
   const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -13,12 +25,31 @@ export default function Gallery() {
 
     async function fetchGallery() {
       try {
+        const baseSelect = "id, created_at, title, category, image_url";
+
         const { data, error } = await supabase
           .from("gallery")
-          .select("id, created_at, title, category, image_url")
+          .select(baseSelect)
           .order("created_at", { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          if (isMissingCreatedAtColumnError(error)) {
+            const { data: fallbackData, error: fallbackError } = await supabase
+              .from("gallery")
+              .select("id, title, category, image_url")
+              .order("id", { ascending: false });
+            if (fallbackError) throw fallbackError;
+            if (!isMounted) return;
+            const safeFallback = ((fallbackData as GalleryItem[]) || []).filter((row) =>
+              Boolean(row?.image_url && String(row.image_url).trim())
+            );
+            setImages(safeFallback);
+            return;
+          }
+
+          throw error;
+        }
+
         if (!isMounted) return;
         const safe = ((data as GalleryItem[]) || []).filter((row) =>
           Boolean(row?.image_url && String(row.image_url).trim())
@@ -80,6 +111,10 @@ export default function Gallery() {
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={(e) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) parent.style.display = "none";
+                }}
               />
 
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
