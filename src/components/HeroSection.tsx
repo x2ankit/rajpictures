@@ -8,17 +8,26 @@ export const HeroSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden">
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        src={HERO_VIDEO_URL}
-        autoPlay={!isMobile}
-        muted
-        loop
-        playsInline
-        preload={isMobile ? "none" : "metadata"}
-        poster="/moody-card.svg"
-      />
+    <section className="relative min-h-screen h-[100dvh] overflow-hidden">
+      {isMobile ? (
+        <img
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/raj-portrait-placeholder.svg"
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={HERO_VIDEO_URL}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+      )}
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 
@@ -85,14 +94,9 @@ const HeroCopy = () => {
 
 const HeroStaticContent = () => {
   return (
-    <motion.div
-      className="max-w-3xl flex flex-col items-start text-left"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.2, 0, 0.2, 1] }}
-    >
+    <div className="max-w-3xl flex flex-col items-start text-left">
       <HeroCopy />
-    </motion.div>
+    </div>
   );
 };
 
