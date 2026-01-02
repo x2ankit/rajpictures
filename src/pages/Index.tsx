@@ -4,7 +4,6 @@ import Portfolio from "@/components/Portfolio";
 import { Testimonials } from "@/components/Testimonials";
 import { AboutRaj } from "../components/AboutRaj";
 import Services from "@/components/Services";
-import { LensScrollSection } from "@/components/LensScrollSection";
 import Pricing from "@/components/Pricing";
 import Contact from "@/components/Contact";
 import { SectionDivider } from "@/components/SectionDivider";
@@ -16,10 +15,6 @@ const Index = () => {
       <section id="home">
         <HeroSection />
       </section>
-
-      <div className="w-full py-20 relative z-10">
-        <LensScrollSection />
-      </div>
 
       <div className="w-full py-20 relative z-10">
         <section id="about">
