@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
 import type { ReactEventHandler } from "react";
 import { useRef } from "react";
@@ -20,6 +21,20 @@ export function ParallaxImage({
   loading = "lazy",
   onError,
 }: ParallaxImageProps) {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        loading={loading}
+        className={cn(className)}
+        onError={onError}
+      />
+    );
+  }
+
   const ref = useRef<HTMLImageElement | null>(null);
 
   const { scrollYProgress } = useScroll({

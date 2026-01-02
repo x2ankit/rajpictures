@@ -3,17 +3,6 @@ import { X } from "lucide-react";
 import type { MouseEvent } from "react";
 import { useEffect } from "react";
 
-function scrollToHash(hash: "#pricing" | "#contact") {
-  const el = document.querySelector(hash);
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-
-  // If user is not on the home route (or section isn't mounted), navigate to home + hash.
-  window.location.assign(`/${hash}`);
-}
-
 type PromoPopupProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -35,11 +24,6 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
     // Cleanup: Remove listener when popup closes or component unmounts
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, onClose]);
-
-  const claim = () => {
-    onClose();
-    scrollToHash("#contact");
-  };
 
   return (
     <AnimatePresence>
@@ -89,13 +73,13 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
                     <span className="text-amber-500 font-semibold">Free Drone Teaser</span>.
                   </p>
 
-                  <button
-                    type="button"
-                    onClick={claim}
-                    className="mt-8 inline-flex w-full items-center justify-center rounded-md bg-amber-500 px-6 py-3 text-xs font-bold uppercase tracking-widest text-black transition-colors hover:bg-amber-400"
+                  <a
+                    href="/#pricing"
+                    onClick={onClose}
+                    className="mt-8 w-full py-4 bg-amber-500 text-black font-bold uppercase tracking-widest hover:bg-amber-400 transition-colors text-center block rounded-md"
                   >
-                    CLAIM OFFER NOW
-                  </button>
+                    Book This Offer
+                  </a>
 
                   <button
                     type="button"

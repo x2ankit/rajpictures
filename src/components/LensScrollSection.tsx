@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
@@ -5,15 +6,8 @@ const LENS_VIDEO_URL =
   "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/Sony%20camera%20lens%20360%20view%20-%20David%20Emil%20(1080p,%20h264).mp4";
 
 export const LensScrollSection = () => {
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
 
   return (
     <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden mt-0 md:-mt-24">
@@ -24,15 +18,18 @@ export const LensScrollSection = () => {
       />
 
       {/* Full-bleed floating lens video */}
-      <motion.video
-        className="absolute inset-0 h-full w-full object-cover opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
-        src={LENS_VIDEO_URL}
-        autoPlay
-        muted
-        loop
-        playsInline
-        style={{ rotate, scale, transformOrigin: "50% 50%" }}
-      />
+      {isMobile ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
+          src={LENS_VIDEO_URL}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      ) : (
+        <LensScrollVideo targetRef={sectionRef} />
+      )}
 
       {/* Vignette + contrast layers */}
       <div className="absolute inset-0 bg-black/35" />
@@ -74,3 +71,29 @@ export const LensScrollSection = () => {
     </section>
   );
 };
+
+function LensScrollVideo({
+  targetRef,
+}: {
+  targetRef: React.RefObject<HTMLElement>;
+}) {
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end start"],
+  });
+
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
+
+  return (
+    <motion.video
+      className="absolute inset-0 h-full w-full object-cover opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
+      src={LENS_VIDEO_URL}
+      autoPlay
+      muted
+      loop
+      playsInline
+      style={{ rotate, scale, transformOrigin: "50% 50%" }}
+    />
+  );
+}
