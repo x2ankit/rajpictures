@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 import { Image as ImageIcon, Maximize2, X } from "lucide-react";
 
 function isMissingCreatedAtColumnError(err: unknown): boolean {
@@ -15,45 +15,35 @@ function isMissingCreatedAtColumnError(err: unknown): boolean {
   );
 }
 
-type PortfolioGalleryItem = {
-  id: number | string;
-  category: string | null;
-  src: string;
-  title: string | null;
-  created_at?: string;
-  sort_order?: number | null;
-};
-
 export default function Gallery() {
-  const [images, setImages] = useState<PortfolioGalleryItem[]>([]);
+  const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImg, setSelectedImg] = useState<PortfolioGalleryItem | null>(null);
+  const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function fetchGallery() {
       try {
-        const baseSelect = "id, category, src, title, created_at, sort_order";
+        setLoading(true);
 
+        // Fetch ALL rows from the gallery table.
         const { data, error } = await supabase
-          .from("portfolio_items")
-          .select(baseSelect)
-          .order("created_at", { ascending: false })
-          .order("id", { ascending: false });
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: false });
 
         if (error) {
+          console.error("Database Error:", error.message);
           if (isMissingCreatedAtColumnError(error)) {
             const { data: fallbackData, error: fallbackError } = await supabase
-              .from("portfolio_items")
-              .select("id, category, src, title, sort_order")
+              .from("gallery")
+              .select("*")
               .order("id", { ascending: false });
             if (fallbackError) throw fallbackError;
             if (!isMounted) return;
-            const safeFallback = ((fallbackData as PortfolioGalleryItem[]) || []).filter((row) =>
-              Boolean(row?.src && String(row.src).trim())
-            );
-            setImages(safeFallback);
+            console.log("Images found:", (fallbackData as any[])?.length ?? 0);
+            setImages(((fallbackData as GalleryItem[]) || []) ?? []);
             return;
           }
 
@@ -61,10 +51,8 @@ export default function Gallery() {
         }
 
         if (!isMounted) return;
-        const safe = ((data as PortfolioGalleryItem[]) || []).filter((row) =>
-          Boolean(row?.src && String(row.src).trim())
-        );
-        setImages(safe);
+        console.log("Images found:", (data as any[])?.length ?? 0);
+        setImages(((data as GalleryItem[]) || []) ?? []);
       } catch (error) {
         // Keep UI stable; errors are shown via empty state.
         console.error("Error loading gallery:", error);
@@ -116,8 +104,8 @@ export default function Gallery() {
               className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-zinc-900/40 cursor-zoom-in"
             >
               <img
-                src={image.src}
-                alt={image.category || "Portfolio image"}
+                src={image.image_url}
+                alt={image.category || image.title || "Gallery image"}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -172,8 +160,8 @@ export default function Gallery() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              src={selectedImg.src}
-              alt={selectedImg.category || "Selected portfolio image"}
+              src={selectedImg.image_url}
+              alt={selectedImg.category || selectedImg.title || "Selected gallery image"}
               className="max-w-full max-h-[85vh] rounded shadow-2xl object-contain pointer-events-none"
             />
 
