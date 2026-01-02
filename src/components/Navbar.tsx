@@ -72,8 +72,8 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
   }, [mobileOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-sm border-b border-white/10">
-      <div className="w-full flex items-center justify-between px-6 md:px-12 lg:px-24 py-6">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-none md:backdrop-blur-sm border-b border-white/10 pt-[env(safe-area-inset-top)]">
+      <div className="w-full flex items-center justify-between px-4 sm:px-6 md:px-12 lg:px-24 py-4 md:py-6">
         {/* Left: Logo */}
         <Link
           to="/"
@@ -172,7 +172,7 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
           <button
             type="button"
             onClick={onOpenPopup}
-            className="inline-flex items-center justify-center px-5 py-2 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
+            className="inline-flex items-center justify-center px-3 sm:px-5 py-2 rounded-sm bg-amber-500 text-black font-bold text-[10px] sm:text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
           >
             BOOK NOW
           </button>

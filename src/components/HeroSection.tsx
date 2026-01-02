@@ -8,14 +8,16 @@ export const HeroSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative min-h-[100dvh] overflow-hidden">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src={HERO_VIDEO_URL}
-        autoPlay
+        autoPlay={!isMobile}
         muted
         loop
         playsInline
+        preload={isMobile ? "none" : "metadata"}
+        poster="/moody-card.svg"
       />
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />

@@ -25,16 +25,55 @@ export function ParallaxImage({
 
   if (isMobile) {
     return (
-      <img
+      <ParallaxImageMobile
         src={src}
         alt={alt}
         loading={loading}
-        className={cn(className)}
+        className={className}
         onError={onError}
       />
     );
   }
 
+  return (
+    <ParallaxImageDesktop
+      src={src}
+      alt={alt}
+      loading={loading}
+      className={className}
+      intensity={intensity}
+      onError={onError}
+    />
+  );
+}
+
+function ParallaxImageMobile({
+  src,
+  alt,
+  className,
+  loading,
+  onError,
+}: Pick<ParallaxImageProps, "src" | "alt" | "className" | "loading" | "onError">) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      className={cn(className)}
+      onError={onError}
+    />
+  );
+}
+
+function ParallaxImageDesktop({
+  src,
+  alt,
+  className,
+  intensity,
+  loading,
+  onError,
+}: ParallaxImageProps) {
   const ref = useRef<HTMLImageElement | null>(null);
 
   const { scrollYProgress } = useScroll({
@@ -50,6 +89,7 @@ export function ParallaxImage({
       src={src}
       alt={alt}
       loading={loading}
+      decoding="async"
       className={cn("will-change-transform", className)}
       style={{ y }}
       onError={onError}
