@@ -1,22 +1,90 @@
-import { Aperture } from "lucide-react";
-import type { MouseEvent } from "react";
+import { Aperture, Menu, X } from "lucide-react";
+import { useEffect, useState, type MouseEvent } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 type NavbarProps = {
   onOpenPopup: () => void;
 };
 
+const navLinks = [
+  { name: "Home", path: "/" },
+  { name: "About", path: "/#about" },
+  { name: "Services", path: "/#services" },
+  { name: "Portfolio", path: "/#portfolio" },
+  { name: "Gallery", path: "/gallery" },
+  { name: "Films", path: "/#films" },
+  { name: "Contact", path: "#contact" },
+] as const;
+
 export const Navbar = ({ onOpenPopup }: NavbarProps) => {
-  const scrollToTop = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+
+  const scrollToTop = (e?: MouseEvent) => {
+    if (e) e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleNavClick = (path: string) => {
+    // Always close mobile menu when navigating.
+    setMobileOpen(false);
+
+    if (path === "/") {
+      if (isHome) {
+        scrollToTop();
+      } else {
+        navigate("/");
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 0);
+      }
+      return;
+    }
+
+    // "#contact" is requested in the prompt; make it route-aware.
+    if (path.startsWith("#")) {
+      if (isHome) {
+        const el = document.querySelector(path);
+        if (el) {
+          // Wait for overlay to close + body scroll to unlock.
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() =>
+              el.scrollIntoView({ behavior: "smooth", block: "start" })
+            )
+          );
+        }
+      } else {
+        navigate(`/${path}`);
+      }
+      return;
+    }
+
+    navigate(path);
+  };
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-black/10 backdrop-blur-sm border-b border-white/10">
-      <div className="w-full flex justify-between items-center px-6 md:px-12 lg:px-24 py-6">
-        <a
-          href="#"
-          onClick={scrollToTop}
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-sm border-b border-white/10">
+      <div className="w-full flex items-center justify-between px-6 md:px-12 lg:px-24 py-6">
+        {/* Left: Logo */}
+        <Link
+          to="/"
+          onClick={(e) => {
+            if (isHome) {
+              e.preventDefault();
+              scrollToTop();
+            } else {
+              setMobileOpen(false);
+            }
+          }}
           className="flex items-center gap-2"
         >
           <span
@@ -34,14 +102,73 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
               CINEMATIC VISUALS
             </span>
           </span>
-        </a>
-        <div className="flex items-center gap-5">
-          <a
-            href="#contact"
-            className="text-xs uppercase tracking-[0.35em] text-zinc-300 hover:text-amber-500 transition-colors font-display"
-          >
-            CONTACT
-          </a>
+        </Link>
+
+        {/* Center: Desktop menu */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((l) => {
+            // Home uses scroll-to-top logic.
+            if (l.path === "/") {
+              return (
+                <Link
+                  key={l.name}
+                  to="/"
+                  onClick={(e) => {
+                    if (isHome) {
+                      e.preventDefault();
+                      scrollToTop();
+                    }
+                  }}
+                  className="text-sm font-medium tracking-widest text-zinc-300 hover:text-amber-500 transition-colors uppercase"
+                >
+                  {l.name}
+                </Link>
+              );
+            }
+
+            // For #contact keep it route-aware.
+            if (l.path.startsWith("#")) {
+              if (isHome) {
+                return (
+                  <a
+                    key={l.name}
+                    href={l.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(l.path);
+                    }}
+                    className="text-sm font-medium tracking-widest text-zinc-300 hover:text-amber-500 transition-colors uppercase"
+                  >
+                    {l.name}
+                  </a>
+                );
+              }
+
+              return (
+                <Link
+                  key={l.name}
+                  to={`/${l.path}`}
+                  className="text-sm font-medium tracking-widest text-zinc-300 hover:text-amber-500 transition-colors uppercase"
+                >
+                  {l.name}
+                </Link>
+              );
+            }
+
+            return (
+              <Link
+                key={l.name}
+                to={l.path}
+                className="text-sm font-medium tracking-widest text-zinc-300 hover:text-amber-500 transition-colors uppercase"
+              >
+                {l.name}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right: CTA + mobile toggle */}
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={onOpenPopup}
@@ -49,8 +176,46 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
           >
             BOOK NOW
           </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="md:hidden inline-flex items-center justify-center text-amber-500"
+            aria-label="Open menu"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-[70] bg-black">
+          <div className="absolute top-6 right-6">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center text-amber-500"
+              aria-label="Close menu"
+            >
+              <X className="w-7 h-7" />
+            </button>
+          </div>
+
+          <div className="h-full flex flex-col items-center justify-center gap-7 px-8">
+            {navLinks.map((l) => (
+              <button
+                key={l.name}
+                type="button"
+                onClick={() => handleNavClick(l.path)}
+                className="text-sm font-medium tracking-widest text-zinc-300 hover:text-amber-500 transition-colors uppercase"
+              >
+                {l.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

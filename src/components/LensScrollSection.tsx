@@ -16,7 +16,7 @@ export const LensScrollSection = () => {
   const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden -mt-1">
+    <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden mt-0 md:-mt-24">
       {/* Top fade connector to blend with previous section */}
       <div
         aria-hidden
@@ -40,11 +40,11 @@ export const LensScrollSection = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.06)_0%,rgba(0,0,0,0)_55%)]" />
 
       {/* Subtle cinematic UI so the section isn't empty */}
-      <div className="relative z-10 mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24 py-16 md:py-24">
+      <div className="relative z-30 mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24 pt-20 pb-16 md:pt-32 md:pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
-          <div className="min-w-0">
+          <div className="min-w-0 relative z-30">
             <p className="text-amber-500 text-xs uppercase tracking-[0.35em]">Lens Study</p>
-            <h2 className="mt-4 font-serifDisplay text-4xl md:text-6xl text-white tracking-tight">
+            <h2 className="mt-4 font-serifDisplay text-5xl md:text-8xl leading-tight text-white tracking-tight">
               360° Lens Motion
             </h2>
             <p className="mt-5 text-white/70 font-body text-base md:text-lg leading-relaxed max-w-xl">

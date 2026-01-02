@@ -3,10 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
-import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { Preloader } from "@/components/Preloader";
 import FullGallery from "./pages/FullGallery";
@@ -14,6 +13,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollToHash } from "@/components/ScrollToHash";
 import AdminLogin from "@/pages/admin/AdminLogin";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminGuard from "@/components/auth/AdminGuard";
 import PromoPopup from "@/components/PromoPopup";
 
@@ -64,13 +64,14 @@ const AppLayout = () => {
         <Route path="/gallery" element={<FullGallery />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
-          path="/admin"
+          path="/admin/dashboard"
           element={
             <AdminGuard>
-              <Admin />
+              <AdminDashboard />
             </AdminGuard>
           }
         />
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -83,6 +84,23 @@ const AppLayout = () => {
 
 const App = () => {
   const [showPreloader, setShowPreloader] = useState(true);
+
+  useLayoutEffect(() => {
+    // 1. Disable browser's default scroll restoration
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    // 2. Force scroll to top immediately
+    window.scrollTo(0, 0);
+
+    // 3. Optional: Re-enable auto scroll on cleanup (if needed for other behavior)
+    return () => {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "auto";
+      }
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

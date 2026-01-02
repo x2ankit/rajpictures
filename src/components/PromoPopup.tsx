@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import type { MouseEvent } from "react";
+import { useEffect } from "react";
 
 function scrollToHash(hash: "#pricing" | "#contact") {
   const el = document.querySelector(hash);
@@ -19,6 +20,22 @@ type PromoPopupProps = {
 };
 
 export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    // Only listen when the popup is actually open
+    if (isOpen) {
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    // Cleanup: Remove listener when popup closes or component unmounts
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
   const claim = () => {
     onClose();
     scrollToHash("#contact");
