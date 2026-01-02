@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 
 const CATEGORY_TABS = [
@@ -177,20 +175,7 @@ export default function Portfolio() {
           </div>
         )}
 
-        {/* "View Archive" button (only on All tab) */}
-        {activeCategory === "All" && !isLoading && (
-          <div className="mt-12 flex justify-center">
-            <Link
-              to="/gallery"
-              className="group flex items-center gap-3 px-8 py-3 border border-zinc-700 rounded-full text-zinc-400 hover:text-amber-500 hover:border-amber-500 transition-all duration-300"
-            >
-              <span className="text-sm font-medium tracking-[0.2em] uppercase">
-                VIEW FULL ARCHIVE
-              </span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        )}
+        {/* Full-archive CTA removed */}
       </div>
     </section>
   );

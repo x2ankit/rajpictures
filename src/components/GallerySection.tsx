@@ -1,10 +1,9 @@
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
 import { ParallaxImage } from "@/components/ParallaxImage";
 
 type Tab = "STILLS" | "MOTION";
@@ -51,14 +50,8 @@ function isVideoUrl(url: string): boolean {
 }
 
 export const GallerySection = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>("STILLS");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-
-  const buttonX = useMotionValue(0);
-  const buttonY = useMotionValue(0);
-  const buttonXSpring = useSpring(buttonX, { stiffness: 240, damping: 22, mass: 0.6 });
-  const buttonYSpring = useSpring(buttonY, { stiffness: 240, damping: 22, mass: 0.6 });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["gallery"],
@@ -252,39 +245,6 @@ export const GallerySection = () => {
             </motion.div>
           </AnimatePresence>
         )}
-
-        {/* Call to action */}
-        <div className="mt-14 flex justify-center">
-          <motion.button
-            type="button"
-            onClick={() => navigate("/gallery")}
-            className="group pointer-events-auto px-10 md:px-14 py-6 md:py-7 rounded-full border border-primary/40 bg-card/30 backdrop-blur-xl text-foreground font-body text-xs md:text-sm uppercase tracking-[0.35em] transition-colors"
-            style={{ x: buttonXSpring, y: buttonYSpring }}
-            whileHover={{ boxShadow: "var(--shadow-glow-purple)" }}
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
-              const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
-              buttonX.set(dx * 14);
-              buttonY.set(dy * 10);
-            }}
-            onMouseLeave={() => {
-              buttonX.set(0);
-              buttonY.set(0);
-            }}
-          >
-            <span className="inline-flex items-center gap-4">
-              <span>EXPLORE FULL ARCHIVE</span>
-              <motion.span
-                className="h-px bg-foreground/70"
-                initial={{ width: 22 }}
-                whileHover={{ width: 46 }}
-                transition={{ duration: 0.25 }}
-              />
-              <ArrowRight className="w-4 h-4 text-foreground/80" />
-            </span>
-          </motion.button>
-        </div>
 
       </div>
     </section>

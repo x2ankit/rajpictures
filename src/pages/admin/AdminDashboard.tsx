@@ -458,30 +458,14 @@ export default function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (cancelled) return;
-
-      // Get the name from metadata, or fallback to the part before '@'
-      const user = data.user;
-      const nameFromMeta =
-        (user?.user_metadata as any)?.full_name || (user?.user_metadata as any)?.name;
-      const nameFromEmail = user?.email?.split("@")[0];
-      setUserName((nameFromMeta || nameFromEmail || "Admin").toString());
-    };
-
-    void loadUser();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  // PIN-based auth: user identity is local only.
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      localStorage.removeItem("isAdminAuthenticated");
+    } catch {
+      // ignore
+    }
     navigate("/admin/login", { replace: true });
   };
 

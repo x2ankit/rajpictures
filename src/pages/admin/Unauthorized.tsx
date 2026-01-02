@@ -1,4 +1,3 @@
-import { supabase } from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 import { ShieldX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,11 @@ export default function Unauthorized() {
   const navigate = useNavigate();
 
   const onReturnHome = async () => {
-    await supabase.auth.signOut();
+    try {
+      localStorage.removeItem("isAdminAuthenticated");
+    } catch {
+      // ignore
+    }
     navigate("/", { replace: true });
   };
 
@@ -36,7 +39,7 @@ export default function Unauthorized() {
         </h1>
 
         <p className="mt-4 text-sm text-zinc-300 leading-relaxed">
-          Admin access is not associated with this email.
+          Admin access is restricted.
         </p>
 
         <button
@@ -47,9 +50,7 @@ export default function Unauthorized() {
           Return to Home
         </button>
 
-        <div className="mt-4 text-xs text-zinc-500">
-          You will be signed out for safety.
-        </div>
+        <div className="mt-4 text-xs text-zinc-500">You will be signed out for safety.</div>
       </motion.div>
     </div>
   );
