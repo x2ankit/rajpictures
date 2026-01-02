@@ -100,7 +100,7 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {showPreloader && (
             <Preloader onComplete={() => setShowPreloader(false)} />
           )}
