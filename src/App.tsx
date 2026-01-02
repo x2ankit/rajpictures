@@ -25,6 +25,8 @@ const AppLayout = () => {
   const hideChrome =
     location.pathname === "/gallery" || location.pathname.startsWith("/admin");
 
+  const [showPreloader, setShowPreloader] = useState(true);
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
@@ -39,6 +41,10 @@ const AppLayout = () => {
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden isolate">
+      {showPreloader && (
+        <Preloader onComplete={() => setShowPreloader(false)} />
+      )}
+
       {/* Unified site wallpaper (single high-perf backdrop) */}
       <div
         aria-hidden
@@ -83,8 +89,6 @@ const AppLayout = () => {
 };
 
 const App = () => {
-  const [showPreloader, setShowPreloader] = useState(true);
-
   useLayoutEffect(() => {
     // 1. Disable browser's default scroll restoration
     if ("scrollRestoration" in history) {
@@ -107,10 +111,6 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-
-        {showPreloader && (
-          <Preloader onComplete={() => setShowPreloader(false)} />
-        )}
 
         <BrowserRouter>
           <AppLayout />
