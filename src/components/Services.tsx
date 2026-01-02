@@ -1,6 +1,8 @@
 import { Reveal } from "@/components/Reveal";
+import { supabase } from "@/lib/supabaseClient";
 import { motion, type Variants } from "framer-motion";
 import { Baby, Camera, Heart, Send, type LucideIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 type ServiceCard = {
@@ -9,7 +11,6 @@ type ServiceCard = {
   titleText: string;
   description: string;
   Icon: LucideIcon;
-  image: string;
   iconClassName?: string;
 };
 
@@ -25,8 +26,6 @@ const services: ServiceCard[] = [
     description:
       "Full-day editorial coverage with cinematic light, crafted compositions, and timeless storytelling.",
     Icon: Heart,
-    image:
-      "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=1600&q=80",
   },
   {
     key: "prewedding",
@@ -35,8 +34,6 @@ const services: ServiceCard[] = [
     description:
       "Romantic, cinematic sessions designed for natural emotion and chemistry.",
     Icon: Camera,
-    image:
-      "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1600&q=80",
   },
   {
     key: "baby",
@@ -45,8 +42,6 @@ const services: ServiceCard[] = [
     description:
       "Gentle portraits capturing the warmth, grace, and new beginnings of your family.",
     Icon: Baby,
-    image:
-      "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1600&q=80",
   },
   {
     key: "drone",
@@ -55,11 +50,39 @@ const services: ServiceCard[] = [
     description:
       "Capture the scale and grandeur of your event with stunning, high-resolution aerial perspectives.",
     Icon: Send,
-    image:
-      "https://images.unsplash.com/photo-1508610048659-a06b669e3321?auto=format&fit=crop&w=1600&q=80",
     iconClassName: "rotate-45",
   },
 ] as const;
+
+type GalleryRow = {
+  id: number | string;
+  category: string | null;
+  image_url: string;
+  created_at?: string;
+};
+
+function isMissingCreatedAtColumnError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("created_at") &&
+    (lower.includes("does not exist") ||
+      lower.includes("could not find") ||
+      lower.includes("unknown column") ||
+      (lower.includes("column") && lower.includes("not") && lower.includes("exist")))
+  );
+}
+
+function normalizeCategory(category: string | null | undefined): string {
+  return (category || "").trim().toLowerCase();
+}
+
+const SERVICE_CATEGORY_MATCH: Record<string, string[]> = {
+  wedding: ["wedding"],
+  prewedding: ["pre-wedding", "prewedding", "pre wedding"],
+  baby: ["baby", "maternity"],
+  drone: ["conceptual", "drone"],
+};
 
 const grid: Variants = {
   hidden: { opacity: 0 },
@@ -79,6 +102,75 @@ const card: Variants = {
 };
 
 export default function Services() {
+  const [imageByKey, setImageByKey] = useState<Record<string, string>>({});
+
+  const localOverride: Record<string, string> = {
+    prewedding: "/services/prwed.png",
+    baby: "/services/baby.png",
+  };
+
+  const serviceKeys = useMemo(() => services.map((s) => s.key), []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const baseSelect = "id, category, image_url, created_at";
+
+        const { data, error } = await supabase
+          .from("gallery")
+          .select(baseSelect)
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .limit(250);
+
+        let rows: GalleryRow[] = [];
+
+        if (!error) {
+          rows = (data as GalleryRow[]) || [];
+        } else if (isMissingCreatedAtColumnError(error)) {
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from("gallery")
+            .select("id, category, image_url")
+            .order("id", { ascending: false })
+            .limit(250);
+          if (fallbackError) throw fallbackError;
+          rows = (fallbackData as GalleryRow[]) || [];
+        } else {
+          throw error;
+        }
+
+        const nextMap: Record<string, string> = {};
+        for (const row of rows) {
+          if (!row?.image_url || !String(row.image_url).trim()) continue;
+          const c = normalizeCategory(row.category);
+
+          for (const key of serviceKeys) {
+            if (nextMap[key]) continue;
+            const needles = SERVICE_CATEGORY_MATCH[key] || [];
+            if (needles.some((n) => c.includes(n))) {
+              nextMap[key] = row.image_url;
+            }
+          }
+
+          if (serviceKeys.every((k) => Boolean(nextMap[k]))) break;
+        }
+
+        if (!cancelled) setImageByKey(nextMap);
+      } catch (err) {
+        // If Supabase is unavailable, keep UI stable with placeholders.
+        if (!cancelled) setImageByKey({});
+        console.error("Error loading service images:", err);
+      }
+    };
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [serviceKeys]);
+
   return (
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -105,7 +197,7 @@ export default function Services() {
         viewport={{ once: true, amount: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 mt-12"
       >
-        {services.map(({ key, title, titleText, description, Icon, image, iconClassName }) => (
+        {services.map(({ key, title, titleText, description, Icon, iconClassName }) => (
           <motion.div
             key={key}
             variants={card}
@@ -113,10 +205,14 @@ export default function Services() {
           >
             {/* Background image */}
             <img
-              src={image}
+              src={localOverride[key] || imageByKey[key] || "/placeholder.svg"}
               alt={titleText}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
+              onError={(e) => {
+                if (e.currentTarget.src.endsWith("/placeholder.svg")) return;
+                e.currentTarget.src = "/placeholder.svg";
+              }}
             />
 
             {/* Dark overlay for readability */}

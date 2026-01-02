@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { supabase, type GalleryItem } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { Image as ImageIcon, Maximize2, X } from "lucide-react";
 
 function isMissingCreatedAtColumnError(err: unknown): boolean {
@@ -15,33 +15,43 @@ function isMissingCreatedAtColumnError(err: unknown): boolean {
   );
 }
 
+type PortfolioGalleryItem = {
+  id: number | string;
+  category: string | null;
+  src: string;
+  title: string | null;
+  created_at?: string;
+  sort_order?: number | null;
+};
+
 export default function Gallery() {
-  const [images, setImages] = useState<GalleryItem[]>([]);
+  const [images, setImages] = useState<PortfolioGalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
+  const [selectedImg, setSelectedImg] = useState<PortfolioGalleryItem | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function fetchGallery() {
       try {
-        const baseSelect = "id, created_at, title, category, image_url";
+        const baseSelect = "id, category, src, title, created_at, sort_order";
 
         const { data, error } = await supabase
-          .from("gallery")
+          .from("portfolio_items")
           .select(baseSelect)
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false });
 
         if (error) {
           if (isMissingCreatedAtColumnError(error)) {
             const { data: fallbackData, error: fallbackError } = await supabase
-              .from("gallery")
-              .select("id, title, category, image_url")
+              .from("portfolio_items")
+              .select("id, category, src, title, sort_order")
               .order("id", { ascending: false });
             if (fallbackError) throw fallbackError;
             if (!isMounted) return;
-            const safeFallback = ((fallbackData as GalleryItem[]) || []).filter((row) =>
-              Boolean(row?.image_url && String(row.image_url).trim())
+            const safeFallback = ((fallbackData as PortfolioGalleryItem[]) || []).filter((row) =>
+              Boolean(row?.src && String(row.src).trim())
             );
             setImages(safeFallback);
             return;
@@ -51,8 +61,8 @@ export default function Gallery() {
         }
 
         if (!isMounted) return;
-        const safe = ((data as GalleryItem[]) || []).filter((row) =>
-          Boolean(row?.image_url && String(row.image_url).trim())
+        const safe = ((data as PortfolioGalleryItem[]) || []).filter((row) =>
+          Boolean(row?.src && String(row.src).trim())
         );
         setImages(safe);
       } catch (error) {
@@ -106,8 +116,8 @@ export default function Gallery() {
               className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-zinc-900/40 cursor-zoom-in"
             >
               <img
-                src={image.image_url}
-                alt={image.category || image.title || "Gallery Image"}
+                src={image.src}
+                alt={image.category || "Portfolio image"}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -162,8 +172,8 @@ export default function Gallery() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              src={selectedImg.image_url}
-              alt={selectedImg.category || selectedImg.title || "Selected gallery image"}
+              src={selectedImg.src}
+              alt={selectedImg.category || "Selected portfolio image"}
               className="max-w-full max-h-[85vh] rounded shadow-2xl object-contain pointer-events-none"
             />
 
