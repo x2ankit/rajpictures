@@ -80,7 +80,7 @@ const card: Variants = {
 
 export default function Services() {
   return (
-    <section className="relative bg-transparent z-10 py-20">
+    <section className="py-20">
       <div className="max-w-7xl mx-auto px-6">
         <Reveal>
           <p className="text-amber-500 text-xs sm:text-sm uppercase tracking-[0.2em]">

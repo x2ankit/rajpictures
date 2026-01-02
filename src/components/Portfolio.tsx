@@ -100,7 +100,7 @@ export default function Portfolio() {
   }, [activeCategory, items]);
 
   return (
-    <section className="relative bg-transparent">
+    <section className="relative">
       <div className="mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

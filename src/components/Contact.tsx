@@ -11,8 +11,18 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative w-full py-24 bg-transparent overflow-hidden scroll-mt-28"
+      className="relative w-full py-24 bg-[#050505] overflow-hidden scroll-mt-28"
     >
+      {/* Ambient orbs */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-1/4 w-96 h-96 bg-amber-900/20 rounded-full blur-[128px] pointer-events-none"
+      />
+      <div
+        aria-hidden
+        className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-900/10 rounded-full blur-[128px] pointer-events-none"
+      />
+
       <div className="relative z-10 px-6 flex justify-center items-center">
         <motion.div
           whileHover={{ y: -8 }}

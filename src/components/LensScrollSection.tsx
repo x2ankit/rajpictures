@@ -10,7 +10,7 @@ export const LensScrollSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section ref={sectionRef} className="relative z-10 min-h-[95vh] bg-transparent overflow-hidden mt-0 md:-mt-24">
+    <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden mt-0 md:-mt-24">
       {/* Top fade connector to blend with previous section */}
       <div
         aria-hidden

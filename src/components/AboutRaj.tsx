@@ -8,7 +8,11 @@ const PORTRAIT_SRC = "/image_129164.jpg";
 
 export const AboutRaj = () => {
   return (
-    <section className="relative overflow-hidden bg-transparent z-10">
+    <section className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none"
+      />
       <div className="relative z-10 mx-auto grid w-full max-w-[1920px] grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-16 px-6 md:px-12 lg:px-24">
         {/* Left: Portrait + stats */}
         <motion.div
