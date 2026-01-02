@@ -1,45 +1,49 @@
-import { Aperture } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { Aperture, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const ADMIN_AUTH_KEY = "isAdminAuthenticated";
-const DEFAULT_PIN = "2025";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
-
-  const expectedPin = useMemo(() => {
-    const v = (import.meta.env.VITE_ADMIN_PIN as string | undefined) || DEFAULT_PIN;
-    return String(v);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    try {
-      const isAuthed = localStorage.getItem(ADMIN_AUTH_KEY) === "true";
-      if (isAuthed) navigate("/admin/dashboard", { replace: true });
-    } catch {
-      // ignore
-    }
+    let cancelled = false;
+
+    const run = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (data.session) navigate("/admin/dashboard", { replace: true });
+    };
+
+    void run();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate("/admin/dashboard", { replace: true });
+    });
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, [navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const handleLogin = async () => {
+    const origin = window.location.origin;
 
-    if (pin === expectedPin) {
-      try {
-        localStorage.setItem(ADMIN_AUTH_KEY, "true");
-      } catch {
-        // ignore
-      }
-      navigate("/admin/dashboard", { replace: true });
-      return;
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/admin/dashboard`,
+      },
+    });
+
+    if (error) {
+      console.error("Login error:", error);
+      alert(error.message);
+      setIsLoading(false);
     }
-
-    setError("Invalid Admin PIN. Please try again.");
-    setPin("");
   };
 
   return (
@@ -66,35 +70,30 @@ export default function AdminLogin() {
               Secure Login
             </div>
             <h1 className="mt-4 font-serifDisplay text-3xl text-white">
-              Enter PIN to continue
+              Sign in to continue
             </h1>
             <p className="mt-3 text-sm text-zinc-400">
-              This is a temporary PIN-based access system.
+              Sign in with your Google account to continue.
             </p>
 
-            <form onSubmit={handleLogin} className="mt-8 space-y-4">
-              <input
-                type="password"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                placeholder="Enter Admin PIN"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors text-center tracking-[0.5em]"
-              />
-
-              {error && <p className="text-red-500 text-xs text-center">{error}</p>}
-
-              <button
-                type="submit"
-                className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-lg transition-colors uppercase tracking-widest text-sm"
-              >
-                Authorize
-              </button>
-            </form>
+            <button
+              type="button"
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="mt-8 flex items-center justify-center gap-3 w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-60"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Redirecting...
+                </>
+              ) : (
+                <span>Sign in with Google</span>
+              )}
+            </button>
 
             <div className="mt-6 text-xs text-zinc-500">
-              You will be redirected to the dashboard after authorization.
+              You will be redirected back to the dashboard after login.
             </div>
           </div>
         </div>

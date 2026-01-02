@@ -458,14 +458,29 @@ export default function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // PIN-based auth: user identity is local only.
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (cancelled) return;
+
+      const user = data.user;
+      const nameFromMeta =
+        (user?.user_metadata as any)?.full_name || (user?.user_metadata as any)?.name;
+      const nameFromEmail = user?.email?.split("@")[0];
+      setUserName((nameFromMeta || nameFromEmail || "Admin").toString());
+    };
+
+    void loadUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleLogout = async () => {
-    try {
-      localStorage.removeItem("isAdminAuthenticated");
-    } catch {
-      // ignore
-    }
+    await supabase.auth.signOut();
     navigate("/admin/login", { replace: true });
   };
 
@@ -536,7 +551,9 @@ export default function AdminDashboard() {
           }
         }
 
-        if (uploadRes.error) throw uploadRes.error;
+        if (uploadRes.error) {
+          throw new Error(`Storage upload failed: ${uploadRes.error.message}`);
+        }
 
         // 2) Public URL
         const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(objectPath);
@@ -555,7 +572,7 @@ export default function AdminDashboard() {
         if (insertErr) {
           // Keep things clean if DB insert fails.
           await supabase.storage.from(bucket).remove([objectPath]);
-          throw insertErr;
+          throw new Error(`DB insert failed: ${insertErr.message}`);
         }
 
         uploadedBytesRef.current += file.size;

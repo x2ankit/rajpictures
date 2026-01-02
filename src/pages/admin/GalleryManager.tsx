@@ -202,7 +202,9 @@ export default function GalleryManager() {
           }
         }
 
-        if (uploadRes.error) throw uploadRes.error;
+        if (uploadRes.error) {
+          throw new Error(`Storage upload failed: ${uploadRes.error.message}`);
+        }
 
         // 2) Public URL
         const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(objectPath);
@@ -220,7 +222,7 @@ export default function GalleryManager() {
         if (insertErr) {
           // Keep things clean if DB insert fails.
           await supabase.storage.from(bucket).remove([objectPath]);
-          throw insertErr;
+          throw new Error(`DB insert failed: ${insertErr.message}`);
         }
       }
 
