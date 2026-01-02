@@ -105,8 +105,10 @@ export default function Services() {
   const [imageByKey, setImageByKey] = useState<Record<string, string>>({});
 
   const localOverride: Record<string, string> = {
+    wedding: "/services/wed.png",
     prewedding: "/services/prwed.png",
     baby: "/services/baby.png",
+    drone: "/services/drone.png",
   };
 
   const serviceKeys = useMemo(() => services.map((s) => s.key), []);
