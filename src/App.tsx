@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import FullGallery from "./pages/FullGallery";
+import Gallery from "./pages/Gallery";
 import Team from "./pages/Team";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -15,6 +15,7 @@ import { Preloader } from "@/components/Preloader";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminGuard from "@/components/auth/AdminGuard";
+import GalleryManager from "@/pages/admin/GalleryManager";
 import PromoPopup from "@/components/PromoPopup";
 import Unauthorized from "@/pages/admin/Unauthorized";
 
@@ -25,25 +26,40 @@ const AppLayout = () => {
   const hideChrome =
     location.pathname === "/gallery" || location.pathname.startsWith("/admin");
 
-  const [showPreloader, setShowPreloader] = useState(true);
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     if (hideChrome) return;
+    if (location.pathname !== "/") return;
+
+    let hasSeenOffer = false;
+    try {
+      hasSeenOffer = Boolean(localStorage.getItem("hide_new_year_offer"));
+    } catch {
+      hasSeenOffer = false;
+    }
+
+    if (hasSeenOffer) return;
 
     const t = window.setTimeout(() => {
       setIsPopupOpen(true);
-    }, 2000);
+    }, 3000);
 
     return () => window.clearTimeout(t);
   }, [hideChrome, location.pathname]);
 
+  const dismissOffer = () => {
+    setIsPopupOpen(false);
+    try {
+      localStorage.setItem("hide_new_year_offer", "true");
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <div className="min-h-screen text-white relative overflow-hidden isolate">
-      {showPreloader && (
-        <Preloader onComplete={() => setShowPreloader(false)} />
-      )}
+      {location.pathname === "/" && <Preloader />}
 
       {/* Unified site wallpaper (single high-perf backdrop) */}
       <div
@@ -65,7 +81,7 @@ const AppLayout = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/team" element={<Team />} />
-          <Route path="/gallery" element={<FullGallery />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/unauthorized" element={<Unauthorized />} />
           <Route
@@ -76,13 +92,25 @@ const AppLayout = () => {
               </AdminGuard>
             }
           />
+          <Route
+            path="/admin/gallery"
+            element={
+              <AdminGuard>
+                <GalleryManager />
+              </AdminGuard>
+            }
+          />
           <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
         {!hideChrome && <Footer />}
 
-        <PromoPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+        <PromoPopup
+          isOpen={isPopupOpen}
+          onDismiss={dismissOffer}
+          onBook={() => setIsPopupOpen(false)}
+        />
       </div>
     </div>
   );

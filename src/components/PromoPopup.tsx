@@ -5,14 +5,15 @@ import { useEffect } from "react";
 
 type PromoPopupProps = {
   isOpen: boolean;
-  onClose: () => void;
+  onDismiss: () => void;
+  onBook: () => void;
 };
 
-export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
+export default function PromoPopup({ isOpen, onDismiss, onBook }: PromoPopupProps) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        onDismiss();
       }
     };
 
@@ -23,13 +24,13 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
 
     // Cleanup: Remove listener when popup closes or component unmounts
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [isOpen, onClose]);
+  }, [isOpen, onDismiss]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm flex items-center justify-center px-5 py-10"
+          className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center px-5 py-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -37,7 +38,7 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
           aria-modal="true"
           aria-label="New Year Offer"
           onMouseDown={(e: MouseEvent<HTMLDivElement>) => {
-            if (e.target === e.currentTarget) onClose();
+            if (e.target === e.currentTarget) onDismiss();
           }}
         >
           <motion.div
@@ -52,7 +53,7 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
                 <button
                   type="button"
                   aria-label="Close"
-                  onClick={onClose}
+                  onClick={onDismiss}
                   className="absolute right-4 top-4 text-zinc-400 hover:text-amber-500 transition-colors"
                 >
                   <X className="h-5 w-5" />
@@ -75,7 +76,7 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
 
                   <a
                     href="/#pricing"
-                    onClick={onClose}
+                    onClick={onBook}
                     className="mt-8 w-full py-4 bg-amber-500 text-black font-bold uppercase tracking-widest hover:bg-amber-400 transition-colors text-center block rounded-md"
                   >
                     Book This Offer
@@ -83,7 +84,7 @@ export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
 
                   <button
                     type="button"
-                    onClick={onClose}
+                    onClick={onDismiss}
                     className="mt-3 w-full text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-300 transition-colors"
                   >
                     Maybe later

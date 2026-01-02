@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Trash2, Upload } from "lucide-react";
+import { Link2, Loader2, Trash2, Upload } from "lucide-react";
 import { supabase, supabaseGalleryBucket } from "@/lib/supabaseClient";
 import { toast } from "@/hooks/use-toast";
 
@@ -14,14 +14,19 @@ const CATEGORIES = [
 
 type Category = (typeof CATEGORIES)[number];
 
-type PortfolioItemRow = {
+type GalleryRow = {
   id: number;
   category: string | null;
-  src: string;
+  image_url: string;
   title: string | null;
-  type: string | null;
+  storage_path: string | null;
   created_at?: string;
 };
+
+function isVideoUrl(url: string): boolean {
+  const u = url.toLowerCase();
+  return u.endsWith(".mp4") || u.endsWith(".webm") || u.endsWith(".mov") || u.endsWith(".m4v");
+}
 
 function safeFileName(name: string) {
   return name
@@ -53,7 +58,9 @@ export default function GalleryManager() {
   const [isUploading, setIsUploading] = useState(false);
   const [progressText, setProgressText] = useState<string>("");
 
-  const [items, setItems] = useState<PortfolioItemRow[]>([]);
+  const [externalLink, setExternalLink] = useState<string>("");
+
+  const [items, setItems] = useState<GalleryRow[]>([]);
   const [isLoadingItems, setIsLoadingItems] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -65,24 +72,24 @@ export default function GalleryManager() {
     setIsLoadingItems(true);
     try {
       const base = supabase
-        .from("portfolio_items")
-        .select("id, category, src, title, type, created_at");
+        .from("gallery")
+        .select("id, category, image_url, title, storage_path, created_at");
 
       // Prefer newest-first if created_at exists.
       const { data, error } = await base.order("created_at", { ascending: false });
       if (error) {
         // Fallback if created_at doesn't exist.
         const { data: fallback, error: fallbackErr } = await supabase
-          .from("portfolio_items")
-          .select("id, category, src, title, type")
+          .from("gallery")
+          .select("id, category, image_url, title, storage_path")
           .order("id", { ascending: false });
 
         if (fallbackErr) throw fallbackErr;
-        setItems((fallback as PortfolioItemRow[]) || []);
+        setItems((fallback as GalleryRow[]) || []);
         return;
       }
 
-      setItems((data as PortfolioItemRow[]) || []);
+      setItems((data as GalleryRow[]) || []);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to load items";
       toast({ title: "Load failed", description: message, variant: "destructive" });
@@ -140,11 +147,11 @@ export default function GalleryManager() {
         if (!publicUrl) throw new Error("Could not resolve public URL for uploaded file.");
 
         // 3) DB insert
-        const { error: insertErr } = await supabase.from("portfolio_items").insert({
+        const { error: insertErr } = await supabase.from("gallery").insert({
           category,
-          src: publicUrl,
           title: file.name,
-          type: "image",
+          image_url: publicUrl,
+          storage_path: objectPath,
         });
 
         if (insertErr) {
@@ -167,28 +174,26 @@ export default function GalleryManager() {
     }
   };
 
-  const onDelete = async (row: PortfolioItemRow) => {
+  const onDelete = async (row: GalleryRow) => {
     if (deletingId) return;
 
-    const storagePath = tryExtractStoragePathFromPublicUrl(row.src, bucket);
-    if (!storagePath) {
-      toast({
-        title: "Delete failed",
-        description: "Could not determine storage path from the URL. (Only Supabase public URLs can be cleaned from storage.)",
-        variant: "destructive",
-      });
-      return;
-    }
+    const storagePath = row.storage_path || tryExtractStoragePathFromPublicUrl(row.image_url, bucket);
 
     setDeletingId(row.id);
     try {
-      const { error: storageErr } = await supabase.storage.from(bucket).remove([storagePath]);
-      if (storageErr) throw storageErr;
+      // Delete file from Storage when it is a Supabase-hosted public URL.
+      if (storagePath) {
+        const { error: storageErr } = await supabase.storage.from(bucket).remove([storagePath]);
+        if (storageErr) throw storageErr;
+      }
 
-      const { error: dbErr } = await supabase.from("portfolio_items").delete().eq("id", row.id);
+      const { error: dbErr } = await supabase.from("gallery").delete().eq("id", row.id);
       if (dbErr) throw dbErr;
 
-      toast({ title: "Deleted", description: row.title || "Item removed." });
+      toast({
+        title: "Deleted",
+        description: storagePath ? (row.title || "Item removed.") : "Removed DB record (external link).",
+      });
       await loadItems();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Delete failed";
@@ -205,7 +210,7 @@ export default function GalleryManager() {
           <div className="text-xs uppercase tracking-[0.3em] text-amber-500">Admin</div>
           <h1 className="mt-4 font-serifDisplay text-4xl md:text-5xl">Gallery Manager</h1>
           <p className="mt-3 text-sm text-zinc-400">
-            Bulk upload images into Supabase Storage and the portfolio_items table.
+            Upload images into Supabase Storage and manage your gallery table.
           </p>
         </div>
 
@@ -243,6 +248,48 @@ export default function GalleryManager() {
               <div className="mt-2 text-xs text-zinc-500">
                 Selected: {files.length} file(s)
               </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-xs uppercase tracking-[0.25em] text-zinc-400">
+              Add External Link
+            </label>
+            <div className="mt-2 flex flex-col md:flex-row md:items-center gap-3">
+              <div className="flex-1 relative">
+                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                <input
+                  value={externalLink}
+                  onChange={(e) => setExternalLink(e.target.value)}
+                  placeholder="https://... direct image link"
+                  className="w-full rounded-md border border-white/10 bg-black/30 pl-10 pr-3 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const url = externalLink.trim();
+                  if (!url) return;
+                  try {
+                    const { error } = await supabase.from("gallery").insert({
+                      category,
+                      title: null,
+                      image_url: url,
+                      storage_path: null,
+                    });
+                    if (error) throw error;
+                    setExternalLink("");
+                    toast({ title: "Added", description: "Link added to gallery." });
+                    await loadItems();
+                  } catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : "Failed to add link";
+                    toast({ title: "Add failed", description: message, variant: "destructive" });
+                  }
+                }}
+                className="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/10 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/15"
+              >
+                Add
+              </button>
             </div>
           </div>
 
@@ -311,16 +358,22 @@ export default function GalleryManager() {
                   </button>
 
                   <div className="aspect-[4/3] bg-black/40">
-                    {row.type === "video" ? (
-                      <div className="h-full w-full flex items-center justify-center text-xs uppercase tracking-[0.25em] text-zinc-400">
-                        Video
-                      </div>
+                    {isVideoUrl(row.image_url) ? (
+                      <video
+                        src={row.image_url}
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <img
-                        src={row.src}
+                        src={row.image_url}
                         alt={row.title || "Image"}
                         className="h-full w-full object-cover"
                         loading="lazy"
+                        decoding="async"
                       />
                     )}
                   </div>
