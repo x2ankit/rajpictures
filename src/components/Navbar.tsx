@@ -1,7 +1,12 @@
 import { Aperture } from "lucide-react";
+import type { MouseEvent } from "react";
 
-export const Navbar = () => {
-  const scrollToTop = (e: React.MouseEvent<HTMLAnchorElement>) => {
+type NavbarProps = {
+  onOpenPopup: () => void;
+};
+
+export const Navbar = ({ onOpenPopup }: NavbarProps) => {
+  const scrollToTop = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -22,7 +27,8 @@ export const Navbar = () => {
           </span>
           <span className="flex flex-col items-start justify-center -mt-1">
             <span className="font-serif text-2xl font-bold text-white leading-none">
-              <span className="text-white">Raj</span> <span className="text-amber-500">Pictures</span>
+              <span className="text-white">Raj</span>{" "}
+              <span className="text-amber-500">Pictures</span>
             </span>
             <span className="mt-1 text-[0.6rem] uppercase tracking-[0.2em] text-zinc-400 font-medium leading-tight">
               CINEMATIC VISUALS
@@ -36,12 +42,13 @@ export const Navbar = () => {
           >
             CONTACT
           </a>
-          <a
-            href="#pricing"
+          <button
+            type="button"
+            onClick={onOpenPopup}
             className="inline-flex items-center justify-center px-5 py-2 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
           >
             BOOK NOW
-          </a>
+          </button>
         </div>
       </div>
     </header>

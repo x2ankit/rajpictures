@@ -3,14 +3,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { Preloader } from "@/components/Preloader";
 import FullGallery from "./pages/FullGallery";
-import { Header } from "@/components/Header";
+import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollToHash } from "@/components/ScrollToHash";
 import AdminLogin from "@/pages/admin/AdminLogin";
@@ -23,6 +23,18 @@ const AppLayout = () => {
   const location = useLocation();
   const hideChrome =
     location.pathname === "/gallery" || location.pathname.startsWith("/admin");
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  useEffect(() => {
+    if (hideChrome) return;
+
+    const t = window.setTimeout(() => {
+      setIsPopupOpen(true);
+    }, 2000);
+
+    return () => window.clearTimeout(t);
+  }, [hideChrome, location.pathname]);
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden isolate">
@@ -45,7 +57,7 @@ const AppLayout = () => {
         className="pointer-events-none fixed bottom-[-280px] left-[-320px] w-[1000px] h-[1000px] bg-purple-900/10 blur-[180px] animate-float"
       />
 
-      {!hideChrome && <Header />}
+      {!hideChrome && <Navbar onOpenPopup={() => setIsPopupOpen(true)} />}
       <ScrollToHash />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -64,8 +76,7 @@ const AppLayout = () => {
       </Routes>
       {!hideChrome && <Footer />}
 
-      {/* Luxury Promo Popup (auto-shows + can be triggered from Header) */}
-      <PromoPopup />
+      <PromoPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </div>
   );
 };

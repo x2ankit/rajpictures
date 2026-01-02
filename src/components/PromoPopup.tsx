@@ -1,9 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-
-const PROMO_SESSION_KEY = "rajpictures:newyear-promo:seen";
-const OPEN_EVENT = "rajpictures:promo-open";
+import type { MouseEvent } from "react";
 
 function scrollToHash(hash: "#pricing" | "#contact") {
   const el = document.querySelector(hash);
@@ -16,53 +13,14 @@ function scrollToHash(hash: "#pricing" | "#contact") {
   window.location.assign(`/${hash}`);
 }
 
-export function openPromoPopup() {
-  window.dispatchEvent(new Event(OPEN_EVENT));
-}
+type PromoPopupProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
 
-export default function PromoPopup() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const shouldAutoShow = useMemo(() => {
-    try {
-      return sessionStorage.getItem(PROMO_SESSION_KEY) !== "1";
-    } catch {
-      return true;
-    }
-  }, []);
-
-  useEffect(() => {
-    const onOpen = () => setIsOpen(true);
-    window.addEventListener(OPEN_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_EVENT, onOpen);
-  }, []);
-
-  useEffect(() => {
-    if (!shouldAutoShow) return;
-
-    const t = window.setTimeout(() => {
-      setIsOpen(true);
-      try {
-        sessionStorage.setItem(PROMO_SESSION_KEY, "1");
-      } catch {
-        // ignore
-      }
-    }, 2000);
-
-    return () => window.clearTimeout(t);
-  }, [shouldAutoShow]);
-
-  const close = () => {
-    setIsOpen(false);
-    try {
-      sessionStorage.setItem(PROMO_SESSION_KEY, "1");
-    } catch {
-      // ignore
-    }
-  };
-
+export default function PromoPopup({ isOpen, onClose }: PromoPopupProps) {
   const claim = () => {
-    close();
+    onClose();
     scrollToHash("#contact");
   };
 
@@ -77,8 +35,8 @@ export default function PromoPopup() {
           role="dialog"
           aria-modal="true"
           aria-label="New Year Offer"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) close();
+          onMouseDown={(e: MouseEvent<HTMLDivElement>) => {
+            if (e.target === e.currentTarget) onClose();
           }}
         >
           <motion.div
@@ -93,7 +51,7 @@ export default function PromoPopup() {
                 <button
                   type="button"
                   aria-label="Close"
-                  onClick={close}
+                  onClick={onClose}
                   className="absolute right-4 top-4 text-zinc-400 hover:text-amber-500 transition-colors"
                 >
                   <X className="h-5 w-5" />
@@ -124,7 +82,7 @@ export default function PromoPopup() {
 
                   <button
                     type="button"
-                    onClick={close}
+                    onClick={onClose}
                     className="mt-3 w-full text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-300 transition-colors"
                   >
                     Maybe later

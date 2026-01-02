@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/HeroSection";
 import { YouTubeSection } from "@/components/YouTubeSection";
-import { GallerySection } from "@/components/GallerySection";
+import Portfolio from "@/components/Portfolio";
 import { Testimonials } from "@/components/Testimonials";
 import { AboutRaj } from "../components/AboutRaj";
 import Services from "@/components/Services";
@@ -57,7 +57,7 @@ const Index = () => {
 
       <div className="w-full py-20 relative z-10">
         <section id="portfolio">
-          <GallerySection />
+          <Portfolio />
         </section>
       </div>
 
