@@ -1,46 +1,76 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroPoster from "@/assets/photographer-profile.jpg";
+import { useEffect, useRef, useState } from "react";
 
 const HERO_VIDEO_URL =
   "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/finalhero.mp4";
 
 export const HeroSection = () => {
   const isMobile = useIsMobile();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
+
+  useEffect(() => {
+    // If autoplay is blocked or the network is slow, avoid a "flash" by
+    // showing a fallback only after a short grace period.
+    const t = window.setTimeout(() => {
+      if (!hasStartedPlaying) setShowFallback(true);
+    }, 1600);
+
+    return () => window.clearTimeout(t);
+  }, [hasStartedPlaying]);
 
   return (
-    <section className="relative min-h-screen h-[100dvh] overflow-hidden">
-      {/* Fallback image (shows immediately if video can't autoplay/load) */}
-      <img
-        aria-hidden
-        className="absolute inset-0 h-full w-full object-cover"
-        src={heroPoster}
-        alt=""
-        loading="eager"
-        decoding="async"
-      />
-
-      {/* Background video (mobile-safe attributes enabled) */}
+    <section className="relative min-h-screen h-[100dvh] overflow-hidden bg-black">
+      {/* Background video (fade in only when it actually starts playing) */}
       <video
-        className="absolute inset-0 h-full w-full object-cover"
+        ref={videoRef}
+        className={
+          "absolute inset-0 h-full w-full object-cover z-10 transition-opacity duration-1000 ease-in " +
+          (hasStartedPlaying ? "opacity-100" : "opacity-0")
+        }
         autoPlay
         loop
         muted
         playsInline
         preload="metadata"
-        poster={heroPoster}
+        onPlay={() => {
+          setHasStartedPlaying(true);
+          setShowFallback(false);
+        }}
+        onPlaying={() => {
+          setHasStartedPlaying(true);
+          setShowFallback(false);
+        }}
+        onError={() => {
+          setShowFallback(true);
+        }}
       >
         <source src={HERO_VIDEO_URL} type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+      {/* Fallback image (only if the video fails to start) */}
+      {showFallback && (
+        <img
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover z-0"
+          src={heroPoster}
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      )}
 
-      <div className="absolute inset-0 flex items-center px-6 md:px-12 lg:px-24 z-20">
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+
+      <div className="absolute inset-0 flex items-center px-6 md:px-12 lg:px-24 z-30">
         {isMobile ? <HeroStaticContent /> : <HeroScrollParallaxContent />}
       </div>
 
       {/* Scroll to Focus */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
         <div className="relative h-20 w-20 md:h-24 md:w-24">
           <div className="absolute inset-0 rounded-full border border-white/20 animate-spin-slow" />
           <div className="absolute inset-0 flex items-center justify-center">
