@@ -39,13 +39,23 @@ const AppLayout = () => {
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden isolate">
+      {/* Global ambient spotlight */}
       <div
-        className="fixed inset-0 z-[-1] pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at center, #2a2a2a 0%, #000000 100%)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-black to-black"
+      />
+
+      {/* Film grain overlay */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 film-grain" />
+
+      {/* Ambient background orbs */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed top-[-220px] right-[-260px] w-[800px] h-[800px] bg-amber-500/10 blur-[150px] animate-pulse-slow"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed bottom-[-280px] left-[-320px] w-[1000px] h-[1000px] bg-purple-900/10 blur-[180px] animate-float"
       />
 
       {!hideChrome && <Navbar onOpenPopup={() => setIsPopupOpen(true)} />}
