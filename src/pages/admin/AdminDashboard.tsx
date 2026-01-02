@@ -431,7 +431,7 @@ export default function AdminDashboard() {
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [isSavingOrder, setIsSavingOrder] = useState(false);
 
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [userName, setUserName] = useState<string>("Admin");
 
   const loadItems = async () => {
     setIsLoadingItems(true);
@@ -464,8 +464,13 @@ export default function AdminDashboard() {
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (cancelled) return;
-      const email = data.user?.email || "";
-      setUserEmail(email);
+
+      // Get the name from metadata, or fallback to the part before '@'
+      const user = data.user;
+      const nameFromMeta =
+        (user?.user_metadata as any)?.full_name || (user?.user_metadata as any)?.name;
+      const nameFromEmail = user?.email?.split("@")[0];
+      setUserName((nameFromMeta || nameFromEmail || "Admin").toString());
     };
 
     void loadUser();
@@ -791,9 +796,9 @@ export default function AdminDashboard() {
         <div>
           <div className="text-[11px] uppercase tracking-[0.35em] text-amber-500">Dashboard</div>
           <div className="mt-2 font-serifDisplay text-2xl text-white">Admin Command Center</div>
-          <div className="mt-2 text-xs text-zinc-500 truncate">
-            {userEmail ? `Welcome, ${userEmail}` : "Welcome"}
-          </div>
+          <h1 className="mt-3 text-sm text-zinc-300">
+            Welcome, <span className="text-amber-500 capitalize">{userName}</span>
+          </h1>
         </div>
 
         <UploadZone
@@ -806,13 +811,15 @@ export default function AdminDashboard() {
           isUploading={isUploading}
         />
 
-        <UploadStatsCompact
-          percent={uploadPercent}
-          currentIndex={Math.min(currentUploadIndex, Math.max(1, uploadQueue.length))}
-          total={Math.max(1, uploadQueue.length)}
-          speed={uploadSpeed}
-          currentFileName={currentUploadName}
-        />
+        {isUploading && (
+          <UploadStatsCompact
+            percent={uploadPercent}
+            currentIndex={Math.min(currentUploadIndex, Math.max(1, uploadQueue.length))}
+            total={Math.max(1, uploadQueue.length)}
+            speed={uploadSpeed}
+            currentFileName={currentUploadName}
+          />
+        )}
 
         <div className="mt-auto pt-2">
           <button
@@ -855,15 +862,26 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Sign out (top right) */}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign out
-          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
+            >
+              View Live Site ↗
+            </a>
+
+            {/* Sign out (top right) */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/10"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
+          </div>
         </div>
 
         {activeFolder ? (

@@ -29,14 +29,20 @@ export default function AdminLogin() {
   }, [navigate]);
 
   const handleLogin = async () => {
+    // 1. Detect where we are (e.g., "http://localhost:8080" or "https://myapp.vercel.app")
+    const origin = window.location.origin;
+
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/admin/dashboard",
+        // 2. Tell Supabase to send us back to the dashboard on THIS same site
+        redirectTo: `${origin}/admin/dashboard`,
       },
     });
+
     if (error) {
+      console.error("Login error:", error);
       alert(error.message);
       setIsLoading(false);
     }

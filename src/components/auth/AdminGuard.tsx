@@ -10,6 +10,7 @@ type AdminGuardProps = {
 };
 
 export default function AdminGuard({ children }: AdminGuardProps) {
+  const allowedEmail = "x2ankittripathy@gmail.com";
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
@@ -73,6 +74,11 @@ export default function AdminGuard({ children }: AdminGuardProps) {
 
   if (!session) {
     return <Navigate to="/admin/login" replace />;
+  }
+
+  const email = session.user?.email || "";
+  if (email.toLowerCase() !== allowedEmail.toLowerCase()) {
+    return <Navigate to="/admin/unauthorized" replace />;
   }
 
   return <>{children}</>;

@@ -16,6 +16,7 @@ import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminGuard from "@/components/auth/AdminGuard";
 import PromoPopup from "@/components/PromoPopup";
+import Unauthorized from "@/pages/admin/Unauthorized";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const AppLayout = () => {
         <Route path="/" element={<Index />} />
         <Route path="/gallery" element={<FullGallery />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/unauthorized" element={<Unauthorized />} />
         <Route
           path="/admin/dashboard"
           element={
