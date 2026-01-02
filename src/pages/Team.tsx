@@ -45,7 +45,7 @@ export default function Team() {
         className="text-center mb-20"
       >
         <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 tracking-tight">
-          The <span className="text-amber-500">Artists</span>
+          OUR <span className="text-amber-500">TEAM</span>
         </h1>
         <div className="h-1 w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6" />
         <p className="text-zinc-400 max-w-2xl mx-auto text-lg font-light tracking-wide">
