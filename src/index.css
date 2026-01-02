@@ -61,16 +61,10 @@
   }
 
   body {
-    @apply text-foreground antialiased;
-    background-color: #000000; /* Prevent white flashes */
-    overscroll-behavior-y: none; /* Stops the elastic bounce */
-    overflow-x: hidden; /* Zero horizontal wobble */
-    -webkit-font-smoothing: antialiased;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-    background-attachment: fixed; /* Locked in place */
+    background-color: #000000; /* Fallback black */
     color: white;
-    font-family: 'Manrope', sans-serif;
-    scroll-behavior: smooth;
+    margin: 0;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
