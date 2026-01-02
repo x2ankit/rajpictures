@@ -1,5 +1,6 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
+import heroPoster from "@/assets/photographer-profile.jpg";
 
 const HERO_VIDEO_URL =
   "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/finalhero.mp4";
@@ -9,25 +10,28 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen h-[100dvh] overflow-hidden">
-      {isMobile ? (
-        <img
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/raj-portrait-placeholder.svg"
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-      ) : (
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src={HERO_VIDEO_URL}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-      )}
+      {/* Fallback image (shows immediately if video can't autoplay/load) */}
+      <img
+        aria-hidden
+        className="absolute inset-0 h-full w-full object-cover"
+        src={heroPoster}
+        alt=""
+        loading="eager"
+        decoding="async"
+      />
+
+      {/* Background video (mobile-safe attributes enabled) */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        poster={heroPoster}
+      >
+        <source src={HERO_VIDEO_URL} type="video/mp4" />
+      </video>
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 

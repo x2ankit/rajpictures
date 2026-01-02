@@ -38,23 +38,18 @@ const AppLayout = () => {
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden isolate">
-      {/* Global ambient spotlight */}
+      {/* Unified site wallpaper (single high-perf backdrop) */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-black to-black"
-      />
-
-      {/* Film grain overlay */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 film-grain" />
-
-      {/* Ambient background orbs */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed top-[-220px] right-[-260px] w-[800px] h-[800px] bg-amber-500/10 blur-[150px] animate-pulse-slow"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none fixed bottom-[-280px] left-[-320px] w-[1000px] h-[1000px] bg-purple-900/10 blur-[180px] animate-float"
+        className="fixed inset-0 z-[-1] pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 50% -10%, rgba(217, 119, 6, 0.2), transparent 60%),
+            radial-gradient(circle at 50% 110%, rgba(255, 255, 255, 0.05), transparent 50%),
+            #050505
+          `,
+          backgroundAttachment: "fixed",
+        }}
       />
 
       <div className="relative z-10">

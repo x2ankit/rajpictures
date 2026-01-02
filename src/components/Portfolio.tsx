@@ -150,9 +150,9 @@ export default function Portfolio() {
             {filteredData.map((item) => (
               <div
                 key={item.id}
-                className="group text-left rounded-xl border border-zinc-800 overflow-hidden bg-black/40 hover:border-amber-500/40 transition-colors"
+                className="group text-left rounded-xl border border-zinc-800 overflow-hidden bg-transparent hover:border-amber-500/40 transition-colors"
               >
-                <div className="relative aspect-[4/3] bg-black overflow-hidden">
+                <div className="relative aspect-[4/3] bg-transparent overflow-hidden">
                   <img
                     src={item.src}
                     alt={item.title || "Portfolio image"}

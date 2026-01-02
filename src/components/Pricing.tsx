@@ -36,7 +36,7 @@ export default function Pricing() {
   return (
     <section
       id="pricing"
-      className="relative w-full bg-gradient-to-b from-black via-zinc-950 to-black"
+      className="relative w-full bg-transparent"
     >
       <div className="mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24">
         <Reveal className="text-center">
@@ -61,7 +61,7 @@ export default function Pricing() {
           {/* Card 1 */}
           <motion.div
             variants={item}
-            className="relative flex flex-col h-full rounded-2xl bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
+            className="relative flex flex-col h-full rounded-2xl bg-transparent border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
           >
             <div className="flex-grow">
               <div className="text-sm md:text-base uppercase tracking-[0.3em] text-zinc-400 font-body">
@@ -97,7 +97,7 @@ export default function Pricing() {
           {/* Card 2 */}
           <motion.div
             variants={item}
-            className="relative flex flex-col h-full rounded-2xl bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
+            className="relative flex flex-col h-full rounded-2xl bg-transparent border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
           >
             <div className="bg-amber-500 text-black text-[10px] px-3 py-1 uppercase font-bold tracking-wider rounded-full absolute -top-3 left-1/2 -translate-x-1/2">
               Most Popular
@@ -135,7 +135,7 @@ export default function Pricing() {
           {/* Card 3 */}
           <motion.div
             variants={item}
-            className="relative flex flex-col h-full rounded-2xl bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
+            className="relative flex flex-col h-full rounded-2xl bg-transparent border border-white/10 p-8 transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-black/50"
           >
             <div className="flex-grow">
               <div className="text-sm md:text-base uppercase tracking-[0.3em] text-zinc-400 font-body">
@@ -170,7 +170,7 @@ export default function Pricing() {
 
         {/* Add-ons */}
         <Reveal delay={0.05} className="mt-10">
-          <div className="w-full rounded-xl border border-white/10 bg-black/60 backdrop-blur-md px-6 py-6">
+          <div className="w-full rounded-xl border border-white/10 bg-transparent px-6 py-6">
             <div className="text-sm md:text-base uppercase tracking-[0.3em] text-amber-500 font-body">
               Add-On Services
             </div>
