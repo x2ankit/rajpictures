@@ -5,6 +5,7 @@ import { ArrowRight, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { ParallaxImage } from "@/components/ParallaxImage";
 
 type Tab = "STILLS" | "MOTION";
 
@@ -81,9 +82,9 @@ export const GallerySection = () => {
   }
 
   return (
-    <section className="py-28 md:py-32 px-6 bg-black">
+    <section className="relative">
       <div id="gallery" className="scroll-mt-28" />
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -201,14 +202,18 @@ export const GallerySection = () => {
                               }}
                             />
                           ) : (
-                            <motion.img
-                              src={image.image_url}
-                              alt={image.title || "Raj Pictures asset"}
-                              loading="lazy"
-                              className="w-full h-auto object-cover block will-change-transform"
+                            <motion.div
                               whileHover={{ scale: 1.05 }}
                               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-                            />
+                            >
+                              <ParallaxImage
+                                src={image.image_url}
+                                alt={image.title || "Raj Pictures asset"}
+                                loading="lazy"
+                                className="w-full h-auto object-cover block"
+                                intensity={14}
+                              />
+                            </motion.div>
                           )}
 
                           {/* Dark gradient overlay */}

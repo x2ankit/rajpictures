@@ -16,10 +16,10 @@ export const Footer = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
       transition={{ duration: 0.9, ease: [0.2, 0, 0.2, 1] }}
-      className="bg-[#020202]"
+      className="bg-black"
     >
-      <div className="mx-auto max-w-7xl px-6 md:px-10 py-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 md:gap-12">
+      <div className="mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Column 1: Brand */}
           <div className="min-w-0">
             <div className="font-serifDisplay text-2xl text-white tracking-tight">
@@ -52,13 +52,13 @@ export const Footer = () => {
             <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
               Quick Links
             </div>
-            <div className="mt-5 space-y-3 text-sm font-body">
+            <div className="mt-4 space-y-2 text-sm font-body">
               {[{ to: "/", label: "Home" }, { to: "/#about", label: "About" }, { to: "/#portfolio", label: "Portfolio" }, { to: "/#films", label: "Films" }, { to: "/#contact", label: "Contact" }].map(
                 (l) => (
                   <Link
                     key={l.label}
                     to={l.to}
-                    className="block text-zinc-400 hover:text-amber-500 transition-all hover:translate-x-1"
+                    className="block text-sm text-zinc-400 hover:text-amber-500 transition-colors"
                   >
                     {l.label}
                   </Link>
@@ -72,7 +72,7 @@ export const Footer = () => {
             <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
               Services
             </div>
-            <div className="mt-5 space-y-3 text-sm font-body">
+            <div className="mt-4 space-y-2 text-sm font-body">
               {[
                 "Wedding Photography",
                 "Pre-Wedding Shoots",
@@ -83,7 +83,7 @@ export const Footer = () => {
                 <Link
                   key={s}
                   to="/#services"
-                  className="block text-zinc-400 hover:text-amber-500 transition-all hover:translate-x-1"
+                  className="block text-sm text-zinc-400 hover:text-amber-500 transition-colors"
                 >
                   {s}
                 </Link>
@@ -96,7 +96,7 @@ export const Footer = () => {
             <div className="font-serifDisplay text-white text-sm uppercase tracking-[0.08em]">
               Contact Us
             </div>
-            <div className="mt-5 space-y-4 text-sm font-body text-zinc-400">
+            <div className="mt-4 space-y-3 text-sm font-body text-zinc-400">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 text-amber-500" />
                 <span>{LOCATION_SHORT}</span>
@@ -119,14 +119,14 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-16 border-t border-white/5 pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="text-xs text-zinc-600 font-body">© 2025 Raj Pictures. All rights reserved.</div>
-          <div className="text-xs text-zinc-600 font-body">
-            <a href="#" className="hover:text-white transition-colors">
+        <div className="mt-8 pt-6 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-500 font-body gap-3">
+          <div>© 2025 Raj Pictures. All rights reserved.</div>
+          <div>
+            <a href="#" className="hover:text-amber-500 transition-colors">
               Privacy Policy
             </a>
             <span className="mx-2 text-white/10">|</span>
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="#" className="hover:text-amber-500 transition-colors">
               Terms of Service
             </a>
           </div>

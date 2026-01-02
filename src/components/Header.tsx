@@ -17,6 +17,16 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const isHome = location.pathname === "/";
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToId = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -53,7 +63,17 @@ export const Header = () => {
     >
       <div className="w-full grid grid-cols-2 md:grid-cols-3 items-center">
         {/* Left: Logo */}
-        <Link to="/" className="inline-flex items-center gap-3 leading-none">
+        <Link
+          to="/"
+          onClick={(e) => {
+            // If already home, avoid navigation and just scroll.
+            if (isHome) {
+              e.preventDefault();
+              scrollToTop();
+            }
+          }}
+          className="inline-flex items-center gap-3 leading-none"
+        >
           <span
             aria-hidden
             className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
@@ -73,11 +93,66 @@ export const Header = () => {
         {/* Center: Menu */}
         <nav className="hidden md:flex items-center justify-center gap-8">
           {navLinks.map((l) => {
-            const to = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
+            if ("href" in l) {
+              return (
+                <Link
+                  key={l.label}
+                  to={l.href}
+                  className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
+                >
+                  {l.label}
+                </Link>
+              );
+            }
+
+            if (isHome) {
+              if (l.label === "HOME") {
+                return (
+                  <a
+                    key={l.label}
+                    href={l.hash}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToTop();
+                    }}
+                    className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
+                  >
+                    {l.label}
+                  </a>
+                );
+              }
+
+              return (
+                <a
+                  key={l.label}
+                  href={l.hash}
+                  className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
+                >
+                  {l.label}
+                </a>
+              );
+            }
+
+            if (l.label === "HOME") {
+              return (
+                <Link
+                  key={l.label}
+                  to="/"
+                  onClick={() => {
+                    // After route change, ensure we land at the very top.
+                    setTimeout(scrollToTop, 0);
+                  }}
+                  className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
+                >
+                  {l.label}
+                </Link>
+              );
+            }
+
             return (
               <Link
                 key={l.label}
-                to={to}
+                to={`/${l.hash}`}
                 className="text-xs uppercase tracking-[0.2em] text-white hover:text-amber-500 transition-colors"
               >
                 {l.label}
@@ -88,12 +163,21 @@ export const Header = () => {
 
         {/* Right: CTA / Mobile hamburger */}
         <div className="flex items-center justify-end gap-4">
-          <Link
-            to={location.pathname === "/" ? "#contact" : "/#contact"}
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
-          >
-            BOOK NOW
-          </Link>
+          {isHome ? (
+            <a
+              href="#pricing"
+              className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
+            >
+              BOOK NOW
+            </a>
+          ) : (
+            <Link
+              to="/#pricing"
+              className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
+            >
+              BOOK NOW
+            </Link>
+          )}
 
           <button
             type="button"
@@ -128,11 +212,78 @@ export const Header = () => {
 
             <div className="h-full flex flex-col items-center justify-center gap-7 px-8">
               {navLinks.map((l) => {
-                const to = "href" in l ? l.href : location.pathname === "/" ? l.hash : `/${l.hash}`;
+                if ("href" in l) {
+                  return (
+                    <Link
+                      key={l.label}
+                      to={l.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  );
+                }
+
+                if (isHome) {
+                  if (l.label === "HOME") {
+                    return (
+                      <a
+                        key={l.label}
+                        href={l.hash}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setMobileOpen(false);
+                          requestAnimationFrame(() =>
+                            requestAnimationFrame(() => scrollToTop())
+                          );
+                        }}
+                        className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
+                      >
+                        {l.label}
+                      </a>
+                    );
+                  }
+
+                  return (
+                    <a
+                      key={l.label}
+                      href={l.hash}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setMobileOpen(false);
+                        const id = l.hash.replace("#", "");
+                        // Wait for overlay/body scroll lock to release.
+                        requestAnimationFrame(() => requestAnimationFrame(() => scrollToId(id)));
+                      }}
+                      className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
+                    >
+                      {l.label}
+                    </a>
+                  );
+                }
+
+                if (l.label === "HOME") {
+                  return (
+                    <Link
+                      key={l.label}
+                      to="/"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        setTimeout(scrollToTop, 0);
+                      }}
+                      className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  );
+                }
+
                 return (
                   <Link
                     key={l.label}
-                    to={to}
+                    to={`/${l.hash}`}
+                    onClick={() => setMobileOpen(false)}
                     className="text-sm uppercase tracking-[0.25em] text-white hover:text-amber-500 transition-colors"
                   >
                     {l.label}
@@ -140,12 +291,29 @@ export const Header = () => {
                 );
               })}
 
-              <Link
-                to={location.pathname === "/" ? "#contact" : "/#contact"}
-                className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
-              >
-                BOOK NOW
-              </Link>
+              {isHome ? (
+                <a
+                  href="#pricing"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileOpen(false);
+                    requestAnimationFrame(() =>
+                      requestAnimationFrame(() => scrollToId("pricing"))
+                    );
+                  }}
+                  className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
+                >
+                  BOOK NOW
+                </a>
+              ) : (
+                <Link
+                  to="/#pricing"
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-6 inline-flex items-center justify-center px-7 py-3 rounded-sm bg-amber-500 text-black font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95"
+                >
+                  BOOK NOW
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

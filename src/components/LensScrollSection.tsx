@@ -16,10 +16,16 @@ export const LensScrollSection = () => {
   const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[95vh] bg-black overflow-hidden -mt-1">
+      {/* Top fade connector to blend with previous section */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-black z-20 pointer-events-none"
+      />
+
       {/* Full-bleed floating lens video */}
       <motion.video
-        className="absolute inset-0 h-full w-full object-cover opacity-40"
+        className="absolute inset-0 h-full w-full object-cover opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]"
         src={LENS_VIDEO_URL}
         autoPlay
         muted
@@ -34,7 +40,7 @@ export const LensScrollSection = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.06)_0%,rgba(0,0,0,0)_55%)]" />
 
       {/* Subtle cinematic UI so the section isn't empty */}
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-16 md:py-24">
+      <div className="relative z-10 mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
           <div className="min-w-0">
             <p className="text-amber-500 text-xs uppercase tracking-[0.35em]">Lens Study</p>

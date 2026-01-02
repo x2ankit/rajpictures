@@ -79,6 +79,10 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "pulse-slow": {
+          "0%, 100%": { transform: "translate3d(0,0,0)", opacity: "0.65" },
+          "50%": { transform: "translate3d(-40px, 35px, 0)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -86,6 +90,7 @@ export default {
         "fade-in": "fade-in 0.6s ease-out forwards",
         "scale-in": "scale-in 0.4s ease-out forwards",
         "spin-slow": "spin 8s linear infinite",
+        "pulse-slow": "pulse-slow 10s ease-in-out infinite",
       },
     },
   },

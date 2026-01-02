@@ -61,7 +61,7 @@
 
   body {
     @apply text-foreground antialiased;
-    background-color: #000;
+    background: radial-gradient(circle at 50% -20%, #2a1b3d 0%, #0a0a0a 40%, #000000 100%);
     font-family: 'Manrope', sans-serif;
     scroll-behavior: smooth;
   }
@@ -96,6 +96,13 @@
 
   .strike-link:hover {
     background-size: 100% 1px;
+  }
+
+  .film-grain {
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
   }
 }
 

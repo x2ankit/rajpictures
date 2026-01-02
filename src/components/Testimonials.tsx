@@ -20,8 +20,8 @@ const reviews = [
 
 export const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-24 px-6 bg-black">
-      <div className="max-w-6xl mx-auto">
+    <section id="testimonials" className="relative">
+      <div className="mx-auto w-full max-w-[1920px] px-6 md:px-12 lg:px-24">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

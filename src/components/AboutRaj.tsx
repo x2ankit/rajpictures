@@ -1,3 +1,5 @@
+import { Reveal } from "@/components/Reveal";
+import { ParallaxImage } from "@/components/ParallaxImage";
 import { motion } from "framer-motion";
 
 import photographerImage from "@/assets/photographer-profile.jpg";
@@ -6,12 +8,12 @@ const PORTRAIT_SRC = "/image_129164.jpg";
 
 export const AboutRaj = () => {
   return (
-    <section className="relative overflow-hidden px-6 py-24 md:py-32 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a0b2e] via-black to-black">
+    <section className="relative overflow-hidden">
       <div
         aria-hidden
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none"
       />
-      <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-16">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1920px] grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-16 px-6 md:px-12 lg:px-24">
         {/* Left: Portrait + stats */}
         <motion.div
           initial={{ opacity: 0, y: 22 }}
@@ -28,11 +30,12 @@ export const AboutRaj = () => {
             <div className="border border-amber-500/30 p-4">
               <div className="relative overflow-hidden bg-zinc-950">
                 <div className="relative aspect-[4/5] w-full">
-                  <img
+                  <ParallaxImage
                     src={PORTRAIT_SRC}
                     alt="Portrait of Raj"
                     className="h-full w-full object-cover"
                     loading="lazy"
+                    intensity={14}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src = photographerImage;
                     }}
@@ -75,7 +78,7 @@ export const AboutRaj = () => {
           transition={{ duration: 1.0, ease: [0.2, 0, 0.2, 1], delay: 0.05 }}
           className="min-w-0 flex flex-col justify-center"
         >
-          <div className="mb-8 text-center">
+          <Reveal className="mb-8 text-center">
             <span className="block text-amber-500 uppercase tracking-[0.3em] text-sm md:text-base font-medium mb-6">
               About Raj Pictures
             </span>
@@ -83,18 +86,22 @@ export const AboutRaj = () => {
               A Decade of <br className="hidden md:block" />
               <span className="text-amber-500">Visual Artistry</span>
             </h2>
-          </div>
+          </Reveal>
 
-          <p className="mt-6 text-white/70 text-base md:text-lg leading-relaxed">
-            I&apos;m Raj, founder of Raj Pictures. With over 10 years of experience capturing life&apos;s most precious
-            moments, I believe every frame should tell a story that resonates with emotion and authenticity.
-          </p>
+          <Reveal delay={0.05}>
+            <p className="mt-6 text-white/70 text-base md:text-lg leading-relaxed">
+              I&apos;m Raj, founder of Raj Pictures. With over 10 years of experience capturing life&apos;s most precious
+              moments, I believe every frame should tell a story that resonates with emotion and authenticity.
+            </p>
+          </Reveal>
 
-          <p className="mt-5 text-white/65 text-base md:text-lg leading-relaxed">
-            From intimate ceremonies to grand celebrations, my team and I are dedicated to transforming fleeting
-            moments into timeless memories. We blend traditional artistry with modern techniques to create
-            photographs that stand the test of time.
-          </p>
+          <Reveal delay={0.08}>
+            <p className="mt-5 text-white/65 text-base md:text-lg leading-relaxed">
+              From intimate ceremonies to grand celebrations, my team and I are dedicated to transforming fleeting
+              moments into timeless memories. We blend traditional artistry with modern techniques to create
+              photographs that stand the test of time.
+            </p>
+          </Reveal>
 
           <motion.a
             href="#portfolio"
