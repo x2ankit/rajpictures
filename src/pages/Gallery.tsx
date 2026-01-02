@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, Maximize2, X } from "lucide-react";
 
 export default function Gallery() {
   const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,18 +43,11 @@ export default function Gallery() {
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen bg-transparent">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-16"
-      >
-        <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-16">
+        <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-4">
           Visual <span className="text-amber-500">Archive</span>
         </h1>
-        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6" />
-        <p className="text-zinc-400 max-w-xl mx-auto">
-          A curated selection from our database.
-        </p>
+        <p className="text-zinc-500 uppercase tracking-[0.4em] text-xs">Capturing stories through the lens</p>
       </motion.div>
 
       {loading ? (
@@ -72,37 +66,83 @@ export default function Gallery() {
           {images.map((image, index) => (
             <motion.div
               key={String(image.id)}
+              onClick={() => setSelectedImg(image)}
+              whileHover={{ y: -5 }}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-white/10"
+              className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-zinc-900/40 cursor-zoom-in"
             >
               <img
                 src={image.image_url}
                 alt={image.category || image.title || "Gallery Image"}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
 
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center border-2 border-transparent group-hover:border-amber-500/50 rounded-lg">
-                <span className="text-amber-500 tracking-widest uppercase text-xs font-bold mb-2">
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                <Maximize2 className="text-amber-500 mb-2" size={28} />
+                <span className="text-amber-500 text-[10px] tracking-[0.3em] uppercase font-bold">
                   {(image.category || "Gallery").toString()}
                 </span>
-                <a
-                  href={image.image_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-white text-sm border border-white/30 px-6 py-2 rounded-full hover:bg-amber-500 hover:border-amber-500 transition-all"
-                >
-                  View Full
-                </a>
               </div>
             </motion.div>
           ))}
         </div>
       )}
+
+      {/* Full Screen Lightbox with Smooth Zoom Exit */}
+      <AnimatePresence>
+        {selectedImg && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImg(null)}
+            className="fixed inset-0 z-[11000] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="absolute top-6 right-6 z-50"
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImg(null);
+                }}
+                className="text-white/70 hover:text-amber-500 transition-colors"
+                aria-label="Close"
+              >
+                <X size={40} />
+              </button>
+            </motion.div>
+
+            <motion.img
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              src={selectedImg.image_url}
+              alt={selectedImg.category || selectedImg.title || "Selected gallery image"}
+              className="max-w-full max-h-[85vh] rounded shadow-2xl object-contain pointer-events-none"
+            />
+
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              className="mt-6 text-amber-500 text-sm tracking-[0.4em] uppercase font-bold"
+            >
+              {(selectedImg.category || "Gallery").toString()}
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
