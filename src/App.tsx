@@ -10,7 +10,7 @@ import FullGallery from "./pages/FullGallery";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ScrollToHash } from "@/components/ScrollToHash";
-import Preloader from "@/components/Preloader";
+import { Preloader } from "@/components/Preloader";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminGuard from "@/components/auth/AdminGuard";
@@ -81,6 +81,8 @@ const AppLayout = () => {
 };
 
 const App = () => {
+  const [showPreloader, setShowPreloader] = useState(true);
+
   useLayoutEffect(() => {
     // 1. Disable browser's default scroll restoration
     if ("scrollRestoration" in history) {
@@ -104,7 +106,9 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        <Preloader />
+        {showPreloader && (
+          <Preloader onComplete={() => setShowPreloader(false)} />
+        )}
 
         <BrowserRouter>
           <AppLayout />

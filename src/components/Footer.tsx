@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 const PRIMARY_PHONE_DISPLAY = "+91 93375 64186";
 const SECONDARY_PHONE_DISPLAY = "+91 94377 50574";
 const PRIMARY_PHONE_TEL = "+919337564186";
-const CONTACT_EMAIL = "book@rajpictures.com";
+const SECONDARY_PHONE_TEL = "+919437750574";
+const CONTACT_EMAIL = "patraraj075@gmail.com";
 const LOCATION_DISPLAY = "Bonaigarh, Sundargarh, Odisha, India";
 const LOCATION_SHORT = "Bonaigarh, Odisha";
 
@@ -106,6 +107,13 @@ export const Footer = () => {
                 <Phone className="mt-0.5 h-4 w-4 text-amber-500" />
                 <a href={`tel:${PRIMARY_PHONE_TEL}`} className="hover:text-amber-500 transition-colors">
                   {PRIMARY_PHONE_DISPLAY}
+                </a>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Phone className="mt-0.5 h-4 w-4 text-amber-500" />
+                <a href={`tel:${SECONDARY_PHONE_TEL}`} className="hover:text-amber-500 transition-colors">
+                  {SECONDARY_PHONE_DISPLAY}
                 </a>
               </div>
 

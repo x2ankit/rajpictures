@@ -41,7 +41,7 @@ export default function Contact() {
                   </span>
                   <div className="min-w-0">
                     <div className="text-xs uppercase tracking-[0.25em] text-zinc-500">Phone</div>
-                    <div className="mt-1 text-sm">+91 93375 64186</div>
+                    <div className="mt-1 text-sm">+91 93375 64186 / +91 94377 50574</div>
                   </div>
                 </div>
 
@@ -51,7 +51,7 @@ export default function Contact() {
                   </span>
                   <div className="min-w-0">
                     <div className="text-xs uppercase tracking-[0.25em] text-zinc-500">Email</div>
-                    <div className="mt-1 text-sm">book@rajpictures.com</div>
+                    <div className="mt-1 text-sm">patraraj075@gmail.com</div>
                   </div>
                 </div>
 

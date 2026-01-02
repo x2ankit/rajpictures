@@ -15,7 +15,9 @@ const serviceTypes = [
 export const ContactSection = () => {
   const primaryPhoneDisplay = "+91 93375 64186";
   const primaryPhoneTel = "+919337564186";
-  const contactEmail = "book@rajpictures.com";
+  const secondaryPhoneDisplay = "+91 94377 50574";
+  const secondaryPhoneTel = "+919437750574";
+  const contactEmail = "patraraj075@gmail.com";
   const locationDisplay = "Bonaigarh, Sundargarh, Odisha, India";
 
   const [formData, setFormData] = useState({
@@ -92,6 +94,9 @@ export const ContactSection = () => {
                   <div className="text-xs uppercase tracking-[0.28em] text-white/70">Phone</div>
                   <a href={`tel:${primaryPhoneTel}`} className="mt-1 block text-sm hover:text-amber-500 transition-colors">
                     {primaryPhoneDisplay}
+                  </a>
+                  <a href={`tel:${secondaryPhoneTel}`} className="mt-1 block text-sm hover:text-amber-500 transition-colors">
+                    {secondaryPhoneDisplay}
                   </a>
                 </div>
               </div>
