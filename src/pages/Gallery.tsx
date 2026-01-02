@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
+import { Image as ImageIcon } from "lucide-react";
 
 export default function Gallery() {
   const [images, setImages] = useState<GalleryItem[]>([]);
@@ -18,7 +19,10 @@ export default function Gallery() {
 
         if (error) throw error;
         if (!isMounted) return;
-        setImages((data as GalleryItem[]) || []);
+        const safe = ((data as GalleryItem[]) || []).filter((row) =>
+          Boolean(row?.image_url && String(row.image_url).trim())
+        );
+        setImages(safe);
       } catch (error) {
         // Keep UI stable; errors are shown via empty state.
         console.error("Error loading gallery:", error);
@@ -52,15 +56,20 @@ export default function Gallery() {
         </p>
       </motion.div>
 
-      {loading && (
-        <div className="text-center text-amber-500 animate-pulse">
-          Loading Gallery...
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 text-amber-500">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4" />
+          <p className="text-sm tracking-widest uppercase">Fetching Archive...</p>
         </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {!loading &&
-          images.map((image, index) => (
+      ) : images.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 border border-white/5 rounded-2xl bg-white/5 backdrop-blur-sm">
+          <ImageIcon size={48} className="text-zinc-700 mb-4" />
+          <h3 className="text-xl font-display text-zinc-500 mb-2">The Gallery is empty</h3>
+          <p className="text-zinc-600 text-sm">Raj has not uploaded any pictures yet.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {images.map((image, index) => (
             <motion.div
               key={String(image.id)}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -92,10 +101,7 @@ export default function Gallery() {
               </div>
             </motion.div>
           ))}
-      </div>
-
-      {!loading && images.length === 0 && (
-        <div className="text-center text-zinc-500">No images found in database.</div>
+        </div>
       )}
     </div>
   );

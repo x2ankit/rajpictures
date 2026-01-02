@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link2, Loader2, Trash2, Upload } from "lucide-react";
 import { supabase, supabaseGalleryBucket } from "@/lib/supabaseClient";
 import { toast } from "@/hooks/use-toast";
@@ -52,6 +52,40 @@ function tryExtractStoragePathFromPublicUrl(publicUrl: string, bucket: string): 
   }
 }
 
+function extractGoogleDriveFileId(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (!u.hostname.includes("drive.google.com")) return null;
+
+    const byPath =
+      u.pathname.match(/\/file\/d\/([^/]+)/) ||
+      u.pathname.match(/\/d\/([^/]+)/);
+    if (byPath?.[1]) return byPath[1];
+
+    const byQuery = u.searchParams.get("id");
+    if (byQuery) return byQuery;
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeExternalImageUrl(rawUrl: string): string {
+  const trimmed = rawUrl.trim();
+  if (!trimmed) return trimmed;
+
+  if (trimmed.includes("drive.google.com")) {
+    const fileId = extractGoogleDriveFileId(trimmed);
+    if (fileId) {
+      // Most reliable display URL for Drive-hosted images in many web setups.
+      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+    }
+  }
+
+  return trimmed;
+}
+
 export default function GalleryManager() {
   const [category, setCategory] = useState<Category>("Wedding");
   const [files, setFiles] = useState<File[]>([]);
@@ -102,6 +136,35 @@ export default function GalleryManager() {
     void loadItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 🚀 FEATURE: Auto-Convert Google Drive links to Direct Image Links
+  const handleLinkSubmit = async (e?: FormEvent) => {
+    e?.preventDefault();
+    const rawUrl = externalLink;
+    if (!rawUrl.trim()) return;
+
+    const finalUrl = normalizeExternalImageUrl(rawUrl);
+
+    try {
+      const { error } = await supabase.from("gallery").insert({
+        category,
+        title: null,
+        image_url: finalUrl,
+        storage_path: null,
+      });
+      if (error) throw error;
+
+      setExternalLink("");
+      toast({
+        title: "Added",
+        description: finalUrl !== rawUrl.trim() ? "Link converted and saved!" : "Link added to gallery.",
+      });
+      await loadItems();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to add link";
+      toast({ title: "Add failed", description: message, variant: "destructive" });
+    }
+  };
 
   const onUpload = async () => {
     if (!canUpload) return;
@@ -267,24 +330,8 @@ export default function GalleryManager() {
               </div>
               <button
                 type="button"
-                onClick={async () => {
-                  const url = externalLink.trim();
-                  if (!url) return;
-                  try {
-                    const { error } = await supabase.from("gallery").insert({
-                      category,
-                      title: null,
-                      image_url: url,
-                      storage_path: null,
-                    });
-                    if (error) throw error;
-                    setExternalLink("");
-                    toast({ title: "Added", description: "Link added to gallery." });
-                    await loadItems();
-                  } catch (err: unknown) {
-                    const message = err instanceof Error ? err.message : "Failed to add link";
-                    toast({ title: "Add failed", description: message, variant: "destructive" });
-                  }
+                onClick={() => {
+                  void handleLinkSubmit();
                 }}
                 className="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/10 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-white hover:bg-white/15"
               >
