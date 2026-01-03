@@ -23,7 +23,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Cloud, Folder, Loader2, LogOut, Trash, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase, supabaseGalleryBucket } from "@/lib/supabaseClient";
+import { clearSupabaseAuthStorage, supabase, supabaseGalleryBucket } from "@/lib/supabaseClient";
 import { toast } from "@/hooks/use-toast";
 
 const CATEGORIES = [
@@ -480,7 +480,11 @@ export default function AdminDashboard() {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      clearSupabaseAuthStorage();
+    }
     navigate("/admin/login", { replace: true });
   };
 

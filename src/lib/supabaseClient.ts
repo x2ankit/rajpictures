@@ -26,6 +26,21 @@ export const supabase: SupabaseClient = createClient(
   }
 );
 
+export function clearSupabaseAuthStorage() {
+  if (typeof window === "undefined") return;
+  try {
+    const keys = Object.keys(window.localStorage);
+    for (const key of keys) {
+      // Supabase JS stores sessions under keys like: sb-<project-ref>-auth-token
+      if (key.startsWith("sb-") && key.endsWith("-auth-token")) {
+        window.localStorage.removeItem(key);
+      }
+    }
+  } catch {
+    // Ignore storage access errors.
+  }
+}
+
 export type GalleryCategory = "Weddings" | "Cinematic";
 
 export type GalleryItem = {

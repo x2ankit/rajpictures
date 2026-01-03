@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabaseClient";
+import { clearSupabaseAuthStorage, supabase } from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 import { ShieldX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,11 @@ export default function Unauthorized() {
   const navigate = useNavigate();
 
   const onReturnHome = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      clearSupabaseAuthStorage();
+    }
     navigate("/", { replace: true });
   };
 

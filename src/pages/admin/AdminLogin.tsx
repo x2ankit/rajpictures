@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabaseClient";
+import { clearSupabaseAuthStorage, supabase } from "@/lib/supabaseClient";
 import { Aperture, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,18 @@ export default function AdminLogin() {
     let cancelled = false;
 
     const run = async () => {
+      // If the browser has an old token from a different Supabase project,
+      // getSession() may look "truthy" even though it is invalid.
+      // Validate by hitting the API.
+      const { error: userErr } = await supabase.auth.getUser();
+      if (userErr) {
+        try {
+          await supabase.auth.signOut();
+        } finally {
+          clearSupabaseAuthStorage();
+        }
+      }
+
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
       if (data.session) navigate("/admin/dashboard", { replace: true });
