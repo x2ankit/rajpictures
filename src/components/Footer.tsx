@@ -35,14 +35,18 @@ export const Footer = () => {
           </p>
           <div className="flex gap-4">
             <a
-              href="#"
+              href="https://www.instagram.com/raj_pictures_001/"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
               className="text-zinc-400 hover:text-amber-500 transition-colors"
             >
               <Instagram className="h-5 w-5" />
             </a>
             <a
-              href="#"
+              href="https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="YouTube"
               className="text-zinc-400 hover:text-amber-500 transition-colors"
             >

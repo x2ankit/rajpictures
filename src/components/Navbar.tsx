@@ -1,4 +1,4 @@
-import { Aperture, Menu, X } from "lucide-react";
+import { Aperture, Instagram, Menu, X, Youtube } from "lucide-react";
 import { useEffect, useState, type MouseEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -15,6 +15,11 @@ const navLinks = [
   { name: "Films", path: "/#films" },
   { name: "Contact", path: "#contact" },
 ] as const;
+
+const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/raj_pictures_001/",
+  youtube: "https://www.youtube.com/channel/UCI7UMjrc6F4fdJHaRQpDb8A",
+} as const;
 
 export const Navbar = ({ onOpenPopup }: NavbarProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -169,6 +174,27 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
 
         {/* Right: CTA + mobile toggle */}
         <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
+            <a
+              href={SOCIAL_LINKS.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:text-amber-500"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href={SOCIAL_LINKS.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:text-amber-500"
+            >
+              <Youtube className="h-4 w-4" />
+            </a>
+          </div>
+
           <button
             type="button"
             onClick={onOpenPopup}
@@ -213,6 +239,27 @@ export const Navbar = ({ onOpenPopup }: NavbarProps) => {
                 {l.name}
               </button>
             ))}
+
+            <div className="mt-6 flex items-center gap-6">
+              <a
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:text-amber-500"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href={SOCIAL_LINKS.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:text-amber-500"
+              >
+                <Youtube className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
       )}
