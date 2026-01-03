@@ -32,6 +32,7 @@ const CATEGORIES = [
   "Bridal",
   "Baby",
   "Ring Ceremony",
+  "Albums",
   "Conceptual",
 ] as const;
 

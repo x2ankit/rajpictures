@@ -28,7 +28,7 @@ const teamMembers = [
     image: "/team/sanjiv.jpg",
   },
   {
-    name: "Ankit",
+    name: "Rohit",
     role: "Photographer",
     image: "/team/ankit.jpg",
   },

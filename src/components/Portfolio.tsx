@@ -9,6 +9,7 @@ const CATEGORY_TABS = [
   "Bridal",
   "Baby",
   "Ring Ceremony",
+  "Albums",
   "Conceptual",
 ] as const;
 
