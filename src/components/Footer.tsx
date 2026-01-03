@@ -6,7 +6,7 @@ const PRIMARY_PHONE_DISPLAY = "+91 93375 64186";
 const SECONDARY_PHONE_DISPLAY = "+91 94377 50574";
 const PRIMARY_PHONE_TEL = "+919337564186";
 const SECONDARY_PHONE_TEL = "+919437750574";
-const CONTACT_EMAIL = "patraraj075@gmail.com";
+const CONTACT_EMAIL = "support@rajpictures.in";
 const LOCATION_DISPLAY = "Bonaigarh, Sundargarh, Odisha, India";
 const LOCATION_SHORT = "Bonaigarh, Odisha";
 
