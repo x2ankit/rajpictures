@@ -9,50 +9,84 @@ type AdminGuardProps = {
   children: ReactNode;
 };
 
-const allowedEmail = "x2ankittripathy@gmail.com";
-
 export default function AdminGuard({ children }: AdminGuardProps) {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState(false); // New state for DB check
 
   useEffect(() => {
     let cancelled = false;
 
-    const check = async () => {
+    const checkSessionAndWhitelist = async () => {
       setLoading(true);
 
-      // If we're returning from Google OAuth (PKCE), Supabase redirects back with ?code=...
-      // Exchange it for a real session BEFORE we decide to redirect away.
+      // 1. Handle OAuth Redirect (Keep existing logic)
       try {
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (!exchangeError) {
-            // Clean the URL so refreshes don't re-trigger exchange.
             window.history.replaceState({}, document.title, window.location.pathname);
           }
         }
       } catch {
-        // Ignore and continue to getSession
+        // ignore
       }
 
-      const { data, error } = await supabase.auth.getSession();
+      // 2. Get Session
+      const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+      
       if (cancelled) return;
-      if (error) {
+      
+      if (error || !currentSession) {
         setSession(null);
         setLoading(false);
         return;
       }
-      setSession(data.session ?? null);
+
+      setSession(currentSession);
+
+      // 3. CHECK DATABASE WHITELIST (The Fix)
+      // This query checks if the email exists in your table (Case Insensitive)
+      const userEmail = currentSession.user?.email;
+      
+      if (userEmail) {
+        const { data } = await supabase
+          .from("admin_whitelist")
+          .select("email")
+          .ilike("email", userEmail) // .ilike ignores Upper/Lower case differences!
+          .maybeSingle();
+
+        if (data) {
+          setIsAuthorized(true);
+        } else {
+          console.warn("User not in whitelist:", userEmail);
+          setIsAuthorized(false);
+        }
+      }
+
       setLoading(false);
     };
 
-    void check();
+    void checkSessionAndWhitelist();
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    // 4. Listen for Auth Changes
+    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
       if (cancelled) return;
-      setSession(nextSession ?? null);
+      setSession(nextSession);
+      
+      if (nextSession?.user?.email) {
+         // Re-check whitelist on auth change
+         const { data } = await supabase
+          .from("admin_whitelist")
+          .select("email")
+          .ilike("email", nextSession.user.email)
+          .maybeSingle();
+         setIsAuthorized(!!data);
+      } else {
+         setIsAuthorized(false);
+      }
       setLoading(false);
     });
 
@@ -67,20 +101,22 @@ export default function AdminGuard({ children }: AdminGuardProps) {
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
         <div className="inline-flex items-center gap-3 text-zinc-300">
           <Loader2 className="h-5 w-5 animate-spin" />
-          Loading...
+          Verifying Access...
         </div>
       </div>
     );
   }
 
+  // 1. Not logged in -> Login Page
   if (!session) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  const email = session.user?.email || "";
-  if (allowedEmail && email.toLowerCase() !== allowedEmail.toLowerCase()) {
+  // 2. Logged in but not in database -> Unauthorized Page
+  if (!isAuthorized) {
     return <Navigate to="/admin/unauthorized" replace />;
   }
 
+  // 3. Success
   return <>{children}</>;
 }
