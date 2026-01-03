@@ -55,9 +55,20 @@ function safeFileName(name: string) {
     .replace(/[^a-zA-Z0-9._-]/g, "");
 }
 
-function categoryToFolder(category: Category) {
-  // Example desired: baby/filename.jpg
-  return category.toLowerCase().replace(/\s+/g, "-");
+function safeFolderSegment(name: string) {
+  return name
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+}
+
+function categoryToFolder(category: string) {
+  // Example desired: baby/filename.jpg or albums/my-album/filename.jpg
+  return category
+    .split("/")
+    .map((seg) => seg.trim().toLowerCase().replace(/\s+/g, "-"))
+    .filter(Boolean)
+    .join("/");
 }
 
 function tryExtractStoragePathFromPublicUrl(publicUrl: string, bucket: string): string | null {
@@ -233,6 +244,8 @@ function UploadZone({
   categories,
   selectedCategory,
   onCategoryChange,
+  albumName,
+  onAlbumNameChange,
   uploadQueue,
   onPickFiles,
   onStartUpload,
@@ -241,12 +254,18 @@ function UploadZone({
   categories: readonly string[];
   selectedCategory: string;
   onCategoryChange: (cat: string) => void;
+  albumName: string;
+  onAlbumNameChange: (name: string) => void;
   uploadQueue: File[];
   onPickFiles: (files: File[]) => void;
   onStartUpload: () => void;
   isUploading: boolean;
 }) {
-  const canUpload = uploadQueue.length > 0 && !isUploading;
+  const requiresAlbumName = selectedCategory === "Albums";
+  const canUpload =
+    uploadQueue.length > 0 &&
+    !isUploading &&
+    (!requiresAlbumName || albumName.trim().length > 0);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -280,6 +299,23 @@ function UploadZone({
           ))}
         </select>
       </div>
+
+      {selectedCategory === "Albums" && (
+        <div className="mt-4">
+          <label className="block text-[11px] uppercase tracking-[0.25em] text-zinc-400">
+            Album Name
+          </label>
+          <input
+            value={albumName}
+            onChange={(e) => onAlbumNameChange(e.target.value)}
+            placeholder="e.g. Wedding Highlights"
+            className="mt-2 w-full rounded-md border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          />
+          <div className="mt-2 text-[11px] text-zinc-500">
+            Enter an album name to create a separate folder.
+          </div>
+        </div>
+      )}
 
       <div className="mt-4">
         <input
@@ -418,6 +454,7 @@ export default function AdminDashboard() {
 
   const [uploadQueue, setUploadQueue] = useState<File[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("Wedding");
+  const [albumName, setAlbumName] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSpeed, setUploadSpeed] = useState(0);
   const [currentUploadIndex, setCurrentUploadIndex] = useState(1);
@@ -512,8 +549,20 @@ export default function AdminDashboard() {
     setCurrentUploadIndex(1);
     setCurrentUploadName(uploadQueue[0]?.name ?? "");
 
-    const categoryLabel = (selectedCategory as Category) ?? "Wedding";
-    const folder = categoryToFolder(categoryLabel);
+    const baseCategory = (selectedCategory as Category) ?? "Wedding";
+
+    const resolvedAlbumLabel = albumName.trim().replace(/\s+/g, " ");
+    const albumFolderSegment = safeFolderSegment(resolvedAlbumLabel).toLowerCase();
+
+    const categoryLabel =
+      baseCategory === "Albums" && resolvedAlbumLabel
+        ? `Albums/${resolvedAlbumLabel}`
+        : baseCategory;
+
+    const folder =
+      baseCategory === "Albums" && albumFolderSegment
+        ? `${categoryToFolder(baseCategory)}/${albumFolderSegment}`
+        : categoryToFolder(baseCategory);
 
     const existingMax = Math.max(
       -1,
@@ -810,7 +859,12 @@ export default function AdminDashboard() {
         <UploadZone
           categories={CATEGORIES}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={(cat) => {
+            setSelectedCategory(cat);
+            if (cat !== "Albums") setAlbumName("");
+          }}
+          albumName={albumName}
+          onAlbumNameChange={setAlbumName}
           uploadQueue={uploadQueue}
           onPickFiles={setUploadQueue}
           onStartUpload={onUpload}

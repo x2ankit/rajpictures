@@ -95,7 +95,7 @@ const HeroCopy = () => {
 
       <div className="mt-10 flex flex-wrap items-center justify-start gap-6">
         <a
-          href="#gallery"
+          href="#portfolio"
           className="inline-flex items-center justify-center px-8 py-4 border border-white/30 text-white text-xs sm:text-sm uppercase tracking-[0.28em] font-montserrat rounded-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-95 hover:bg-white hover:text-black"
         >
           VIEW PORTFOLIO

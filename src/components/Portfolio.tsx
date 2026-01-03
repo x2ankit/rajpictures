@@ -83,7 +83,12 @@ export default function Portfolio() {
 
     // Show everything for categories, ordered by sort_order (then newest)
     return items
-      .filter((it) => (it.category || "") === activeCategory)
+      .filter((it) => {
+        const c = (it.category || "").trim();
+        if (!c) return false;
+        if (c === activeCategory) return true;
+        return c.startsWith(`${activeCategory}/`);
+      })
       .slice()
       .sort((a, b) => {
         const ao = typeof a.sort_order === "number" ? a.sort_order : 0;
