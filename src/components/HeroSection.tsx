@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 const HERO_VIDEO_LOCAL = "/hero-video-compressed.mp4";
 const HERO_VIDEO_FALLBACK =
   "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/finalhero.mp4";
-const HERO_POSTER = "/raj.jpg";
 
 export const HeroSection = () => {
   const isMobile = useIsMobile();
@@ -37,7 +36,6 @@ export const HeroSection = () => {
           muted
           playsInline
           preload="metadata"
-          poster={HERO_POSTER}
           onPlay={() => {
             setHasStartedPlaying(true);
           }}
@@ -59,15 +57,7 @@ export const HeroSection = () => {
           <source src={videoSrc} type="video/mp4" />
         </video>
       ) : (
-        <div
-          className="absolute inset-0 h-full w-full bg-black z-10"
-          style={{
-            backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2)), url(${HERO_POSTER})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-          aria-hidden
-        />
+        <div className="absolute inset-0 h-full w-full bg-black z-10" aria-hidden />
       )}
 
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />

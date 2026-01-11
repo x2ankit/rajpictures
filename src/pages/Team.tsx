@@ -54,9 +54,18 @@ export default function Team() {
     <>
       <Seo
         title="Meet the Raj Pictures Team"
-        description="Cinematographers, candid photographers, and storytellers crafting cinematic wedding films and editorial portraits across Odisha. Meet the Raj Pictures crew."
+        description="Cinematographers, candid photographers, and storytellers crafting cinematic wedding films and editorial portraits across Odisha, Bonaigarh, and Deogarh. Meet the Raj Pictures crew."
         pathname="/team"
         type="website"
+        keywords={[
+          "wedding photographers in Bonaigarh",
+          "cinematographers Odisha",
+          "candid photographers",
+          "wedding videographers",
+          "professional photography team",
+          "wedding film crew",
+          "Deogarh wedding team",
+        ]}
         schema={aboutSchema}
       />
 

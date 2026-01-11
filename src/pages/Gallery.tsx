@@ -84,9 +84,20 @@ export default function Gallery() {
     <>
       <Seo
         title="Portfolio Gallery | Wedding Photography & Films"
-        description="View curated weddings, pre-weddings, and cinematic films crafted by Raj Pictures across Odisha. High-resolution images, editorial frames, and cinematic storytelling."
+        description="View curated weddings, pre-weddings, and cinematic films crafted by Raj Pictures across Odisha. High-resolution images, editorial frames, and cinematic storytelling from Bonaigarh and Deogarh."
         pathname="/gallery"
         type="website"
+        keywords={[
+          "wedding photography portfolio",
+          "wedding gallery Bonaigarh",
+          "cinematic wedding films",
+          "wedding photography samples",
+          "pre-wedding photography Odisha",
+          "bride and groom photos",
+          "candid wedding moments",
+          "editorial wedding photography",
+          "Deogarh wedding gallery",
+        ]}
         schema={collectionSchema}
       />
 

@@ -49,6 +49,48 @@ const Index = () => {
     },
   };
 
+  const serviceSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Wedding Photography in Bonaigarh",
+      provider: {
+        "@type": "LocalBusiness",
+        name: "Raj Pictures",
+        url: "https://www.rajpictures.in",
+      },
+      description: "Professional wedding photography services in Bonaigarh and Deogarh capturing candid moments and editorial portraits.",
+      areaServed: ["Bonaigarh", "Deogarh", "Odisha"],
+      serviceType: "Photography",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Cinematic Wedding Films",
+      provider: {
+        "@type": "LocalBusiness",
+        name: "Raj Pictures",
+        url: "https://www.rajpictures.in",
+      },
+      description: "Cinematic wedding films and videography with professional editing and color grading.",
+      areaServed: ["Bonaigarh", "Deogarh", "Odisha"],
+      serviceType: "Videography",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Pre-Wedding Shoots",
+      provider: {
+        "@type": "LocalBusiness",
+        name: "Raj Pictures",
+        url: "https://www.rajpictures.in",
+      },
+      description: "Artistic pre-wedding photoshoots and engagement photography across scenic locations in Odisha.",
+      areaServed: ["Bonaigarh", "Deogarh", "Odisha"],
+      serviceType: "Photography",
+    },
+  ];
+
   return (
     <>
       <Seo
@@ -63,10 +105,14 @@ const Index = () => {
           "best wedding photographer in Deogarh",
           "Debagarh wedding photographer",
           "Bonaigarh wedding photographer",
+          "wedding videography Odisha",
+          "cinematic wedding films",
+          "pre-wedding photographer Bonaigarh",
           "Odisha wedding films",
           "Rajpictures",
+          "candid photography Bonaigarh",
         ]}
-        schema={[organizationSchema, websiteSchema]}
+        schema={[organizationSchema, websiteSchema, ...serviceSchemas]}
       />
 
       <main className="relative">
