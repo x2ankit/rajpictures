@@ -30,9 +30,9 @@ export function Preloader({ onComplete }: PreloaderProps) {
     setStage("popup");
 
     // 🎬 Animation Timeline
-    const t1 = window.setTimeout(() => setStage("pan"), 800);
-    const t2 = window.setTimeout(() => setStage("flash"), 1800);
-    const t3 = window.setTimeout(() => setStage("finish"), 2000);
+    const t1 = window.setTimeout(() => setStage("pan"), 1200);
+    const t2 = window.setTimeout(() => setStage("flash"), 2600);
+    const t3 = window.setTimeout(() => setStage("finish"), 3200);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);

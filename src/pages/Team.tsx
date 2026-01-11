@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Seo } from "@/components/Seo";
 
 // 👥 The Complete Team List (Based on your screenshots)
 const teamMembers = [
@@ -40,8 +41,26 @@ const teamMembers = [
 ];
 
 export default function Team() {
+  const aboutSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "Meet the Raj Pictures Team",
+    url: "https://www.rajpictures.in/team",
+    description:
+      "Meet the cinematographers and photographers behind Raj Pictures delivering cinematic wedding films and editorial-style portraits across Odisha.",
+  };
+
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+    <>
+      <Seo
+        title="Meet the Raj Pictures Team"
+        description="Cinematographers, candid photographers, and storytellers crafting cinematic wedding films and editorial portraits across Odisha. Meet the Raj Pictures crew."
+        pathname="/team"
+        type="website"
+        schema={aboutSchema}
+      />
+
+      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
       {/* 1. Header Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -96,6 +115,7 @@ export default function Team() {
           </motion.div>
         ))}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

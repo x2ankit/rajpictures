@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { supabase, type GalleryItem } from "@/lib/supabaseClient";
 import { Image as ImageIcon, Maximize2, X } from "lucide-react";
+import { Seo } from "@/components/Seo";
 
 function isMissingCreatedAtColumnError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
@@ -19,6 +20,15 @@ export default function Gallery() {
   const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImg, setSelectedImg] = useState<GalleryItem | null>(null);
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Wedding Photography Portfolio | Raj Pictures",
+    url: "https://www.rajpictures.in/gallery",
+    description:
+      "Browse the latest wedding photography, cinematic films, pre-wedding shoots, and candid stories captured by Raj Pictures across Odisha.",
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -71,7 +81,16 @@ export default function Gallery() {
   }, []);
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen bg-transparent">
+    <>
+      <Seo
+        title="Portfolio Gallery | Wedding Photography & Films"
+        description="View curated weddings, pre-weddings, and cinematic films crafted by Raj Pictures across Odisha. High-resolution images, editorial frames, and cinematic storytelling."
+        pathname="/gallery"
+        type="website"
+        schema={collectionSchema}
+      />
+
+      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen bg-transparent">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-16">
         <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-4">
           Visual <span className="text-amber-500">Archive</span>
@@ -176,6 +195,7 @@ export default function Gallery() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </>
   );
 }
