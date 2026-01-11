@@ -1,65 +1,29 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
-const HERO_VIDEO_LOCAL = "/hero-video-compressed.mp4";
-const HERO_VIDEO_FALLBACK =
-  "https://ftadonqbzirhllyufnjs.supabase.co/storage/v1/object/public/portfolio/hero/finalhero.mp4";
+const HERO_VIDEO = "/hero-video-compressed.mp4";
 
 export const HeroSection = () => {
   const isMobile = useIsMobile();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
-  const shouldUseVideo = !isMobile;
-
-  useEffect(() => {
-    if (!shouldUseVideo) return;
-
-    // Defer video source assignment slightly to let critical UI paint first.
-    const t = window.setTimeout(() => setVideoSrc(HERO_VIDEO_LOCAL), 150);
-    return () => window.clearTimeout(t);
-  }, [shouldUseVideo]);
 
   return (
     <section className="relative min-h-screen h-[100dvh] overflow-hidden bg-black">
-      {/* Background video (desktop only, fades in after it actually starts) */}
-      {shouldUseVideo && videoSrc ? (
-        <video
-          ref={videoRef}
-          className={
-            "absolute inset-0 h-full w-full object-cover z-10 transition-opacity duration-1000 ease-in " +
-            (hasStartedPlaying ? "opacity-100" : "opacity-0")
-          }
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          onPlay={() => {
-            setHasStartedPlaying(true);
-          }}
-          onPlaying={() => {
-            setHasStartedPlaying(true);
-          }}
-          onCanPlayThrough={() => {
-            setHasStartedPlaying(true);
-          }}
-          onError={() => {
-            if (videoSrc !== HERO_VIDEO_FALLBACK) {
-              setVideoSrc(HERO_VIDEO_FALLBACK);
-              setHasStartedPlaying(false);
-              return;
-            }
-            setHasStartedPlaying(false);
-          }}
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      ) : (
-        <div className="absolute inset-0 h-full w-full bg-black z-10" aria-hidden />
-      )}
+      {/* Background video - appears on all screens */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 h-full w-full object-cover z-10"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+      >
+        <source src={HERO_VIDEO} type="video/mp4" />
+      </video>
 
+      {/* Dark overlay for text readability */}
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 
       <div className="absolute inset-0 flex items-center px-6 md:px-12 lg:px-24 z-30">
