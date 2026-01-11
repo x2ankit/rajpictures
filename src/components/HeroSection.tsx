@@ -10,7 +10,7 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen h-[100dvh] overflow-hidden bg-black">
-      {/* Background video - appears on all screens */}
+      {/* Background video - all screens */}
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover z-10"
